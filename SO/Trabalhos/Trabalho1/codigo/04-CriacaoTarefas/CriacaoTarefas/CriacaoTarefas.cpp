@@ -4,14 +4,15 @@
 #include "stdafx.h"
 #include <stdlib.h>
 
-int NumThreads = -1;
+DWORD NumThreads = -1;
+DWORD Time = -1;
 
 int x;
 
 
 typedef struct _ThreadArgs {
   DWORD id;
-} ThreadArgs, * PThreadArgs;
+} ThreadArgs_t[1], * ThreadArgs_ptr,ThreadArgs_struct;
 
 
 DWORD WINAPI ImprimeThread(LPVOID args)
@@ -28,9 +29,10 @@ DWORD WINAPI ImprimeThread(LPVOID args)
 
 DWORD WINAPI ImprimeThreadArgsByStruct(LPVOID _args)
 {
-    PThreadArgs args = (PThreadArgs)_args;
+	Sleep(Time);
+    ThreadArgs_ptr args = (ThreadArgs_ptr)_args;
     _tprintf( TEXT("[Thread nº %2d] Olá Mundo.\n"), args->id);
-
+	
     //chENDTHREADEX( args->id );
 
     return args->id;
@@ -41,7 +43,7 @@ void showThreadExitCode(HANDLE * hThreads)
 {
   DWORD exitCode;
 
-  for(int idThread=0; idThread<NumThreads; ++idThread) {
+  for(DWORD idThread=0; idThread<NumThreads; ++idThread) {
 
     if (GetExitCodeThread(hThreads[idThread], &exitCode)==0) {
         ReportErrorSystem( TEXT("Erro ao obter o código de terminação da tarefa %d"), idThread);
@@ -67,21 +69,21 @@ int _tmain(int argc, _TCHAR* argv[])
     _tsetlocale( LC_ALL, TEXT("portuguese_portugal") );
     _tprintf( TEXT("[main] Vou criar as tarefas.\n") );
 
-	DWORD num = _wtoi(argv[1]);
-	DWORD time = _wtoi(argv[2]);
+	Time = _wtoi(argv[2]);
 	
-	NumThreads = num;
+	NumThreads = _wtoi(argv[1]);
 
-	HANDLE* hThreads = (HANDLE*) calloc(num,sizeof(HANDLE));
-	DWORD* idThreads = (DWORD *)calloc(time,sizeof(DWORD));
+	HANDLE* hThreads = (HANDLE*)calloc(NumThreads,sizeof(HANDLE));
+	DWORD* idThreads = (DWORD *)calloc(NumThreads,sizeof(DWORD));
 
-    //HANDLE hThreads[ NumThreads ];
+    //HANDLE * hThreads;
+	//DWORD hThreads = (HANDLE*)malloc(sizeof(HANDLE)*NumThreads);
     //DWORD idThreads[ NumThreads ];
 	//ThreadArgs args[ num ];
 
-	ThreadArgs* args = (ThreadArgs*)calloc(num,sizeof(ThreadArgs));
+	ThreadArgs_ptr args = (ThreadArgs_ptr)calloc(NumThreads,sizeof(ThreadArgs_struct));
 
-    for (DWORD idThread=0; idThread<num; ++idThread) {
+    for (DWORD idThread=0; idThread < NumThreads; ++idThread) {
 		//_tprintf(TEXT("FOR NAO ESTA A FAZER NADA!!\n"));
         // Utilizando a função "CreateThread"
         //hThreads[ idThread ] = CreateThread( NULL, 0, ImprimeThread, (LPVOID)idThread, NULL, &idThreads[ idThread ] );
@@ -109,22 +111,21 @@ int _tmain(int argc, _TCHAR* argv[])
         //hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ImprimeThreadArgsByStruct, (LPVOID)(&arg), NULL, &idThreads[ idThread ] );
     }
 
+    _tprintf( TEXT("[main] Esperar pela terminação das tarefas.\n") );
 
-    _tprintf( TEXT("[main] Esperar pela terminação das tarefas através da função Sleep.\n") );
-
-    //WaitForMultipleObjects( num, hThreads, TRUE, INFINITE );
-	Sleep(time);
+    WaitForMultipleObjects( NumThreads, hThreads, TRUE, INFINITE );
+	
 
     _tprintf( TEXT("[main] [HANDLES abertos] Mostrar o código de terminação das tarefas.\n") );
     showThreadExitCode( hThreads );
 
     _tprintf( TEXT("[main] Fechar os HANDLES das tarefas.\n") );
-    for (int idThread=0; idThread<NumThreads; ++idThread) {
+    for (DWORD idThread=0; idThread<NumThreads; ++idThread) {
         CloseHandle( hThreads[ idThread ] );
     }
 
-    _tprintf( TEXT("[main] [HANDLES fechados]Não está a mostrar o código de terminação das tarefas.\n") );
-    //showThreadExitCode( hThreads ); //--> esta a dar erro ainda nao percebi porque... :S
+    //_tprintf( TEXT("[main] [HANDLES fechados]Não está a mostrar o código de terminação das tarefas.\n") );
+    //showThreadExitCode( hThreads ); -> so e chamado quando os handles nao estao fechados!
 
 
     _tprintf( TEXT("[main] Função principal a terminar.\nPrima uma tecla para continuar.\n") );
