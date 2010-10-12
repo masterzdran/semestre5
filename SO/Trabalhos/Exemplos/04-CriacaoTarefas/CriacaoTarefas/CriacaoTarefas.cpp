@@ -58,8 +58,28 @@ void showThreadExitCode(HANDLE * hThreads, int NumThreads)
   }
 }
 
-DOUBLE randVal(DOUBLE min, DOUBLE max){
-	
+void IshowThreadExitCode(HANDLE * hThreads, int NumThreads,int* total)
+{
+  DWORD exitCode;
+
+  for(int idThread=0; idThread<NumThreads; ++idThread) {
+
+    if (GetExitCodeThread(hThreads[idThread], &exitCode)==0) {
+        ReportErrorSystem( TEXT("Erro ao obter o código de terminação da tarefa %d"), idThread);
+    }
+    else {
+        if ( exitCode==STILL_ACTIVE ) {
+            _tprintf( TEXT("A tarefa %d ainda se encontra em execução.\n"), idThread );
+        }
+        else {
+            _tprintf( TEXT("A tarefa %d terminou com o valor %d.\n"), idThread, exitCode );
+			*total += exitCode;
+        }
+    }
+  }
+}
+
+static DOUBLE randVal(DOUBLE min, DOUBLE max){
 	return (DOUBLE)rand()/(RAND_MAX + 1)*(max - min) + min;
 }
 
@@ -71,6 +91,27 @@ DOUBLE piValue(DOUBLE insidePoints, DOUBLE totalExperiences){
 	return (insidePoints/totalExperiences)*4;
 }
 
+DWORD WINAPI ThreadsCode(LPVOID args)
+{
+	DWORD experiencias = (DWORD) args;
+	DWORD n_expr = 0;
+	
+	DOUBLE xx = 0;
+	DOUBLE yy = 0;
+	
+	for(int i = 0;i<experiencias;++i)
+	{
+		xx = randVal(-0.5,0.5) ;
+		yy = randVal(-0.5,0.5);
+		if(isInsideCircle(xx,yy,0.5))
+		{
+			++n_expr;
+		}
+	}
+
+	return n_expr;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     _tsetlocale( LC_ALL, TEXT("portuguese_portugal") );
@@ -78,27 +119,35 @@ int _tmain(int argc, _TCHAR* argv[])
     if (argc != 3 ) 
 	{
 		_tprintf(TEXT("Numero Invalido de Argumentos. Devem ser 3, existem %i"),argc);
-		Sleep(2000);
+		_gettchar();
 		return 1;
 	}
-
-	//	Leitura dos valores da linha de comandos
-	int tarefasNbr	=	_ttoi((_TCHAR*) argv[1]);
-	int expNbr		=	_ttoi((_TCHAR*) argv[2]);
-	_tprintf(TEXT("[NAC] :: [0] %i [1] %i\n"),tarefasNbr, expNbr);
-
-	DOUBLE xx = 0;
-	DOUBLE yy = 0;
-	int in = 0;
 	srand(time(NULL));
-	for (DWORD i =0;i<expNbr;++i){
-		xx = randVal(-0.50,0.50);
-		yy = randVal(-0.50,0.50);
-		if (isInsideCircle(xx,yy,0.5)){++in;}
+	for(int i = 0;i<100;++i)
+	{
+		printf("%f ",randVal(-0.5,0.5));
 	}
-	_tprintf(TEXT("[NAC] :: [PI VALUE] %f [Nbr Exp] %i [Nbr Inside] %i\n"),piValue(in,expNbr), expNbr,in);
-	Sleep(10000);
+	_gettchar();
 	return 1;
+	//	Leitura dos valores da linha de comandos
+	DWORD tarefasNbr	=	_ttoi((_TCHAR*) argv[1]);
+	DWORD expNbr		=	_ttoi((_TCHAR*) argv[2]);
+	//_tprintf(TEXT("[NAC] :: [0] %i [1] %i\n"),tarefasNbr, expNbr);
+
+	//DOUBLE xx = 0;
+	//DOUBLE yy = 0;
+	//DWORD in = 0;
+	
+	
+	
+	//for (DWORD i =0;i<expNbr;++i){
+	//	xx = randVal(-0.50,0.50);
+	//	yy = randVal(-0.50,0.50);
+	//	if (isInsideCircle(xx,yy,0.5)){++in;}
+	//}
+	//_tprintf(TEXT("[NAC] :: [PI VALUE] %f [Nbr Exp] %i [Nbr Inside] %i\n"),piValue(in,expNbr), expNbr,in);
+	//_gettchar();
+	//return 1;
 
 	//	Criação do espaço que vai albergar das estruturas
 	_tprintf( TEXT("[main] Vou criar as tarefas.\n") );
@@ -106,27 +155,30 @@ int _tmain(int argc, _TCHAR* argv[])
 	DWORD*  idThreads	= (DWORD*)calloc(tarefasNbr,sizeof(DWORD));	
 	ThreadArgs* args = (ThreadArgs*)calloc(tarefasNbr,sizeof(ThreadArgs));
 
-
+	DWORD totalExp=tarefasNbr*expNbr;
+	DWORD totalExpInside=0;
 
     for (int idThread=0; idThread<tarefasNbr; ++idThread) {
+
         args[ idThread ].id = idThread;
-        hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ImprimeThreadArgsByStruct, (LPVOID)(&args[ idThread ]), NULL, idThreads[ idThread ] );
+		hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ThreadsCode, (LPVOID)(expNbr), NULL, idThreads[ idThread ] );
     }
 
 	
-    _tprintf( TEXT("[main] Esperar pela terminação das tarefas.\n") );
+   // _tprintf( TEXT("[main] Esperar pela terminação das tarefas.\n") );
 
 	WaitForMultipleObjects( tarefasNbr, hThreads, TRUE, INFINITE );
+	
+	//_tprintf( TEXT("[main] [HANDLES abertos] Mostrar o código de terminação das tarefas.\n") );
+    IshowThreadExitCode( hThreads, tarefasNbr,(int*)&totalExpInside );
 
-    _tprintf( TEXT("[main] [HANDLES abertos] Mostrar o código de terminação das tarefas.\n") );
-    showThreadExitCode( hThreads, tarefasNbr );
-
-    _tprintf( TEXT("[main] Fechar os HANDLES das tarefas.\n") );
+    //_tprintf( TEXT("[main] Fechar os HANDLES das tarefas.\n") );
 	for (int idThread=0; idThread<tarefasNbr; ++idThread) {
+
         CloseHandle( hThreads[ idThread ] );
     }
-
-	_tprintf( TEXT("[main] Função principal a terminar.\nPrima uma tecla para continuar.\n") );
+	_tprintf(TEXT("[NAC] :: [PI VALUE] %f [Nbr Exp] %i [Nbr Inside] %i\n"),piValue(totalExpInside,totalExp), totalExp,totalExpInside);
+	//_tprintf( TEXT("[main] Função principal a terminar.\nPrima uma tecla para continuar.\n") );
     _gettch();
 
 	free(args);
