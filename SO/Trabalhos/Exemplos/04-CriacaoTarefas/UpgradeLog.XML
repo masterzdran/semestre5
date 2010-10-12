@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CriacaoTarefas">
+</Property><Property Name="Solution File" Value="D:\ESCOLA\ISEL\Semestre5\SO\Trabalhos\Exemplos\04-CriacaoTarefas\CriacaoTarefas.sln">
+</Property><Property Name="Date" Value="terça-feira, 12 de Outubro de 2010">
+</Property><Property Name="Time" Value="12:23">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="CriacaoTarefas.sln" Description="File successfully backed up as D:\ESCOLA\ISEL\Semestre5\SO\Trabalhos\Exemplos\04-CriacaoTarefas\CriacaoTarefas.sln.old">
+</Event><Event ErrorLevel="0" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="Converting project file 'D:\ESCOLA\ISEL\Semestre5\SO\Trabalhos\Exemplos\04-CriacaoTarefas\CriacaoTarefas\CriacaoTarefas.vcproj'.">
+</Event><Event ErrorLevel="1" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="Attribute 'Detect64BitPortabilityProblems' of 'VCCLCompilerTool' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="1" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="Attribute 'Detect64BitPortabilityProblems' of 'VCCLCompilerTool' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="1" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="MSB8012: $(TargetPath) ('D:\ESCOLA\ISEL\Semestre5\SO\Trabalhos\Exemplos\04-CriacaoTarefas\CriacaoTarefas\Debug\CriacaoTarefas.exe') does not match the Linker's OutputFile property value 'Debug\CriacaoTarefas.exe' ('D:\ESCOLA\ISEL\Semestre5\SO\Trabalhos\Exemplos\04-CriacaoTarefas\Debug\CriacaoTarefas.exe') in project configuration 'Debug|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="0" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="Done converting to new project file 'D:\ESCOLA\ISEL\Semestre5\SO\Trabalhos\Exemplos\04-CriacaoTarefas\CriacaoTarefas\CriacaoTarefas.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="CriacaoTarefas" Source="CriacaoTarefas\CriacaoTarefas.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="CriacaoTarefas.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="CriacaoTarefas.sln" Description="Converted">
+</Event></UpgradeLog>

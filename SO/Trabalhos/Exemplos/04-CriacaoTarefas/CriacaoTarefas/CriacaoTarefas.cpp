@@ -2,9 +2,10 @@
 //
 
 #include "stdafx.h"
+#include <time.h>
 
 
-const int NumThreads = 5;
+//const int NumThreads = 5;
 
 int x;
 
@@ -17,7 +18,7 @@ typedef struct _ThreadArgs {
 DWORD WINAPI ImprimeThread(LPVOID args)
 {
     int id = (int)args;
-    _tprintf( TEXT("[Thread nº %2d] Olá Mundo.\n"), id);
+    _tprintf( TEXT("[[1]Thread nº %2d] Olá Mundo.\n"), id);
 
     //ExitThread( (DWORD)id );
     //chENDTHREADEX( (DWORD)id );
@@ -29,7 +30,7 @@ DWORD WINAPI ImprimeThread(LPVOID args)
 DWORD WINAPI ImprimeThreadArgsByStruct(LPVOID _args)
 {
     PThreadArgs args = (PThreadArgs)_args;
-    _tprintf( TEXT("[Thread nº %2d] Olá Mundo.\n"), args->id);
+    _tprintf( TEXT("[[2]Thread nº %2d] Olá Mundo.\n"), args->id);
 
     //chENDTHREADEX( args->id );
 
@@ -37,7 +38,7 @@ DWORD WINAPI ImprimeThreadArgsByStruct(LPVOID _args)
 }
 
 
-void showThreadExitCode(HANDLE * hThreads)
+void showThreadExitCode(HANDLE * hThreads, int NumThreads)
 {
   DWORD exitCode;
 
@@ -57,56 +58,79 @@ void showThreadExitCode(HANDLE * hThreads)
   }
 }
 
+DOUBLE randVal(DOUBLE min, DOUBLE max){
+	
+	return (DOUBLE)rand()/(RAND_MAX + 1)*(max - min) + min;
+}
+
+BOOL isInsideCircle(DOUBLE xx, DOUBLE yy, DOUBLE radius ){
+	return ((xx*xx) + (yy*yy))<= radius*radius;
+}
+
+DOUBLE piValue(DOUBLE insidePoints, DOUBLE totalExperiences){
+	return (insidePoints/totalExperiences)*4;
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
     _tsetlocale( LC_ALL, TEXT("portuguese_portugal") );
 
-    
-    _tprintf( TEXT("[main] Vou criar as tarefas.\n") );
+    if (argc != 3 ) 
+	{
+		_tprintf(TEXT("Numero Invalido de Argumentos. Devem ser 3, existem %i"),argc);
+		Sleep(2000);
+		return 1;
+	}
+
+	//	Leitura dos valores da linha de comandos
+	int tarefasNbr	=	_ttoi((_TCHAR*) argv[1]);
+	int expNbr		=	_ttoi((_TCHAR*) argv[2]);
+	_tprintf(TEXT("[NAC] :: [0] %i [1] %i\n"),tarefasNbr, expNbr);
+
+	DOUBLE xx = 0;
+	DOUBLE yy = 0;
+	int in = 0;
+	srand(time(NULL));
+	for (DWORD i =0;i<expNbr;++i){
+		xx = randVal(-0.50,0.50);
+		yy = randVal(-0.50,0.50);
+		if (isInsideCircle(xx,yy,0.5)){++in;}
+	}
+	_tprintf(TEXT("[NAC] :: [PI VALUE] %f [Nbr Exp] %i [Nbr Inside] %i\n"),piValue(in,expNbr), expNbr,in);
+	Sleep(10000);
+	return 1;
+
+	//	Criação do espaço que vai albergar das estruturas
+	_tprintf( TEXT("[main] Vou criar as tarefas.\n") );
+	HANDLE* hThreads	= (HANDLE*)calloc(tarefasNbr,sizeof(HANDLE));
+	DWORD*  idThreads	= (DWORD*)calloc(tarefasNbr,sizeof(DWORD));	
+	ThreadArgs* args = (ThreadArgs*)calloc(tarefasNbr,sizeof(ThreadArgs));
 
 
-    HANDLE hThreads[ NumThreads ];
-    DWORD idThreads[ NumThreads ];
 
-    for (int idThread=0; idThread<NumThreads; ++idThread) {
-        // Utilizando a função "CreateThread"
-        //hThreads[ idThread ] = CreateThread( NULL, 0, ImprimeThread, (LPVOID)idThread, NULL, &idThreads[ idThread ] );
-
-        // Utiliznado a macro "chBEGINTHREADEX"
-        //hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ImprimeThread, (LPVOID)idThread, NULL, &idThreads[ idThread ] );
-
-        // Utilizando a macro "chBEGINTHREADEX" e uma estrutura para passar argumentos
-        ThreadArgs args[ NumThreads ];
+    for (int idThread=0; idThread<tarefasNbr; ++idThread) {
         args[ idThread ].id = idThread;
-        hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ImprimeThreadArgsByStruct, (LPVOID)(&args[ idThread ]), NULL, &idThreads[ idThread ] );
-    
-        // Utilizando a macro "chBEGINTHREADEX" e uma estrutura, partilhada por todas as tarefas, 
-        // para passar argumentos 
-        // NOTA: perceber porque é errada esta opção
-        //ThreadArgs arg;
-        //arg.id = idThread;
-        //hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ImprimeThreadArgsByStruct, (LPVOID)(&arg), NULL, &idThreads[ idThread ] );
+        hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ImprimeThreadArgsByStruct, (LPVOID)(&args[ idThread ]), NULL, idThreads[ idThread ] );
     }
 
-
+	
     _tprintf( TEXT("[main] Esperar pela terminação das tarefas.\n") );
 
-    WaitForMultipleObjects( NumThreads, hThreads, TRUE, INFINITE );
+	WaitForMultipleObjects( tarefasNbr, hThreads, TRUE, INFINITE );
 
     _tprintf( TEXT("[main] [HANDLES abertos] Mostrar o código de terminação das tarefas.\n") );
-    showThreadExitCode( hThreads );
+    showThreadExitCode( hThreads, tarefasNbr );
 
     _tprintf( TEXT("[main] Fechar os HANDLES das tarefas.\n") );
-    for (int idThread=0; idThread<NumThreads; ++idThread) {
+	for (int idThread=0; idThread<tarefasNbr; ++idThread) {
         CloseHandle( hThreads[ idThread ] );
     }
 
-    //_tprintf( TEXT("[main] [HANDLES fechados] Mostrar o código de terminação das tarefas.\n") );
-    //showThreadExitCode( hThreads );
-
-    _tprintf( TEXT("[main] Função principal a terminar.\nPrima uma tecla para continuar.\n") );
+	_tprintf( TEXT("[main] Função principal a terminar.\nPrima uma tecla para continuar.\n") );
     _gettch();
 
-    return 0;
+	free(args);
+	free(hThreads);
+	free(idThreads);
+	return 0;
 }
