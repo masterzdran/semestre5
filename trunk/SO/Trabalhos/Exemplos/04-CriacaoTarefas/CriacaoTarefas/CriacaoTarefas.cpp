@@ -3,15 +3,17 @@
 
 #include "stdafx.h"
 #include <time.h>
-
+#include <MMSystem.h>
 
 //const int NumThreads = 5;
 
 int x;
-
+void showTimes(HANDLE hThread);
 
 typedef struct _ThreadArgs {
   DWORD id;
+  DWORD nbrExp;
+  DWORD totalExp;
 } ThreadArgs, * PThreadArgs;
 
 
@@ -73,7 +75,8 @@ void IshowThreadExitCode(HANDLE * hThreads, int NumThreads,int* total)
         }
         else {
             _tprintf( TEXT("A tarefa %d terminou com o valor %d.\n"), idThread, exitCode );
-			*total += exitCode;
+			*total = exitCode + *total;
+			showTimes(hThreads[ idThread ] );
         }
     }
   }
@@ -93,13 +96,13 @@ DOUBLE piValue(DOUBLE insidePoints, DOUBLE totalExperiences){
 
 DWORD WINAPI ThreadsCode(LPVOID args)
 {
-	DWORD experiencias = (DWORD) args;
+	PThreadArgs experiencias = (PThreadArgs)(args);
 	DWORD n_expr = 0;
 	
 	DOUBLE xx = 0;
 	DOUBLE yy = 0;
-	
-	for(int i = 0;i<experiencias;++i)
+	srand(experiencias->id);
+	for(DWORD i = 0;i < (experiencias->nbrExp) ;++i)
 	{
 		xx = randVal(-0.5,0.5) ;
 		yy = randVal(-0.5,0.5);
@@ -108,10 +111,59 @@ DWORD WINAPI ThreadsCode(LPVOID args)
 			++n_expr;
 		}
 	}
-
+	experiencias->totalExp = n_expr;
+//	_tprintf(TEXT("[[NAC] %i -> %i]\n"),experiencias->id,experiencias->totalExp);
 	return n_expr;
 }
-
+void showTimes(HANDLE hThread)
+{
+    union { // simplifies elapsed time calculation
+        LONG64   li;
+        FILETIME ft;
+    } creationTime, exitTime, elapsedTime;
+
+
+    FILETIME kernelTime;
+    FILETIME userTime;
+
+    if ( GetThreadTimes(hThread, &creationTime.ft, &exitTime.ft, &kernelTime, &userTime)==0 ) {
+
+        ReportErrorSystem( TEXT("Erro ao obter os tempos de execução da tarefa %h"), hThread );
+    }
+    else
+    {
+        SYSTEMTIME syElapsedTime;
+        SYSTEMTIME syKernelTime;
+        SYSTEMTIME syUserTime;
+
+        elapsedTime.li = exitTime.li - creationTime.li; 
+
+        FileTimeToSystemTime( &elapsedTime.ft, &syElapsedTime);
+        FileTimeToSystemTime( &kernelTime, &syKernelTime);
+        FileTimeToSystemTime( &userTime, &syUserTime);
+
+        _tprintf( 
+          TEXT("Tempo de execução ------ %02d:%02d:%02d,%03d\n"), 
+          syElapsedTime.wHour, 
+          syElapsedTime.wMinute, 
+          syElapsedTime.wSecond, 
+          syElapsedTime.wMilliseconds );
+
+        _tprintf( 
+           TEXT("Tempo em modo kernel --- %02d:%02d:%02d,%03d\n"), 
+           syKernelTime.wHour, 
+           syKernelTime.wMinute, 
+           syKernelTime.wSecond, 
+           syKernelTime.wMilliseconds );
+
+        _tprintf(
+          TEXT("Tempo em modo user ----- %02d:%02d:%02d,%03d\n"),
+          syUserTime.wHour, 
+          syUserTime.wMinute, 
+          syUserTime.wSecond, 
+          syUserTime.wMilliseconds );
+    }
+}
 int _tmain(int argc, _TCHAR* argv[])
 {
     _tsetlocale( LC_ALL, TEXT("portuguese_portugal") );
@@ -122,13 +174,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		_gettchar();
 		return 1;
 	}
-	srand(time(NULL));
-	for(int i = 0;i<100;++i)
-	{
-		printf("%f ",randVal(-0.5,0.5));
-	}
-	_gettchar();
-	return 1;
+
+
 	//	Leitura dos valores da linha de comandos
 	DWORD tarefasNbr	=	_ttoi((_TCHAR*) argv[1]);
 	DWORD expNbr		=	_ttoi((_TCHAR*) argv[2]);
@@ -158,13 +205,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	DWORD totalExp=tarefasNbr*expNbr;
 	DWORD totalExpInside=0;
 
-    for (int idThread=0; idThread<tarefasNbr; ++idThread) {
+    for (DWORD idThread=0; idThread < tarefasNbr; ++idThread) {
 
         args[ idThread ].id = idThread;
-		hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ThreadsCode, (LPVOID)(expNbr), NULL, idThreads[ idThread ] );
+		args[ idThread ].nbrExp = expNbr;
+
+		hThreads[ idThread ] = chBEGINTHREADEX( NULL, 0, ThreadsCode, (LPVOID)(&args[ idThread ]), NULL, idThreads[ idThread ] );
     }
 
-	
+
+	/*(LPVOID)(expNbr)*/
    // _tprintf( TEXT("[main] Esperar pela terminação das tarefas.\n") );
 
 	WaitForMultipleObjects( tarefasNbr, hThreads, TRUE, INFINITE );
@@ -173,7 +223,7 @@ int _tmain(int argc, _TCHAR* argv[])
     IshowThreadExitCode( hThreads, tarefasNbr,(int*)&totalExpInside );
 
     //_tprintf( TEXT("[main] Fechar os HANDLES das tarefas.\n") );
-	for (int idThread=0; idThread<tarefasNbr; ++idThread) {
+	for (DWORD idThread=0; idThread<tarefasNbr; ++idThread) {
 
         CloseHandle( hThreads[ idThread ] );
     }
