@@ -18,5 +18,5 @@
 #include <conio.h>
 #include <process.h>
 
-#include "..\..\Include\SesError.h"
-#include "..\..\Include\BeginThreadex.h"
+#include "SesError.h"
+#include "BeginThreadex.h"
