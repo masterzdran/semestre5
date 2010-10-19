@@ -16,30 +16,6 @@ typedef struct _ThreadArgs {
   DWORD totalExp;
 } ThreadArgs, * PThreadArgs;
 
-
-DWORD WINAPI ImprimeThread(LPVOID args)
-{
-    DWORD id = (DWORD)args;
-    _tprintf( TEXT("[[1]Thread nº %2d] Olá Mundo.\n"), id);
-
-    //ExitThread( (DWORD)id );
-    //chENDTHREADEX( (DWORD)id );
-
-    return (DWORD)id;
-}
-
-
-DWORD WINAPI ImprimeThreadArgsByStruct(LPVOID _args)
-{
-    PThreadArgs args = (PThreadArgs)_args;
-    _tprintf( TEXT("[[2]Thread nº %2d] Olá Mundo.\n"), args->id);
-
-    //chENDTHREADEX( args->id );
-
-    return args->id;
-}
-
-
 void showThreadExitCode(HANDLE * hThreads, DWORD NumThreads)
 {
   DWORD exitCode;
