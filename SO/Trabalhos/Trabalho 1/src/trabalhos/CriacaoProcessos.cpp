@@ -108,7 +108,7 @@ void executeOnProcess(DWORD tarefasNbr, DWORD expNbr, _TCHAR* prog){
 		free(newlinecomand);
 	}
 	/*
-	 * Iniciar cada processo
+	 * Start each new process
 	 */
 	for (DWORD i = 0;i<tarefasNbr; ++i){
 		if ( (flags & CREATE_SUSPENDED)!=0 ) {
@@ -123,7 +123,7 @@ void executeOnProcess(DWORD tarefasNbr, DWORD expNbr, _TCHAR* prog){
     timeOut = INFINITE;
     //timeOut = 5000;
 	/*
-	 * Finalizar cada processo
+	 * End each new process
 	 */
 	for (DWORD i = 0;i<tarefasNbr; ++i){
 		if (WaitForSingleObject( handleNewProcess[i], timeOut )==WAIT_TIMEOUT) {
@@ -147,18 +147,14 @@ void executeOnProcess(DWORD tarefasNbr, DWORD expNbr, _TCHAR* prog){
 	}
 
 
-	/*
-		Fechar os handles
-	*/
+
 	for (DWORD i = 0;i<tarefasNbr; ++i){
 		CloseHandle( handleNewProcess[i] );
 		CloseHandle( handleNewThread[i] );
 	}
     _tprintf( TEXT("Prima uma tecla para terminar.") );
     _gettch();
-	/*
-		libertar o espaço alocado
-	*/
+
 	free(handleNewThread);
 	free(handleNewProcess);
 }
