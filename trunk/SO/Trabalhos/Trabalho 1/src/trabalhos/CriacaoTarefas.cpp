@@ -187,8 +187,6 @@ void executeOnThreads(DWORD tarefasNbr, DWORD expNbr,_TCHAR* prog)
     }
 
 	_tprintf(TEXT("[PI VALUE] %f [Nbr Exp] %i [Nbr Inside] %i\n"),piValue(totalExpInside,totalExp), totalExp,totalExpInside);
-	_tprintf( TEXT("[main] Função principal a terminar.\nPrima uma tecla para continuar.\n") );
-    _gettch();
 
 	free(args);
 	free(hThreads);
