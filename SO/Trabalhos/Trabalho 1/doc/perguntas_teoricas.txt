@@ -1,0 +1,22 @@
+Exercicios Teoricos
+
+1.
+  - Como as instruções privilegiadas actuam directamente no hardware da máquina podem comprometer o sistema, logo, para proteger os acessos ao hardware e à memória, estas instruções apenas são executadas pelo sistema operativo em modo kernel, através de System Calls no modo user. Deste modo, qualquer programa executado em modo user não conseguirá aceder às instruções privilegiadas, garantindo assim  a estabilidade de funcionamento de qualquer aplicação, incluindo o sistema operativo.
+  
+2.
+  - Um context switch consiste na eventual troca de PCB (no caso do próximo processo a executar ser distinto do actual), ou seja, guardar o estado actual do PCB e carregar aquele que se prentede que seja executado, de seguida é reposto o estado do stack e dos resgistos da thread que irá ser executada.
+  - Os context switchs ocorrem quando se pretende trocar a thread em execução (estado de run) por uma outra que esteja pronta para ser executada (estado de ready), sendo um pouco mais concreto, acontece um context switch sempre que o TimeSlice termine ou a thread que se encontre em execução, por algum motivo, tiver a necessidade de passar para o estado de wait.
+  
+3.
+  - Os estados principais de uma tarefa são: Ready, Run e Wait. Quando uma tarefa é criada esta é inserida no estado Ready, onde irá ficar alojada numa lista com tarefas pendentes. Após toda a lista ser escalonada até à tarefa indicada acima o seu estado passará para Run. Em Run as tarefas dispõem de um time-slice para efectuar a sua função, caso esse tempo não seja suficiente para executar toda a operação esta passará para Ready. Pode ocorrer uma tarefa necessitar de uma informação de um periférico, como por exemplo o teclado, então esta é automáticamente transferida para Wait inde irá esperar tecla e posteriormente passará para Ready novamente. Após a tarefa estar em Run e toda a sua função estar concluída, esta é dada como terminada.
+  
+4.
+  - Um processo pode conter multiplas tarefas, por isso, os seus dados estão isolados face aos restantes processos do sistema operativo. Por outro lado, as tarefas partilham o mesmo espaço de endereçamento pois estas executam-se no contexto de um processo. Computacionalmente, a criação de um processo é mais pesado (tempo, memória e sincronização) para o sistema operativo dado que este contem um Process Control Block (que dispõe de identificador do processo, espaço de endereçamento, instruction pointer, program counter, entre outros), ao contrário das tarefas (cujo seu contexto é composto pelos seus os registos e o seu stack). Ao nível do escalonamento este é mais pesado na comutação entre processos distintos do que fazer a comutação entre tarefas do mesmo processo devido ao estado associado a cada um.
+  
+5.
+  - Preemptive scheduling consiste em estabelecer prioridades na tarefas existentes no estado Ready. Starvation é um problema que ocorre em multitarefa quando um processo está continuamente à espera de recursos, existentes noutros que não serão concluídos(deadlock). Sem estes recursos o processo não pode ser concluído. Assim, o processo fica preso no estado wait não sendo detectado qualquer erro no Process Control Block.
+  
+  
+  
+  
+  NAO SEI... VER CONCEITOS: scheluder e starvation.
