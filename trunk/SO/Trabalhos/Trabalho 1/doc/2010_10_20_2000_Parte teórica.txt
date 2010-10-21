@@ -28,3 +28,9 @@ Em termos de desempenho, a criação de uma thread requer menos custos do que a cr
 
 A grande vantagem do processo é realmente ter um espaço de memória reservado que é bastante útil no caso de considerarmos a execução de código consideravelmente pesado e que apenas necessitemos de obter um valor de retorno. 
 
+-------------------------
+
+Preempção - O CPU pode ser retirado a uma thread para que esta não se execute até que termine a operação que está a realizar ou necessite de consultar um periférico. (O CPU é retirado no final do Time Slice.)
+
+Starvation - diz-se que há starvation quando uma thread não consegue ganhar posse do processador. Isto pode ocorrer se o escalonamento não levar este fenomono em conta. 
+
