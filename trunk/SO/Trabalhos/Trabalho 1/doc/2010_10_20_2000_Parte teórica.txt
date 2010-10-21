@@ -1,0 +1,30 @@
+1 - Explique a necessidade da existência de instruções privilegiadas no suporte à realização do sistema operativo.
+
+As instruções privilegiadas existem para que um utilizador não consiga executar instruções do kernel do S.O. directamente, garantindo que o sistema operativo não é afectado com a execução de programas bem como outros programas quaisquer que também estejam a ser executados.
+------------------------
+2 - Nos sistemas operativos multiprogramados e multiutilizadores uma das acções realizadas, pelo núcleo, é a comutação de contexto (context switch). Diga em que consiste e em que circunstância é realizada.
+
+Um context switch consiste na eventual troca de PCB (no caso do processo que irá ser executado ser diferente), ou seja, guardar o estado actual do PCB e carregar aquele que se prentede que seja executado, de seguida é reposto o estado do stack e dos resgistos da thread que irá ser executada.
+
+Os context switchs ocorrem quando se pretende trocar a thread em execução (estado de run) por uma outra que esteja pronta para ser executada (estado de ready), sendo um pouco mais concreto, acontece um context switch sempre que o TimeSlice termine ou a thread que se encontre em execução, por algum motivo, tiver a necessidade de passar para o estado de wait.
+-----------------------------
+3 - No decorrer da execução de uma tarefa esta vai mudando de estado. Esses estados são definidos pela actividade corrente das tarefas e atribuídos pelo sistema operativo. Descreva, genericamente, os principais estados em que uma tarefa se pode encontrar assim como as possíveis transições entre estados.
+
+De um modo genérico os estados que existem são:
+Run - Este é o estado em que se encontra a thread que esteja a ser executada de momento.
+
+Ready - As threads que estejam prontas para se executarem, encontram-se neste estado.
+
+Wait - Quando uma thread passa para este estado, significa que está à espera que haja um processamento no qual não pode intervir e como tal não há necessidade de estar no estado de ready sem que esse processamento tenha sido concluído.
+---------------------
+4 - Nos sistemas operativos actuais existem, geralmente, os conceitos de tarefa e processo. Assim, o programador tem a possibilidade de modular as suas aplicações com base em múltiplos processos ou em múltiplas tarefas. Aponte as principais vantagens/desvantagens pela adopção de cada uma das alternativas.
+
+Os processos têm sempre associado um espaço de memória reservado para ser utilizado durante o decorrer do seu programa.
+As threads partilham o espaço de memória entre si.
+
+Os processos não podem partilhar segmentos de memória, enquanto que as threads podem. Pode-se considerar uma vantagem para delegar a execução de um troço de código e podermos partilhar espaços de memória possibilitando assim retirar partido do acesso a mais estados do que utilizando um processo, visto que apenas temos acesso ao seu valor de retorno.
+
+Em termos de desempenho, a criação de uma thread requer menos custos do que a criação de um processo, isto devido ao que é necessário alocar para a utilização dos mesmos.
+
+A grande vantagem do processo é realmente ter um espaço de memória reservado que é bastante útil no caso de considerarmos a execução de código consideravelmente pesado e que apenas necessitemos de obter um valor de retorno. 
+
