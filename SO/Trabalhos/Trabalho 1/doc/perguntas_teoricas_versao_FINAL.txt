@@ -1,0 +1,30 @@
+Exercicios Teoricos
+
+1.
+  Como as instruções privilegiadas actuam directamente no hardware da máquina podem comprometer o sistema, logo, para proteger os acessos ao hardware e à memória, estas instruções apenas são executadas pelo sistema operativo em modo kernel, através de System Calls no modo user. Deste modo, qualquer programa executado em modo user não conseguirá aceder às instruções privilegiadas, garantindo assim  a estabilidade de funcionamento de qualquer aplicação, incluindo o sistema operativo.
+  
+2.
+  Um context switch consiste na eventual troca de PCB (no caso do próximo processo a executar ser distinto do actual), ou seja, guardar o estado actual do PCB e carregar aquele que se prentede que seja executado, de seguida é reposto o estado do stack e dos resgistos da thread que irá ser executada.
+  Os context switchs ocorrem quando se pretende trocar a thread em execução (estado de run) por uma outra que esteja pronta para ser executada (estado de ready), sendo um pouco mais concreto, acontece um context switch sempre que o TimeSlice termine ou a thread que se encontre em execução, por algum motivo, tiver a necessidade de passar para o estado de wait.
+  
+3.
+  Estado 'Wait': Neste estado o processo está à espera de algum evento, seja o input do utilizador assim como ler de um periférico.
+	Estado 'Run': Neste estado o processo está a executar o seu código (ou parte) durante o time-slice disponível.
+	Estado 'Ready': Neste estado o processo está em condições de ser executado, mas está à espera que haja disponibilidade por parte do CPU para ser executado.
+	'Ready' -> 'Run': Através do algoritmo de escalonamento o processo pode passar a ser executado.
+	'Run' -> 'Ready': Acabou o time-slice atribuido, mas o procedimento ainda não foi finalizado
+	'Run' -> 'Wait': Fica à espera de um evento
+	'Wait' -> 'Ready': Quando ocorre um evento e fica pronto para ser executado
+
+  Claudia: "coloquei a resposta do cancelo, está identica à tua(morto), mas mais clara."
+  
+4.
+  Um processo pode conter multiplas tarefas, por isso, os seus dados estão isolados face aos restantes processos do sistema operativo. Por outro lado, as tarefas partilham o mesmo espaço de endereçamento pois estas executam-se no contexto de um processo. Computacionalmente requer menos processamento criar uma tarefa(composta pelos seus os registos e o seu stack), do que criar um processo(PCB dispõe de identificador do processo, espaço de endereçamento, instruction pointer, program counter, entre outros). Ao nível do escalonamento este é mais pesado na comutação entre processos distintos do que fazer a comutação entre tarefas do mesmo processo devido ao estado associado a cada um. As tarefas são sub-conjuntos de processos, pelo que podem haver múltiplas tarefas associadas a um processo, mas não existem múltiplos processos associados a uma única tarefa.
+  
+5.
+  Preemptive scheduling (Escalonador Preventivo), toma a iniciativa de interromper temporariamente uma tarefa para que outras possam ser executadas igualmente, distribuindo igualmente o tempo de utilização do CPU por todas as tarefas/processos existentes, para mais tarde o/a retomar.
+	Num escalonador baseado em prioridades é utilizado um algoritmo SJF (shortest job first) em que é executado o processo/tarefa cuja prioridade é definida pelo próximo do tempo de CPU burst.
+	Starvation consiste na situação de processos/tarefas de prioridade reduzida poderem raramente chegar a ser executados. Para evitar que esta situação ocorra pode-se proceder à acção de Aging, ou seja, aumentar a prioridade de processo com prioridade baixa que ainda não tenham sido executados em função do tempo que estão à espera.
+
+  Claudia: "Coloquei a resposta do cancelo dado estar muito completa."
+  201010211930_morto: Falta-te a definição de Preempção.. vou por no meu txt no final para procurares e depois veres se csguiste :p
