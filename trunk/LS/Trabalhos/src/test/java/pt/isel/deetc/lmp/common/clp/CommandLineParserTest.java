@@ -52,15 +52,15 @@ public class CommandLineParserTest {
 		
 		// Act
 		Map<String, String> map = clp.parse("-a valuea -b  valueb");
-		String []values = {"-a", " valuea ", " -b", " valueb"}; 
+		String[] values = {"-a", " valuea ", " -b", " valueb"}; 
 	    Map<String, String> map1 = clp.parse(values);
 		
 		// Assert
-		Assert.assertTrue(map.size() > 0);
+		Assert.assertTrue(map.size() == 2);
 		Assert.assertEquals("valuea", map.get("a"));
 		Assert.assertEquals("valueb", map.get("b"));
 		
-		Assert.assertTrue(map1.size() > 0);
+		Assert.assertTrue(map1.size() == 2);
 		Assert.assertEquals("valuea", map1.get("a"));
 		Assert.assertEquals("valueb", map1.get("b"));
 	}
@@ -71,7 +71,7 @@ public class CommandLineParserTest {
 		CommandLineParser clp = new CommandLineParser();
 				
 		// Act
-		Map<String, String> map = clp.parse("-a  -b   ");
+		Map<String, String> map = clp.parse(" -a  -b   ");
 		String []values = {"-a ", "-b"}; 
 	    Map<String, String> map1 = clp.parse(values);
 		

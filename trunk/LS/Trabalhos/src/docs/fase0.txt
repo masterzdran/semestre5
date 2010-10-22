@@ -1,0 +1,149 @@
+restrições de integridade:
+Entidade 'Calendar'
+	id:
+		* Valor Inteiro
+		* Valor Positivo
+		* Valor Não Nulo
+	name:
+		* Valor Não Nulo
+		* Valor de Texto
+		* Suporta até 50 caracteres
+
+Entidade 'Component'
+	id:
+		* Valor Inteiro
+		* Valor Positivo
+		* Valor Não Nulo
+	begin_date:
+		* Valor Não Nulo
+		* Valor no formato DATE-TIME. Admitindo Componentes em multi-timezones (ex: webcast)
+		* Na sua ausência, admite-se 1900-01-01
+	end_date:
+		* Valor Não Nulo
+		* Valor no formato DATE-TIME. Admitindo Componentes em multi-timezones (ex: webcast)
+		* Na sua ausência, admite-se 2999-12-31	
+
+Entidade 'Event'
+	description:
+		* Valor de Texto
+		* Suporta até 255 caracteres
+	summary:
+		* Valor de Texto
+		* Suporta até 255 caracteres
+	location:
+		* Valor de Texto
+		* Suporta até 255 caracteres
+	componentID:
+		* Valor Inteiro
+		* Valor Não Nulo
+		* Referencia um Component	
+Entidade 'ComponentType'
+	id:
+		* Valor Inteiro
+		* Valor Não Nulo
+	name:
+		* Valor de Texto
+		* Valor Não Nulo
+		* Suporta até 255 caracteres
+	description:
+		* Valor de Texto
+		* Suporta até 255 caracteres	
+
+Entidade 'Category'
+	id:
+		* Valor Inteiro
+		* Valor Não Nulo
+	name:
+		* Valor de Texto
+		* Valor Não Nulo
+		* Valor Único
+		* Suporta até 255 caracteres
+
+Relação 'Calendar_Component'
+	calendarID:
+		* Valor Inteiro
+		* Valor Não Nulo
+		* Referencia um Calendar
+	componentID:
+		* Valor Inteiro
+		* Valor Não Nulo
+		* Referencia um Component
+
+Relação 'Component_Category'
+	categoryID:
+		* Valor Inteiro
+		* Valor Não Nulo
+		* Referencia um Category
+	componentID:
+		* Valor Inteiro
+		* Valor Não Nulo
+		* Referencia um Component
+		
+===============
+=== Modelo lógico: Relacional === #Modelo_Logico
+
+{{{
+#!html
+<font color='blue'><b>Relação 'CALENDAR'</b></font>
+}}}
+
+ * Calendar(ID[PK],NAME)
+    * Chave Candidata = {ID}
+
+{{{
+#!html
+<font color='blue'><b>Relação 'COMPONENT'</b></font>
+}}}
+
+ * COMPONENT(ID[PK],BEGINDATE,ENDDATE,COMPONENTTYPEID[FK])
+    * Chave Candidata = {ID}
+    * Chave Estrangeira = {COMPONENTTYPEID REF COMPONENT:ID}
+
+{{{
+#!html
+<font color='blue'><b>Relação 'CALENDAR' - 'COMPONENT'</b></font>
+}}}
+
+ * CALENDAR_COMPONENT(CALENDARID[FK],COMPONENTID[FK])
+    * Chave Candidata = {CALENDARID,COMPONENTID}
+    * Chave Estrangeira = {CALENDARID REF CALENDAR:ID}, {COMPONENTID REF COMPONENT:ID}
+
+{{{
+#!html
+<font color='red'><b>Nota:</b>É necessário garantir que cada componente está associado a um ou mais calendários</font>
+}}}
+[[BR]]        
+
+{{{
+#!html
+<font color='blue'><b>Relação 'EVENT'</b></font>
+}}}    
+
+ * EVENT(DESCRIPTION,SUMMARY,LOCATION,COMPONENTID[FK])
+  * Chave Estrangeira = {COMPONENTID REF COMPONENT:id}
+
+{{{
+#!html
+<font color='blue'><b>Relação 'COMPONENTTYPE'</b></font>
+}}}    
+
+ * COMPONENTTYPE(ID[PK],NAME,DESCRIPTION)
+  * Chave Candidata = {ID}
+
+{{{
+#!html
+<font color='blue'><b>Relação 'CATEGORY'</b></font>
+}}}    	  
+
+ * CATEGORY(ID[PK],NAME)
+  * Chave Candidata = {ID}
+    	
+{{{
+#!html
+<font color='blue'><b>Relação 'COMPONENT' - 'CATEGORY'</b></font>
+}}}    
+
+ * COMPONENT_CATEGORY(CATEGORYID[FK],COMPONENTID[FK])
+  * Chave Candidata = {CALENDARID,COMPONENTID}
+  * Chave Estrangeira = {CALENDARID REF CALENDAR:ID, COMPONENTID REF COMPONENT:ID}
+
