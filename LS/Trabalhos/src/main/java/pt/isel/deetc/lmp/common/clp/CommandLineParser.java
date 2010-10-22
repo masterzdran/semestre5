@@ -20,7 +20,7 @@ import java.util.Map;
  * </p>
  * <p>Each argument name and value are trimmed from leading and trailing spaces.</p>
  * 
- * @author Carlos Guedes, Lu�s Falc�o e Pedro F�lix
+ * @author Carlos Guedes, Luis Falcao e Pedro Felix
  * @version 1.0 - 19/02/2010
  */
 public class CommandLineParser {
@@ -55,7 +55,10 @@ public class CommandLineParser {
         int idx = field.indexOf(prefix);
         return field.substring(idx + prefix.length(), field.length());
     }
-
+    private boolean byPass(String args,String argumentPrefix){
+    	int x=0;
+    	return ( (x = args.trim().indexOf(_argumentPrefix)) == -1 || ((x > 0) && (args.charAt(x-1) != ' ')));
+    }
     /**
      * Parses the given <code>commadLine</code> string array, fills the internal arguments map and returns it.
      * @param commandLine The command line string to be parsed
@@ -71,13 +74,13 @@ public class CommandLineParser {
         String value = "";
 
         // Skip the first arguments without the prefix
-        while (++i < args.length && args[i].trim().indexOf(_argumentPrefix) == -1);
+        while (++i < args.length && byPass(args[i],_argumentPrefix))  ;
 
         for (; i < args.length;) {
             name = getField(args[i].trim(), _argumentPrefix);
             value = "";
 
-            while (++i < args.length && args[i].indexOf(_argumentPrefix) == -1) {
+            while (++i < args.length && byPass(args[i],_argumentPrefix)) {
                 value += args[i];
             }
             argumentsMap.put(name, value.trim());
@@ -95,7 +98,9 @@ public class CommandLineParser {
             return new Hashtable<String, String>();
         }
         Hashtable<String, String> argumentsMap = new Hashtable<String, String>();
-        String[] arguments = commandLine.split(_argumentPrefix);
+        commandLine = ' '+commandLine;
+        
+        String[] arguments = commandLine.split(' '+_argumentPrefix);
         //Se não tiver o separador de opção toda a string é colocada na primeira posição
         //se tiver...
         // Iterate through the split parameters.
@@ -105,8 +110,8 @@ public class CommandLineParser {
         int idxSeparator = 0;
         String name = null;
         String value = "";
-        int i = (arguments.length == 1) ? 1 : 0;
-        for (; i < arguments.length; ++i) {
+
+        for (int i=1; i < arguments.length; ++i) {
             argument = arguments[i];
             idxSeparator = argument.indexOf(_argumentValueSeparator);
             name = null;

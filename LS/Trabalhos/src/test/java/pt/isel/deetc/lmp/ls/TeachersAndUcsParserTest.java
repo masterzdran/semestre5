@@ -1,7 +1,5 @@
 package pt.isel.deetc.lmp.ls;
 
-import java.util.IllegalFormatException;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
