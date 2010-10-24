@@ -13,4 +13,10 @@ SECTIONS
 	*(.text*) *(.glue_7) *(.glue_7t);
 	__text_end__ = ABSOLUTE(.);
 	} > rom
+	
+	.data ALIGN(4) : {
+	__data_start = ABSOLUTE(.);
+	*(.data*);
+	__data_end__ = ABSOLUTE(.);
+	} >ram	
 }
