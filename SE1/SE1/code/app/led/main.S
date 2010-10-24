@@ -74,7 +74,7 @@ KEYBOARD_READ:
 	LDR R4, =COL_MASK
 	LDR R5, =ROW_MASK
 	/*LDR R3, LAST_KEY_ADDR*/
-	/*MOV R6, #0*/
+	MOV R6, #0
 	/* PIN Direction Control Register */
 	/* 0-INPUT 1-OUTPUT */
 
