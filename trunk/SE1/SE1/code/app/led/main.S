@@ -1,57 +1,11 @@
-/* LPC2606 INITIALIZATION */
 
-/* STARTUP SECTION - VECTORS INITIALIZATION*/
-.global _start
-.text
-
-	LDR PC, RESET_ADDR
-	LDR PC, UNDEF_INST_ADDR
-	LDR PC, SOFT_INTER_ADDR
-	LDR PC, INST_MEM_FAULT_ADDR
-	LDR PC, DATA_MEM_FAULT_ADDR
-	.word 0xB8A06F58
-	LDR PC, IRQ_ADDR
-	LDR PC, FIQ_ADDR
-
-	RESET_ADDR: 			.word START
-	UNDEF_INST_ADDR:		.word UNDEF_INST
-	SOFT_INTER_ADDR:		.word SOFT_INTER
-	INST_MEM_FAULT_ADDR:	.word INST_MEM_FAULT
-	DATA_MEM_FAULT_ADDR:	.word DATA_MEM_FAULT
-							.word 0x0
-	IRQ_ADDR:				.word IRQ
-	FIQ_ADDR:				.word FIQ
-
-
-/* START */
-_start:
-START:
-		B MAIN
-		B .
-		
-/***********************/	
-/* EXCEPTIONS HANDLING */
-/***********************/
-
-UNDEF_INST:
-		B .
-SOFT_INTER:
-		B .
-INST_MEM_FAULT:
-		B .
-DATA_MEM_FAULT:
-		B .
-IRQ:
-		B .
-FIQ:
-		B .
-
-/*.data	
-.global _start
+.global MAIN
+/*
+.data
 	LAST_KEY:	.word 0x00000000
-	
+*/	
 .text
-*/
+
 	/*Register address declaration*/
 	PINSEL0  =	0xE002C000
 	PINSEL1  =	0xE002C004
@@ -60,8 +14,8 @@ FIQ:
 	IODIR	 =	0xE0028008
 	IOCLR	 =	0xE002800C
 	
-	COL_MASK =	0x00000F00
-	ROW_MASK =	0x000000F0
+	COL_MASK =	0x000000F0
+	ROW_MASK =	0x00000F00
 	LED_MASK =	0x00001000
 	
 	SLEEP_MASK = 0x20000
@@ -74,7 +28,7 @@ KEYBOARD_READ:
 	LDR R4, =COL_MASK
 	LDR R5, =ROW_MASK
 	/*LDR R3, LAST_KEY_ADDR*/
-	MOV R6, #0
+	/*MOV R6, #0*/
 	/* PIN Direction Control Register */
 	/* 0-INPUT 1-OUTPUT */
 
@@ -132,8 +86,8 @@ READ_COL:
 	/*Key decoding*/
 	/*shift results to the right and remove one unit to adjust to
 		keyboard values*/
-	MOV R2, R2, LSR #5
-	MOV R3, R3, LSR #9
+	MOV R2, R2, LSR #9
+	MOV R3, R3, LSR #5
 	MOV R0,#0
 	MOV R1,#0
 W1:
@@ -196,7 +150,6 @@ SLEEP1:
 	B BLINK
 
 MAIN:
-/*_start:*/
 	bl 	KEYBOARD_READ
 	bl 	LED_BLINK
-	b 	_start
+	b 	MAIN
