@@ -1,8 +1,7 @@
 package pt.isel.deetc.ls.cmd;
 
-import java.util.Map;
-
 import pt.isel.deetc.ls.mapper.EventMapper;
+import pt.isel.deetc.ls.model.ComponentRule;
 import pt.isel.deetc.ls.model.Event;
 
 public class GetEvents extends GetEventsAll {
@@ -11,31 +10,32 @@ public class GetEvents extends GetEventsAll {
 	private static final String _DESCRIPTION = "Show the information of a set of Event between a period of time";
 	
 	public GetEvents() {
-		super(_NAME, _DESCRIPTION,false);
-		addParameter(new ParameterDescriptor("start", "start date of the Event", false));
-		addParameter(new ParameterDescriptor("end", "end date of the Event ('end' and 'duration' are both mutually exclusive)", false));
-		addParameter(new ParameterDescriptor("duration", "durantion of the Event ('end' and 'duration' are both mutually exclusive)", false));
+		super(_NAME, _DESCRIPTION);
+		Parameter p1 = new Parameter("start", "start date of the Event",true);
+		Parameter p2 = new Parameter("end", "end date of the Event ('end' and 'duration' are both mutually exclusive)");
+		Parameter p3 = new Parameter("duration", "durantion of the Event ('end' and 'duration' are both mutually exclusive)");
+		p1.addRule(ComponentRule.isRequired(p1));
+		p1.addRule(ComponentRule.allowEmpty(p1));
+		
+		p2.addRule(ComponentRule.isOptional(p2));
+		p2.addRule(ComponentRule.allowEmpty(p2));
+		p2.addRule(ComponentRule.mutualExclusive(p2, p3));
+
+		p3.addRule(ComponentRule.isOptional(p3));
+		p3.addRule(ComponentRule.allowEmpty(p3));
+		p3.addRule(ComponentRule.mutualExclusive(p2, p3));	
+		
+		addParameter(p1);
+		addParameter(p2);
+		addParameter(p3);
 	}
 
 	@Override
 	public void execute() {
-//		if (!isValidParameter(parameters)){return;}
 		//TODO Processar as Datas
-		Event event= null;
+		Event event= new Event("none", getValue("start"), getValue("end"));
     	EventMapper e = new EventMapper();
-    	showHelp(); // delete this line
-    	e.selectBetweenDates(event);
+       	setList(e.selectBetweenDates(event));
+    	sR();
 	}
-
-//	@Override
-//	public boolean isValidParameter(Map<String, String> parameters) {
-//		if (!super.isValidParameter(parameters)) return false;
-//		
-//		if (parameters.containsKey("end") && parameters.containsKey("duration")){
-//			System.err.println("The option 'end' and ' 'duration' are mutal exclusive. You can only use one at the time!");
-//			return false;
-//		}
-//		return true;
-//	}
-
 }

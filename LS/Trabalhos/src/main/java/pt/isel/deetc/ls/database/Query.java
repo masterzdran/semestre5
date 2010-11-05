@@ -5,9 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Query {
+	private String _stm;
 	private List<Criteria> _criteriaList;
 	
-	public Query(){
+	public Query(String stm){
+		_stm = stm;
 		_criteriaList = new ArrayList<Criteria>();
 	}
 
@@ -15,8 +17,9 @@ public class Query {
 		_criteriaList.add(criteria);		
 	}
 	
-	public String getWhereClause(){
+	public String getQuery(){
 		StringBuffer stm = new StringBuffer();
+		stm.append(_stm);
 		for (Iterator<Criteria> i = _criteriaList.iterator(); i.hasNext();){
 			Criteria criteria = i.next();
 			if (stm.length() != 0 ){
@@ -26,17 +29,4 @@ public class Query {
 		}
 		return stm.toString();
 	}
-	
-	public String getSetClause(){
-		StringBuffer stm = new StringBuffer();
-		for (Iterator<Criteria> i = _criteriaList.iterator(); i.hasNext();){
-			Criteria criteria = i.next();
-			if (stm.length() != 0 ){
-				stm.append(" , ");
-			}
-			stm.append(criteria.toString());
-		}
-		return stm.toString();
-	}
-
 }

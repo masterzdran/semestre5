@@ -4,16 +4,15 @@
  */
 
 package pt.isel.deetc.ls.exceptions;
-
-/**
- *
- * @author nac
- */
-public class InvalidCommandParameterException extends Exception{
-    String _msg;
+public class InvalidCommandParameterException extends RuntimeException{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -906221264540873272L;
+	String _msg;
 
     public InvalidCommandParameterException() {
-        this("Invalid Command.");
+        this("Invalid Command Parameter.");
     }
     public InvalidCommandParameterException(String msg) {
         _msg=msg;

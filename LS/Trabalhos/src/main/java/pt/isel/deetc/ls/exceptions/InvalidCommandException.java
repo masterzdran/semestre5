@@ -10,13 +10,17 @@ package pt.isel.deetc.ls.exceptions;
  * @author nac
  */
 public class InvalidCommandException extends Exception{
-    String _msg;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4514329034515766865L;
+	String _msg;
 
     public InvalidCommandException() {
-        this("Invalid Command Parameter.");
+        this("Invalid Command name.");
     }
     public InvalidCommandException(String msg) {
-        _msg=msg;
+        _msg="Invalid Command name. "+msg;
     }
 
     @Override

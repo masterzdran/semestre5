@@ -5,49 +5,30 @@ public class Criteria {
 	protected String field;
 	protected Object value;
 	
-	private Criteria(String field,String operator, Object value){
+	private Criteria(String field,String operator){
 		this.field = field;
 		this._operator = operator;
-		this.value = value;
+		this.value = "?";
 	}
-	public static Criteria greaterOrEqualThan(String field, Object value){
-		return new Criteria(field, " >= ", value);
+	public static Criteria greaterOrEqualThan(String field){
+		return new Criteria(field, " >= ");
 	}
-
-	public static Criteria greaterOrEqualThan(String field, int value){
-		return Criteria.greaterThan(field, new Integer(value));
-	}	
-	
-	public static Criteria greaterThan(String field, Object value){
-		return new Criteria(field, " > ", value);
+	public static Criteria greaterThan(String field){
+		return new Criteria(field, " > ");
 	}
 
-	public static Criteria greaterThan(String field, int value){
-		return Criteria.greaterThan(field, new Integer(value));
+	public static Criteria lessOrEqualThan(String field){
+		return new Criteria(field, " <= ");
 	}
-
-	public static Criteria lessOrEqualThan(String field, Object value){
-		return new Criteria(field, " <= ", value);
+	public static Criteria lessThan(String field){
+		return new Criteria(field, " < ");
 	}
-	public static Criteria lessOrEqualThan(String field, int value){
-		return Criteria.lessThan(field, new Integer(value));
-	}
-	public static Criteria lessThan(String field, Object value){
-		return new Criteria(field, " < ", value);
-	}
-	public static Criteria lessThan(String field, int value){
-		return Criteria.lessThan(field, new Integer(value));
-	}
-	
-	public static Criteria equal(String field, Object value){
-		return new Criteria(field, " = ", value);
-	}
-	public static Criteria equal(String field, int value){
-		return Criteria.equal(field, new Integer(value));
+	public static Criteria equal(String field){
+		return new Criteria(field, " = ");
 	}
 	
 	@Override
 	public String toString() {
-		return field+" "+_operator+" '"+value+"'";
+		return field+" "+_operator+" "+value+"";
 	}
 }

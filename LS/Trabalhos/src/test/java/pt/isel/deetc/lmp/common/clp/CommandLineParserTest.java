@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pt.isel.deetc.ls.clp.CommandLineParser;
+
 public class CommandLineParserTest {
 
 	@BeforeClass

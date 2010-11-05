@@ -20,14 +20,14 @@ public class Date {
 		data = new java.util.Date();
 	}
 	/*
-	 *  Construtor com definição de data
+	 *  Construtor com definiï¿½ï¿½o de data
 	 */
 	public Date(String date) throws ParseException{
 		DateFormat dF = new SimpleDateFormat(dataFormat);
 		data = dF.parse(date);
 	}
 	/*
-	 *  Construtor com definição de data por duração
+	 *  Construtor com definiï¿½ï¿½o de data por duraï¿½ï¿½o
 	 */
 	public Date(String begin_date, String duration) throws ParseException {
 		DateFormat dF = new SimpleDateFormat(dataFormat);
@@ -35,18 +35,21 @@ public class Date {
 		data = dF.parse(begin_date);
 		cal.setTime(data);
 		/*
-		 * Necessário definir o formato do duration
-		 * para efectuar-se a aritmética de datas.
+		 * Necessï¿½rio definir o formato do duration
+		 * para efectuar-se a aritmï¿½tica de datas.
 		 * 
 		 */
-		cal.add(cal.HOUR_OF_DAY, Integer.parseInt(duration));
+		cal.add(Calendar.HOUR_OF_DAY, Integer.parseInt(duration));
 		data = cal.getTime();
 	}
 	/*
-	 *  Redefinição de toString()
+	 *  Redefiniï¿½ï¿½o de toString()
 	 */
 	public String toString(){
 		DateFormat dF = new SimpleDateFormat(dataFormat);
 		return dF.format(data).toString();		
+	}
+	public String getDateFormat() {
+		return dateFormat;
 	}
 }

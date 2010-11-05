@@ -3,14 +3,7 @@ package pt.isel.deetc.ls.database;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 public class DBConfigWriter {
 	private static final String CONFIG_FILE_EXTENTION = ".properties";
