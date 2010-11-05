@@ -10,7 +10,11 @@ package pt.isel.deetc.ls.exceptions;
  * @author nac
  */
 public class InvalidConfigurationProperties extends Exception{
-    String _msg;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8312166125529239428L;
+	String _msg;
 
     public InvalidConfigurationProperties() {
         this("Invalid properties configuration file.");

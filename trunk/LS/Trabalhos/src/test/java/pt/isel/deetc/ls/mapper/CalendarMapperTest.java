@@ -35,11 +35,10 @@ public class CalendarMapperTest {
 	public void showAllCalendarsTest(){
 		CalendarMapper c = new CalendarMapper();
 		ArrayList<Calendar>  list = c.select();
-		
 		Assert.assertNotNull(list);
-		Assert.assertTrue(list.size() != 0);
-		for (int i =0;i<list.size();++i){
-			System.out.println(":: "+list.get(i).getID()+" :: "+list.get(i).getName());
+		//Assert.assertTrue(list.size() > 0);
+		for(Calendar cal : list){
+			System.out.println(":: "+cal.getID()+" :: "+cal.getName());
 		}
 	}
 	@Test

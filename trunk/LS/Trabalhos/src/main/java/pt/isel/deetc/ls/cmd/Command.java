@@ -3,35 +3,46 @@ package pt.isel.deetc.ls.cmd;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract public class Command {
-	private Map<String, ParameterDescriptor> _validParameters;
-	private String _name;
-	private String _syntax = null;
-	private String _description;
-	private boolean _allowNoParameters;
+import pt.isel.deetc.ls.exceptions.InvalidCommandParameterException;
+import pt.isel.deetc.ls.exceptions.RequiredCommandParameterException;
+import pt.isel.deetc.ls.model.ComponentRule;
 
-	public Command(String name, String description, boolean allowNoParameters) {
+abstract public class Command {
+	private String _name;
+	private String _syntax;
+	private String _description;
+	private Map<String, Parameter> _validArgments;
+
+	public Command(String name, String description) {
 		this._name = name;
 		this._description = description;
-		this._allowNoParameters = allowNoParameters;
-		_validParameters = new HashMap<String, ParameterDescriptor>();
+		this._syntax = "";
+		_validArgments = new HashMap<String, Parameter>();
+		Parameter p = new Parameter("help", "show help");
+		p.addRule(ComponentRule.isOptional(p));
+		p.addRule(ComponentRule.allowEmpty(p));
+		addParameter(p);
 	}
 
-	protected void addParameter(ParameterDescriptor parameterDescriptor) {
-		_validParameters.put(parameterDescriptor.getName(), parameterDescriptor);
+	protected void addParameter(Parameter parameter) {
+		_validArgments.put(parameter.getName(), parameter);
 	}
-	protected void addParameter(String name, String value){
-		ParameterDescriptor p = null;
-		if ((p = _validParameters.get(name)) == null){
-			//Retorna Excepção
+
+	protected void addParameter(String name, String value) {
+		Parameter p = null;
+		if ((p = _validArgments.get(name)) == null) {
+			throw new InvalidCommandParameterException("Invalid parameter: "
+					+ name);
 		}
-		p.setValue(value);		
+		p.setValue(value);
 	}
-	protected void clearParameters(){
-		for(String name : _validParameters.keySet()){
-			_validParameters.get(name).setValue(null);
+
+	private void clearParameters() {
+		for (String name : _validArgments.keySet()) {
+			_validArgments.get(name).clear();
 		}
 	}
+
 	public void setSyntax(String syntax) {
 		_syntax = syntax;
 	}
@@ -47,66 +58,61 @@ abstract public class Command {
 	public String getSyntax() {
 		return _syntax;
 	}
-	
-	public String getValue(String name){
-		return _validParameters.get(name).getValue();
-	}
-	
-	private boolean isValidParameter(Map<String, String> parameters) {
-		//is admissible an empty map as argument, but its not allowed null argument 
-		if (parameters == null) return false;
-		//if parameters map is empty but the command does not allow no parameters 
-		if (parameters.isEmpty() && !_allowNoParameters) return false;
 
-		//testing if all parameters are valid parameters names
-		for (String name : parameters.keySet()) {
-			if (!_validParameters.containsKey(name)){
-				return false;
-			}
+	public String getValue(String name) {
+		return _validArgments.get(name).getValue();
+	}
+
+	public void run() {
+		if (_validArgments.get("help").isSet()) {
+			showHelp();
+
+		} else {
+			evaluteArguments();
+			execute();
 		}
-		//check is the mandatory parameter is present in the parameters input map
-		/* A - The Key Exists in parameters arg
-		 * B - The Parameter is mandatory
-		 * 
-		 * B | A || R
-		 * 0 | 0 || isGood
-		 * 0 | 1 || isGood
-		 * 1 | 0 || isBad
-		 * 1 | 1 || isGood
-		 * 
-		 * Result: return false as the key doesn't exists in the parameter arg, and
-		 * the parameter is mandatory
-		 */
-		for (String name : _validParameters.keySet()) {
-			if (!parameters.containsKey(name) && _validParameters.get(name).isMandatory()){
-				return false;
+		clearParameters();
+	}
+
+	private boolean evaluteArguments() {
+		// testing if all parameters are valid parameters names
+		for (String name : _validArgments.keySet()) {
+			if (!_validArgments.get(name).isValid()) {
+				throw new RequiredCommandParameterException("The " + name
+						+ " argument is required");
 			}
 		}
 		return true;
 	}
-	
-	public String help(){
-		if (_syntax == null)
-			setSyntax(processSyntax());
-		StringBuffer help = new StringBuffer(" -" + getCommandName() +" [options] \n");
-		help.append("--------------------------------------------------------------------------------");
+
+	public String help() {
+		processSyntax();
+		StringBuffer help = new StringBuffer(getCommandName() + " [options] \n");
+		help
+				.append("--------------------------------------------------------------------------------\n");
 		help.append(getSyntax());
 		return help.toString();
 	}
-	public void showHelp(){
+
+	public void showHelp() {
 		System.out.println(help());
+	}
+
+	private void processSyntax() {
+		String syntax = "<" + getCommandName()
+				+ "> <um ou mais parâmetros do comando>\n";
+
+		for (String name : _validArgments.keySet()) {
+			String mandatory = (_validArgments.get(name).isMandatory()) ? "(MANDATORY)": ""; 
+
+			syntax += "\t-<" + _validArgments.get(name).getName()
+					+ "> <valor do parâmetro>:\n\t\t "
+					+ _validArgments.get(name).getDescription() 
+					+ mandatory + "\n";
+		}
+		_syntax = syntax;
 	}
 
 	abstract public void execute();
 
-	private String processSyntax() {
-		String syntax = "<" + getCommandName()
-				+ "> <um ou mais parâmetros do comando>\n";
-
-		for (String name : _validParameters.keySet()) {
-			syntax += "\t-<" + name + "> <valor do parâmetro>:\t ("
-					+ _validParameters.get(name) + ")\n";
-		}
-		return syntax;
-	}
 }

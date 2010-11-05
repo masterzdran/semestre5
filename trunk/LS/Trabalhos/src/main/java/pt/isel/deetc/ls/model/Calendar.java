@@ -1,7 +1,6 @@
 package pt.isel.deetc.ls.model;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import pt.isel.deetc.ls.utils.Utils;
 

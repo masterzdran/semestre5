@@ -21,6 +21,8 @@ abstract public class Mapper<T> {
   }
   
   public Connection getConnection(){
+	  if (_cm == null)
+		  openConnection();
 	  return _cm.getConnection();
   }
   public void openConnection(){
