@@ -1,0 +1,387 @@
+= Capitulo 3 =
+ * processo: é uma instância de um programa em execução
+ * tarefa (thread): é um fio de execução dentro de um processo
+ 
+== Gestão de Processos ==
+ * Suporte a Processos
+  * estruturas: espaço de endereçamento próprio, contendo o código
+  executável, dados e stack. Contextos de execução (registos do CPU),
+  controlo de   recursos em uso.
+  * acções: criar, remover, suspender, reactivar
+ * Suporte a Threads:
+  * estruturas: implementação ao nível de user ou kernel
+  * acções: criar, remover, suspender, reactivar
+ * CPU Schedulling: algoritmo/política de escalonamento
+ * Sincronismo entre threads: exclusão mútua
+  * Secções Críticas, Semáforos, monitores, transacções atómicas
+ * Comunicação entre processos:
+  * Sinais, pipes, sockects, Remote Procedure Call
+
+== Gestão de Memória Principal ==
+ * Espaço de endereçamento dos processos
+  * Noção de endereço físico e lógico
+  * Endereçamento linear e/ou segmentado
+  * Acesso à memória linear e/ou segmentada
+ * Protecção de Memória
+  * Limites
+  * Tipo de acesso
+ * Memória Virtual
+  * Swapping de processos
+  * Swapping de páginas
+  * Realocação de páginas de memória
+  * Algoritmos de selecção de páginas para swapping, noção de set de páginas
+ * DLL - Dynamic Loading Library
+ * Memória Partilhada entre processos
+ 
+== Gestão de Memória Secundária == 
+ * Memória segundária são todos os dispositivos de armazenamentos de memória
+ que não estão ligados directamente ao processador
+ * Interface de Acesso ao Sistema de Ficheiros
+  * Conceito de ficheiro:
+   * Atributos
+   * Operações
+  * Conceito de directoria:
+   * Atributos
+   * Operações
+  * File Buffering, locking and sharing
+ * Organização do Sistema de ficheiros
+  * Noção de Partição e Volume
+  * Estrutura de suporte a volumes, directorias e ficheiros
+  * Gestão de espaço no volume
+  * Algoritmos de alocação de espaço no volume
+  * Algoritmos de optimização de acesso ao disco
+== Gestão de Input/Output (IO) ==
+ * Gestão dos dispositos de IO
+  * Hardware (como se organiza)
+  * Device Controller
+  * Device Drivers: Device Driver Interface (acesso ao SO)
+  * Acesso básico a I/O: pooling, interrupts, DMA
+  * IO Buffering. IO Schedulling
+ * Gerir e Controlar as operações IO
+  * Acesso a dispositivos orientados ao bloco e ao caracter
+  * Acesso bloqueante e não bloqueante
+  * Acesso com e sem bufferização
+  * Spooling e Device reservation
+  * Tratamento de erros
+== Gestão de Segurança ==
+ * Controlar o acesso aos recursos do SO
+  * CPU, memória, ficheiros, processos, serviços, etc
+ * Sistema de protecção deve:
+  * Providencia forma de autenticar o utilizador
+  * Permitir/Definir permissões de acesso:
+   * O que é autorizado fazer
+   * Quem o pode fazer
+  * Distinguir o acesso autorizador do não autorizado
+ * Tópicos
+  * Permissões de acesso, domínios de protecção(grupos), lista de controlo de acessos
+  * Passwords, encriptação, stack overflow, viruses, denial of service, Intrusion detection, logging
+
+== Aplicações e o Sistema Operativo ==
+ * Interface do SO, que permite operações sobre o mesmo. System Calls, designa chamadas aos serviços
+ utilizando a API.
+    === System Call ===
+    * Colocação dos parametros nos devidos locais
+      * Parâmetros nos registos
+      * Parâmetros numa tabela, sendo passado o seu endereço
+      * Parãmetros no stack
+    * Execução de um interrupt especial (trap)
+      * Indexa o ponto de entrada do SO na tabela de interrupts
+      * Muda do modo processador para o modo kernel
+    * SO verifica se os parâmetros estão correctos
+    * Efectua uma chamada à rotina correspondente ao serviço requesitado
+    * Após a execução do serviço solicitado, passa para o modo utilizador e 
+    salta para a instrução seguinte à invocação do interrupt
+
+== Interface do SO ==
+ * Application <-> API <-> System Call API -> HardWare
+
+== Serviços disponibilizado pelo SO ==
+ * Execução de Programas (processos)
+ * Memória
+ * Sistema de ficheiros
+
+== BootStrapping  ==
+ * Carregamento dos componentes do SO para memória
+   * Executado pela BIOS (Basic Input Output System)
+   * Inicia o hardware
+   * Carrega o código de arranque do SO do sector de arranque para a memória
+   * Código que providencia o carregamento do restante código do SO
+== Plug'n'Play ==
+ * Permite que o SO configure hardware novo automáticamente
+ * Para suportar o PnP, os dispositivos deves:
+   * identificar-se unívocamente perante o SO
+   * Comunicar ao SO para iniciar os recursos e serviços que necessitam
+   * Identificar o driver que suporta o dispositivo e permitir  que o software 
+   configure o dispositivo
+
+== Requesitos de Hardware dos SO ==
+ * Dois modos de operação: user e kernel
+ * Instruções priviligiadas
+ * Protecção de Memória
+ * Interrupts
+ 
+== Protecção do SO ==
+ * Restrições à execução
+   * Acesso indescriminado à memória
+   * Acesso directo ao IO
+   * Acesso ao estado do processador
+   * Uso indiscriminado do CPU
+== Protecção de Hardware ==
+ * Existencia de dois ou mais modos de funcionamento do CPU
+   * Modo sistema/kernel/monitor/supervisor/priveligiado
+     * Modo em que o SO escuta o seu código
+     * Modo sem restrições
+   * Modo user
+     * Modo em que os programas do utilizador são executados
+     * Modo em que as restrições estão activas
+ * Existência de instruções(priveligiadas) que só podem ser executadas no 
+ modo kernel
+ * Uso do interrupt do timer para garantir que o SO adquire o controlo do CPU
+ * Protecção de acesso à memória
+    * Não deve permitir acesso:
+      * À tabela de interrupts
+      * À memória com o código do sistema
+      * A outra memória que não seja a sua (devidamente alocada)
+    * Esquema de protecção
+      * Baseado em espaços de endereçamento lógicos
+      * Cada endereço lógico têm que ser inferior ao valor do registo limite
+      * A cada endereço lógico válido é adicionado um valor base resultando 
+      no endereço físico de acesso à memória
+      * Um acesso fora deste espaço de endereçamento resulta numa 
+      interrupção do SO que o interpreta como fatal
+
+= Capitulo 4 =
+== Processos ==
+ * Programa: Entidade passiva que reside num ficheiro contendo uma lista de 
+ instruções
+ * Processo: Entida do SO que representa um programa em execução
+   * Espaço de endereçamento contendo o código executável (text section), 
+   dados (data section), stack e espaço para atribuição de memória 
+   dinâmica (heap)
+   * Actividade corrente (Instruction Pointer(IP)/Program Counter(PC))
+   * Estado de execução do processo composto pelos valores dos registos do 
+   processador
+   * Identificado do processo (PID)
+   * Informação sobre utilização dos recursos: tempo de utilização do 
+   CPU, (Accounting)
+   * Estado do processo: Ready, Run, Wait, etc
+   * Informação relacionada com o escalonamento do processo (schedulling)
+   * Informação sobre o estado IO: lista de dispositivos atribuidos ao 
+   processo, lista de ficheiros abertos, etc
+   * Credenciais
+ * PCB: Process Control Block
+   * Estrutura de dados contendo toda a informação relacionada com o processo
+ * Tabela de Processos
+   * Tabela com referências para todos os processos instânciados.
+     * Facilita o acesso à estrutura PCB, dado um PID
+     * Eliminação do PCB e todos os recursos, quando o processo é terminado
+=== Estados do Processo/Thread ===
+ * Run
+   * Em execução
+   * Ocorre o algoritmo de escalonamento
+ * Wait
+   * Em espera de um evento
+ * Ready
+   * Quando é iniciado
+   * Quando termina o seu time slice de execução
+   * Quando ocorre um evento
+=== Context Switch ===
+ * Quando muda de estado
+
+== Tarefas (Thread) ==
+ * Entidade que se executa no contexto de um processo. Um processo têm uma ou 
+ mais threads.
+ * Fluxo de execução com inicio, sequência e fim
+ * Partillham o mesmo espaço de endereçamento do processo
+   * Surgem problemas de concorrência
+ * Cada tarefa tem o um stack próprio
+ * Não pode ser assumida qualquer ordem na execução de tarefas
+   * Deve-se assumir que executam em paralelo
+ * Cada tarefa tem uma estrutura semelhante ao PCB, com 
+   * Identificador da tarefa
+   * Instruction Pointer/Program Counter
+   * Stack Próprio
+   * Registos do CPU
+   * Estado de execução da tarefa: RUN, WAIT, READY
+=== Processo vs Thread ===
+ * É mais complexo gerar um processo que uma thread
+ * Isolamento dos dados perante outros processos
+   * Threads dentro do mesmo processo, partilham o mesmo espaço de 
+   endereçamento
+ * É mais complexo proceder à comutação de processos distintos, que tarefas 
+ dentro do mesmo processo
+ * Tarefas em processos diferentes, tem a mesma complexidade que os processos
+ 
+== Schedulling/Escalonamento ==
+ * Algorimo responsável por decidir o próximo elemento a utilizar o processador
+ * Short-Term Scheduller: Seleciona um dos elementos da fila de READY
+ * Medium-Term Scheduller: Selecciona um dos elementos da fila parcialmente 
+ executados
+ * Long-Term Scheduller: 
+   * São submetidos mais processos que os que podem ser executados
+   * Podem existir elementos a esperar na memória secundária pela hipótese 
+   de serem executados
+ * Escalonamento sem preempção ou cooperativo
+   * Uma vez atribuído o CPU, só o liberta quando for para o estado de WAIT 
+   ou então quando terminar
+   * Acesso aos recursos partilhados é simplificado, o processo controla o 
+   ponto onde pode perder o CPU
+   * Facilita o desenho do CPU
+ * Escalonamento com preempção
+   * Algoritmo escolhe um processo e permite que ele corra durante um período 
+   de tempo (time slice). Ao fim desse tempo se ainda estiver a correr, 
+   suspende-o e escolhe outro processo a ser executado
+   * Necessidade de existir um interrupt periódico para garantir a execução 
+   do scheduller
+   * Necessidade de mecanismos para coordenar o acesso a recursos partilhados
+   * Maior complexidade do desenho do SO
+=== Comportamento dos Processo ===
+ * os processos alternam entre os períodos de comutação (CPU burst) e os 
+ períodos de IO (IO Burst)
+
+=== Critérios de Escalonamento ===
+ * Maior Utilização do CPU
+ * Maior Throughput
+ * Menor Turnaround time
+ * Menor Waiting Time
+ * Menor Responsive Time
+
+=== Algoritmos ===
+ * FCFS (First Come First Server) 
+   * Vantajoso executar trabalhos pequenos primeiro
+ * SJF (Short Jobs First)
+   * Associar a cada processo o tempo do próximo CPU Burst. Atribuir o CPU aos 
+   processo com o menor CPU burst
+   * Duas alternativas:
+     * Non-preemptive: Depois de atribuir o processador, o processo não pode 
+     ser interrompido até finalizar o CPU burst
+     * preemptive: Se aparecer um processo com um CPU burst inferior que o 
+     restante tempo procede-se à preempção.
+   * Minimiza o tempo médio de espera
+ * Priority Schedulling
+   * A prioridade é um valor associado ao processo
+   * CPU atribuído ao processo com a maior prioridade
+   * Pode ocorrer situaçõe em que existem processos de baixa prioridade que 
+   nunca são executados (starvation)
+     * Para combater este cenário, o escalonador pode aumentar a prioridade de 
+     processos que não são executados há muito tempo (aging)
+ * Round-Robin
+   * Cada processo obtém uma pequena unidade de CPU (time quantum). Quando 
+   termina este tempo é retirado da fila de RUN e colocado na fila de READY
+   * Se existir n processos em READY, e o quantum time for q, então cada 
+   processo tem 1/n do tempo de CPU e nenhum processo espera mais que (n-1)*q 
+   unidades de tempo
+   * q grande => FCFS
+   * q pequeno => q deve ser elevado em relação ao tempo de context switch 
+   senão provoca overhead elevado
+=== Escalonamento em Windows ===
+ * Escalonamento de Tarefas
+ * Escalonamento entre múltiplas fila de prioridade diferentes
+ * Escalonamento entre a mesma fila
+ * Uso de 32 níveis de prioridade
+   * 16-31 : real-time
+   * 1-15  : vairáveis
+   * 0     : reservado
+ * Os processo estão organizados por classes de prioridade
+ * As tarefas de um processo têm prioridade superior em relação ao processo
+ * Cada tarefa tem dois valores de prioridade:
+   * base
+   * corrente
+ * Um processo têm um único valor de prioridade
+ * Uma tarefa com menor prioridade pode ser preempted por outra tarefa de 
+ maior prioridade que ficou ready
+ * As tarefas podem ter o seu valor de prioridade ajustadas em tempo de 
+ execução 
+   * As tarefas com prioridade entre 1 a 15 recebem boosts quando:
+     * terminam operações de IO
+     * Terminaram operações de sincronização
+     * Tarefas que estejam muito tempo na fila de READY sem serem executadas
+   * Quando uma tarefa ocupa todo o seu time quantum a sua prioridade é 
+   reduzida
+   * As tarefas com prioridade real-time nunca sofre alterações de prioridade
+
+= Capitulo 5 =
+== WIN32 ==
+=== Caracteres e Strings ===
+ * include <tchar.h>
+ * _TEXT();
+ * strlen => _tcslen
+ * printf => _tprintf
+ * sscanf => _stscanf
+ * main   => _tmain
+ * Utilização de tipos genéricos TCHAR, PTSTR
+=== Localização ===
+ * _tsetlocale(int category, TCHAR*)
+   * categorias:
+     * LC_ALL
+     * LC_COLLATE
+     * LC_CTYPE
+     * LC_MONETARY
+     * LC_NUMERIC
+     * LC_TIME
+   * _tsetlocale(LC_ALL, _T("portuguese_portugal"));
+=== Tratamento de Erros ===
+ * GetLastError()
+ * FormatMessage()
+=== Objectos do Kernel ===
+ * manipulados pela WIN32 e controlados pelo SO
+ * referenciados por um HANDLE
+ * têm um descritor de segurança associado
+ * têm um contador de referências
+ 
+= Capitulo 6 = 
+== Processos e Tarefas na WIN32 ==
+ * Criar Processos
+   * Application Name(App): String com o Nome e Localização da aplicação
+   * Command Line (Com): String com a linha de comandos que será passada ao 
+   executável
+ * Terminar um processo
+ 
+ === Herança ===
+   * lpProcessAttributes & lpThreadAttributes
+     * Descritores de segurança e atributos de herança para os dois novos handlers
+   * bInheritHandles
+     * Flag que condiciona a possibilidade de herança, se for true os objectos
+herdáveis são herdados pelo processo filho
+ === Creation Flags ===
+ * CREATE_NEW_CONSOLE
+   * O processo executa-se numa nova consola
+ * DETACHED_PROCESS
+   * O processo é criado sem consola. O processo pode usar a função 
+   AllocConsole para criar uma nova consola.
+ * CREATE_SUSPENDED
+   * A Thread primária do novo processo inicia-se no estado Suspenso
+ * PRIORITY FLAG
+   * Prioridade do processo, nada para receber a prioridade do processo criador
+ * CREATE_DEFAULT_ERROR_MODE
+   * O processo não herda o modo de controlo de erros do processo pai (função SetErrorMode)
+ * CREATE_NEW_PROCESS_GROUP
+   * O novo processo passa a ser a raiz de um novo grupo
+ * CREATE_SEPARATE_WOW_VDM
+   * Processo a 16 bits que se executa numa Virtual Dos Machine (VDM) própria
+ * CREATE_SHARED_WOW_VDM
+   * (WINNT) a aplicação executa-se numa VDM partilhada
+ * CREATE_UNICODE_ENVIRONMENT
+   * Caracteres Unicode nas variáveis de ambiente
+= Capitulo 7 =
+== Introdução ao Sincronismo ==
+ * Concorrência:  sistemas com múltiplas actividades paralelas 
+ (processo/tarefas)
+   * Recursos internos(blocos de memória, processador)
+   * Recursos externos(ficheiros, impressoras)
+ * Definições:
+   * Recurso Crítico: Comportamento coerente quando acedido exclusivamente por 
+   um processo
+   * Condições de Corrida: Quando o resultado final do recurso partilhado 
+   depende da ordem de execução
+   * Exclusão Mútua: quando é garantido o acesso excusivo ao recurso.
+   * Secção Crítica: Zona de código que altera o estado de um recurso. Deve 
+   ser executada em exclusão Mútua
+ * Requisitos
+   * Exclusão Mútua: não podem aceder mais do que um processo ao recurso
+   * Decisão de acesso: qual o processo que acede à secção critica só deve 
+   ter em conta os processos que o devem fazer
+ * Espera Limitada:
+   * Numero de vezes que um processo é preterido no acesso à secção critica 
+   deve ser limitado.
+   pag 20
