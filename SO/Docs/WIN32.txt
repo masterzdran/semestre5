@@ -1,0 +1,161 @@
+= WIN32 =
+=== Prioridade ===
+DWORD GetPriorityClass(HANDLE hproc);
+BOOL SetPriorityClass(HANDLE hproc, DWORD dwPriorityClass);
+BOOL SetThreadPriority(HANDLE hThread, int nPriority);
+int GetThreadPriority(HANDLE hThread);
+
+nPriority :
+THREAD_PRIORITY_IDLE 1 (RT 16)
+THREAD_PRIORITY_LOWEST processP -2
+THREAD_PRIORITY_BELOW_NORMAL processP -1
+THREAD_PRIORITY_NORMAL processP
+THREAD_PRIORITY_ABOVE_NORMAL processP +1
+THREAD_PRIORITY_HIGHEST processP +2
+THREAD_PRIORITY_TIME_CRITICAL 15 (RT 31)
+=== Funções para apresentação de Erros ===
+ * void ReportErrorSystem(const char* fmtStr, ...);
+ * void FatalErrorSystem(const char* fmtStr,...);
+ * void ReportErrorUser(const char* fmtStr,...);
+ * void FatalErrorUser(const char* fmtStr,...);
+=== Uso de objectos do Kernel ===
+ * Criar um objecto:
+   * HANDLE CreateXXXX();
+ *  Partilhar um objecto:
+   * HANDLE OpenXXXX();
+ * Eliminar referências(só é eliminado quando o contador de referências=0):
+   * BOOL CloseHandle(HANDLE hobject);
+=== Processos ===
+ * Criar Processo:
+   * BOOL CreateProcess(
+        LPCTSTR lpApplicationName,                  // nome
+        LPTSTR lpCommandLine,                       // command line
+        LPSECURITY_ATTRIBUTES lpProcessAttributes,  // at. Segurança prcss
+        LPSECURITY_ATTRIBUTES lpThreadAttributes,   // at. Segurança thrd
+        BOOL bInheritHandles,                       // flag herança handles
+        DWORD dwCreationFlags,                      //
+        LPVOID lpEnvironment,                       // variáveis de ambiente
+        LPCTSTR lpCurrentDirectory                  // directoria corrente
+        LPSTARTUPINFO lpStartupInfo,                // informações de startup
+        LPPROCESS_INFORMATION lpProcessInformation  // inf. devolvida
+    );
+ * Terminar um Processo:
+   * VOID ExitProcess( UINT uExitCode );
+   * BOOL TerminateProcess( HANDLE hProcess, UINT uExitCode);
+ * Obter o Código de erro do processo
+   * BOOL GetExitCodeProcess( HANDLE hProcess, LPDWORD lpExitCode );
+     * Devolve STILL_ACTIVE se o processo ainda estiver activo
+ * Esperar o término de um processo
+   * WaitForSingleObject(piA.hProcess, INFINITE);
+ * Consultar os tempos associados ao processo
+   * BOOL GetProcessTimes(
+        HANDLE hProcess,            // handle to process
+        LPFILETIME lpCreationTime,  // process creation time, UTC time
+        LPFILETIME lpExitTime,      // process exit time, UTC time
+        LPFILETIME lpKernelTime,    // process kernel-mode time
+        LPFILETIME lpUserTime );    // process user-mode time
+ * File Times
+   * typedef struct _FILETIME {
+        DWORD dwLowDateTime;
+        DWORD dwHighDateTime;
+    } FILETIME
+   * BOOL FileTimeToLocalFileTime(
+        CONST FILETIME *lpFileTime,
+        LPFILETIME lpLocalFileTime );
+   * BOOL FileTimeToSystemTime (
+        CONST FILETIME *lpFileTime,
+        LPSYSTEMTIME lpSystemTime );
+   * typedef struct _SYSTEMTIME {
+        WORD wYear;
+        WORD wMonth;
+        WORD wDayOfWeek;
+        WORD wDay;
+        WORD wHour;
+        WORD wMinute;
+        WORD wSecond;
+        WORD wMilliseconds;
+    } SYSTEMTIME, *PSYSTEMTIME;
+=== Tarefas ===
+ * Criar Tarefas
+   * HANDLE CreateThread (
+        LPSECURITY_ATTRIBUTES lpThreadAttributes,   // Herança e seg.
+        DWORD dwStackSize,                          // 0 valor por omissão
+        LPTHREAD_START_ROUTINE lpStartAddress,      // routina da thread
+        LPVOID lpParameter,                         // parâmetro
+        DWORD dwCreationFlags,                      // como CREATE_SUSPENDED
+        LPDWORD lpThreadId                          // devolve thread ID
+    );
+ * Terminar Tarefas
+   * BOOL TerminateThread( HANDLE hThread, DWORD dwExitCode );
+ * Obter o Exit Code
+   * BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpdwExitCode);
+     * STILL_ACTIVE se a Thread ainda não terminou
+ * Esperar o Término da Tarefa
+   * WaitForSingleObject(ht, INFINITE);
+ * Retirar uma tarefa de execução
+   * DWORD SuspendThread( HANDLE hThread );
+ * Colocar uma tarefa em execução
+   * DWORD ResumeThread(HANDLE hThread);
+ * Colocar uma tarefa a dormir
+   * VOID Sleep( DWORD dwMilliseconds);
+ * Tarefa de desistir do seu time slice
+   * BOOl SwitchToThread (VOID);
+ * Consultar os tempos associados a uma tarefa
+   * BOOL GetThreadTimes(
+        HANDLE hThread,             // handle to Thread
+        LPFILETIME lpCreationTime,  // process creation time, UTC time
+        LPFILETIME lpExitTime,      // process exit time, UTC time
+        LPFILETIME lpKernelTime,    // process kernel-mode time
+        LPFILETIME lpUserTime );    // process user-mode time
+    
+=== MultiThreading ===
+ * Macro para criar uma Thread
+   * HANDLE chBEGINTHREADEX (
+        LPSECURITY_ATTRIBUTES lpThreadAttributes,
+        DWORD dwStackSize,
+        LPTHREAD_START_ROUTINE lpStartAddress,
+        LPVOID lpParameter,
+        DWORD dwCreationFlags,
+        LPDWORD lpThreadId
+    );
+ * Macro para terminar uma Thread
+   * VOID chENDTHREADEX( UINT ExitCode ) 
+ * HANDLE GetCurrentThread(void);
+ * HANDLE GetCurrentProcess(void);
+ * BOOL DuplicateHandle(
+        HANDLE hSourceProcessHandle,// handle to process with handle to duplicate
+        HANDLE hSourceHandle,       // handle to duplicate
+        HANDLE hTargetProcessHandle,// handle to process to duplicate to
+        LPHANDLE lpTargetHandle,    // pointer to duplicate handle
+        DWORD dwDesiredAccess,      // access for duplicate handle
+        BOOL bInheritHandle,        // handle inheritance flag
+        DWORD dwOptions );
+ * DWORD GetCurrentThreadId(void);
+ * DWORD GetCurrentProcessId(void);
+ * HANDLE OpenThread(
+        DWORD dwDesiredAccess,  // access right
+        BOOL bInheritHandle,    // handle inheritance option
+        DWORD dwThreadId );     // thread identifier
+ * HANDLE OpenProcess(
+        DWORD dwDesiredAccess,  // access flag
+        BOOL bInheritHandle,    // handle inheritance option
+        DWORD dwProcessId );    // process identifier
+=== WIN32 DataTypes ===
+ * BOOL: Boolean variable (should be TRUE or FALSE).
+ * CALLBACK: Calling convention for callback functions.
+ * WINAPI: Calling convention for the Win32 API.
+ * WNDPROC: Pointer to an application-defined window procedure.
+ * DLGPROC: Pointer to an application-defined dialog box callback procedure
+ * DWORD: 32-bit unsigned integer.
+ * HANDLE: Handle to an object.
+ * HMENU: Handle to a menu.
+ * LPARAM, WPARAM: Message parameters.
+ * WCHAR: 16-bit Unicode character.
+ * WORD: 16-bit unsigned integer.
+ * LPCSTR: Ptr to a constant null-terminated string of 8-bit Windows (ANSI) chars.
+ * LPCWSTR: Ptr to a constant null-terminated string of 16-bit Unicode characters.
+ * LPVOID: Pointer to any type.
+ * LPDWORD: Pointer to a DWORD.
+ * LRESULT: Signed result of message processing.
+ * PCWSTR: Ptr to a constant null-terminated string of 16-bit Unicode characters.
+ * PHANDLE: Pointer to a HANDLE.
