@@ -47,15 +47,15 @@ DEBUGSTABS		= --gstabs
 #=======================================================================
 #Set the Correct LdScript
 ifdef ROM
-LDSCRIPT_FILE	= ldscript_rom
-END_EXEC		= main_rom
+LDSCRIPT_FILE	= $(MYLIB)/ldscript_rom
+END_EXEC		= main_rom.elf
 else
 ifdef RAM
-LDSCRIPT_FILE	= ldscript_ram
-END_EXEC		= main_ram
+LDSCRIPT_FILE	= $(MYLIB)/ldscript_ram
+END_EXEC		= main_ram.elf
 else
-LDSCRIPT_FILE	= ldscript
-END_EXEC		= main
+LDSCRIPT_FILE	= $(MYLIB)/ldscript_rom
+END_EXEC		= main.elf
 endif
 endif
 #=======================================================================
