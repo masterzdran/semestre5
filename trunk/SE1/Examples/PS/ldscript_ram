@@ -1,0 +1,58 @@
+ENTRY (_start)
+
+MEMORY {
+	flash     			: ORIGIN = 0,          LENGTH = 128K	/* FLASH ROM                            	*/	
+/*	ram_isp_low(A)		: ORIGIN = 0x40000120, LENGTH = 223 */		/* variables used by Philips ISP bootloader	*/		 	
+	ram   				: ORIGIN = 0x40000000, LENGTH = 64992	/* free RAM area							*/
+/*	ram_isp_high(A)		: ORIGIN = 0x40001FE0, LENGTH = 32	*/	/* variables used by Philips ISP bootloader	*/
+}
+
+SECTIONS {
+.startup : {
+	*(.startup*)
+} > ram
+
+.text : {
+	*(.text*)
+	*(.glue*)
+	*(.rodata) 
+    *(.rodata*)
+	*(.gnu.linkonce*)
+	*(.eh_frame*)
+} > ram
+end = .;
+
+.data ALIGN(4) : {
+    __data_start__ = ABSOLUTE(.);
+	*(.data*)
+	. = ALIGN(4);
+    __data_end__ = ABSOLUTE(.);
+} > ram
+
+__rom_data_start__ = __data_start__;
+
+.bss ALIGN(4) : {
+    __bss_start__ = ABSOLUTE(.);
+    *(.bss*) *(COMMON);
+	. = ALIGN(4);
+    __bss_end__ = ABSOLUTE(.);
+} > ram
+
+.stack ALIGN(4) : {
+	*(.stack*)
+} > ram
+
+.rodata : {
+	*(.rodata*)
+} > ram
+
+
+.stab			0 : { *(.stab*) }
+
+.debug_abbrev	0 : { *(.debug_abbrev) }
+.debug_info		0 : { *(.debug_info) }
+.debug_line		0 : { *(.debug_line) }
+.debug_pubnames	0 : { *(.debug_pubnames) }
+.debug_aranges	0 : { *(.debug_aranges) }
+
+} /* end of sections */
