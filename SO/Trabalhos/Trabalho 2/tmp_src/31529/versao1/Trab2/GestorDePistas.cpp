@@ -2,46 +2,86 @@
 
 #ifndef GESTORDEPISTAS_CPP
 #define GESTORDEPISTAS_CPP
+
 class GestorDePistas : IGestorDePistas
 {
-	Semaforo * _mLanding;
-	Semaforo * _mLiftoff;
+	char _nLanes;
 	Semaforo * _sWaitingListLanding;
 	Semaforo * _sWaitingListLiftoff;
-	int _nWaitingToLand;
-	int _nWaitingToLiftoff;
-	volatile bool[] _bLanes;
+	Plane * _planeListToLand;
+	Plane * _planeListToLift;
+	bool * _bLanes;
+	Semaforo * _mLanes;
+	PlaneDirection * _pdLanes;
+	long _planeCount;
+
+	void AddLast(Plane * planeList)
+	{
+		if(planeList==0)
+		{
+			planeList = new Plane();
+			planeList->_idPlane = InterlockedIncrement(&_planeCount);
+			return;
+		}
+		Plane * p = new Plane();
+		planeList->next = p;
+		p->_idPlane = InterlockedIncrement(&_planeCount);
+	}
+
+	int RemoveFirst(Plane * planeList)
+	{
+		;
+	}
+
+	int findLaneTo(PlaneDirection direction)
+	{
+		for(int i = 0;i<_nLanes;++i)
+		{
+			if(_pdLanes[i]==direction)
+				return i;
+		}
+		return -1;
+	}
 
 public:
 
 	GestorDePistas(int nLanes)
 	{
-		_mLanding = new Semaforo(1,1);
-		_mLiftoff = new Semaforo(1,1);
-		_sWaitingListLanding = new Semaforo(1, MAXLONG);
-		_sWaitingListLiftoff = new Semaforo(1, MAXLONG);
-		_nWaitingToLand=0;
-		_nWaitingToLiftoff=0;
+		_nLanes = nLanes;
 		_bLanes = new bool[nLanes];
+		_mLanes = new Semaforo[nLanes];
+		_pdLanes = new PlaneDirection[nLanes];
+		_planeCount=0;
+
+		Semaforo * f;
+		for(int i = 0;i<nLanes;++i)
+		{
+			f = new Semaforo(1,1);
+			_mLanes[i] = (*f);
+		}
 	}
 
-	virtual int esperarPistaParaAterrar ()
+
+
+	virtual int UseLaneTo(PlaneDirection direction)
 	{
-		InterlockedIncrement(&_nWaitingToLand);
-		_mLanding->Wait();
-		InterlockedDecrement(&_nWaitingToLand);
+		int nLane = findLaneTo(direction);
+		if(nLane == -1)
+		{
+			if(direction == LAND)
+			{
+				;
+			}
+			else if(direction ==LIFTOFF)
+			{
+				;
+			}
+		}
 
-		
-		
-		return _nWaitingToLand;
+		return _planeCount;
 	}
 
-	virtual int esperarPistaParaDescolar ()
-	{
-		return 0;
-	}
-
-	virtual void libertarPista (int idPista)
+	virtual void SetLanePriorityTo (PlaneDirection direction)
 	{
 		;
 	}

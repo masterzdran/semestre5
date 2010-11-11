@@ -18,13 +18,14 @@
 #include <tchar.h>
 
 //My Header Files
-#include <windows.h>
 
 #include "SesError.h"
 #include "BeginThreadex.h"
 #include "Semaforo.h"
 
 #include "IGestorDePistas.h"
+#include "Plane.h"
 #include "GestorDePistas.cpp"
+
 
 
