@@ -27,7 +27,7 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= /home/masterzdran/ISEL/semestre5/SE1
+SVN_PATH		= /mnt/hgfs/Semestre5/SE1
 PROJECT_PATH	= $(SVN_PATH)/SE1/code
 APP				= $(PROJECT_PATH)/app
 MYLIB			= $(PROJECT_PATH)/mylib
@@ -50,18 +50,25 @@ ifdef ROM
 LDSCRIPT_FILE	= $(MYLIB)/ldscript_rom
 END_EXEC		= main_rom.elf
 else
-ifdef RAM
-LDSCRIPT_FILE	= $(MYLIB)/ldscript_ram
-END_EXEC		= main_ram.elf
-else
 LDSCRIPT_FILE	= $(MYLIB)/ldscript_rom
-END_EXEC		= main.elf
-endif
+END_EXEC		= main_ram.elf
 endif
 #=======================================================================
-	
-$(END_EXEC): init.o main.o  
+
+$(END_EXEC): init.o main.o startosc.o led.o keyboard.o
 	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@ $^
+
+main.bin: main.elf
+	arm-eabi-objcopy -Obinary main.elf main.bin
+
+led.o: led.S
+	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
+
+keyboard.o: keyboard.S
+	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
+	
+startosc.o: $(MYLIB)/startosc.c
+	$(CC) -g -c $(OUTPUT) $@  $^
 
 init.o: $(MYLIB)/init.S
 	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
@@ -73,7 +80,7 @@ debug: $(END_EXEC)
 	$(DEBUGGER) $(END_EXEC)
 
 clean:
-	rm *.o $(END_EXEC)
+	rm *.o *.elf *.bin
 
 clear:
 	clear

@@ -2,20 +2,53 @@ ENTRY(_start)
 
 MEMORY
 {
-	ram : ORIGIN = 0x40000000, LENGTH = 0x10000
+	ram : ORIGIN = 0x40000000, LENGTH = 0x64992 /*Free Ram*/
+	rom : ORIGIN = 0x0, LENGTH = 128K			/*Flash Rom*/
 }
 
-SECTIONS
-{
-	.text : {
-	__text_start__ = ABSOLUTE(.);
-	*(.text*) *(.glue_7) *(.glue_7t);
-	__text_end__ = ABSOLUTE(.);
-	} >ram
+SECTIONS {
+.startup : {
+	*(.startup*)
+} > ram
 
-	.data ALIGN(4) : {
-	__data_start = ABSOLUTE(.);
+.text : {
+	*(.text*)
+	*(.glue*)
+	*(.rodata) 
+    *(.rodata*)
+	*(.gnu.linkonce*)
+	*(.eh_frame*)
+} > ram
+end = .;
+
+.data ALIGN(4) : {
+	__data_start__ = ABSOLUTE(.);
 	*(.data*);
+	. = ALIGN(4);
 	__data_end__ = ABSOLUTE(.) ;
 	} >ram
-}
+
+.bss ALIGN(4) : {
+    __bss_start__ = ABSOLUTE(.);
+    *(.bss*) *(COMMON);
+	. = ALIGN(4);
+    __bss_end__ = ABSOLUTE(.);
+} > ram
+
+.stack ALIGN(4) : {
+	*(.stack*)
+} > ram
+
+.rodata : {
+	*(.rodata*)
+} > ram
+
+.stab			0 : { *(.stab*) }
+
+.debug_abbrev	0 : { *(.debug_abbrev) }
+.debug_info		0 : { *(.debug_info) }
+.debug_line		0 : { *(.debug_line) }
+.debug_pubnames	0 : { *(.debug_pubnames) }
+.debug_aranges	0 : { *(.debug_aranges) }
+
+} /* end of sections */
