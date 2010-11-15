@@ -1,156 +1,167 @@
 
-.global _start
-
-.data	
-	LAST_KEY:	.word 0x0000FF00
-
+.global MAIN
+/*
+.data
+	LAST_KEY:	.word 0x00000000
+*/	
 .text
 
 	/*Register address declaration*/
-
 	PINSEL0  =	0xE002C000
 	PINSEL1  =	0xE002C004
-
 	IOPIN	 =	0xE0028000
 	IOSET	 =	0xE0028004
 	IODIR	 =	0xE0028008
 	IOCLR	 =	0xE002800C
 	
-	COL_MASK =	0x00000F00
-	ROW_MASK =	0x000000F0
-	LED_MASK =	0x00001000
-
+	COL_MASK =	0x000000F0
+	ROW_MASK =	0x00000F00
+	LED_MASK =	0x00002000
+	
+	SLEEP_MASK = 0x20000
 
 KEYBOARD_READ:
 	/* PIN Function Selection Register */
-	LDR R1, =PINSEL0
-	EOR R2, R2, R2
-	STR R2, [R1]
-	LDR R4, =COL_MASK
-	LDR R5, =ROW_MASK
-	
+	ldr 	r1, =PINSEL0
+	eor 	r2, r2, r2
+	str 	r2, [r1]
+	ldr 	r4, =COL_MASK
+	ldr 	r5, =ROW_MASK
+	/*ldr 	r3,	LAST_KEY_ADDR*/
+	/*mov		r6, #0*/
 	/* PIN Direction Control Register */
 	/* 0-INPUT 1-OUTPUT */
 
-
+GET_KEY:
 	/*Set Output to Column*/
-    LDR R1, =IODIR
-    STR R4, [R1] 
+    ldr 	r1, =IODIR
+    str 	r4, [r1] 
 	
 	/*Set column to 0*/
-	LDR R1, =IOCLR
-	STR R4,[R1]
-	
-READ_LINE:
-	/*Read row status*/
-	LDR R1, =IOPIN
-	LDR R2, [R1]
+	ldr 	r1, =IOCLR
+	str 	r4,[r1]
 
-	/* R2 tem leitura de pins input - line*/
-	AND R2, R2, R5
-	CMP R2, R5
-	/***** jump para sleep antes de tentar novamente*****/
-	BEQ READ_LINE
+	/*Read row status*/
+	ldr 	r1, =IOPIN
+	ldr 	r2, [r1]
+	and 	r2, r2, r5
 	
+	/*If row has no key start over*/	
+	cmp 	r2, r5
+	bne 	READ_COL
+	mov 	r6, #0
+	b 		GET_KEY
+	
+READ_COL:
 	/*Clear Col Output*/
-	LDR R1, =IOCLR
-    STR R4, [R1]
+	ldr 	r1, =IOCLR
+    str 	r4, [r1]
 	
 	/*Set Output to Row*/
-    LDR R1, =IODIR
-    STR R5, [R1]
+    ldr 	r1, =IODIR
+    str 	r5, [r1]
 	
 	/*Set row to 0*/
-	LDR R1, =IOCLR
-	STR R5, [R1]
-	
-READ_COLUMN:
+	ldr 	r1, =IOCLR
+	str 	r5, [r1]
+
 	/*Read col status*/
-	LDR R1, =IOPIN
-	LDR R3, [R1]
+	ldr 	r1, =IOPIN
+	ldr 	r3, [r1]
+	and 	r3, r3, r4
 
-	/* R3 tem leitura de pins input - row*/
-	AND R3, R3, R4
-
-	/* R2 tem valor linha e R3 valor coluna*/
-	EOR R2, R2, R5
-	EOR R3, R3, R4
-
-	/*shiftar results to the right and remove one unit to adjust to
-		keyboard values*/
-	MOV R2, R2, LSR #5
-	MOV R3, R3, LSR #9
-	MOV R0,#0
-	MOV R1,#0
-W1:
-	CMP R2, #0
-	BEQ W2
-	ADD R0, R0, #1
-	MOV R2, R2, LSR #1
-	B W1
-W2:
-	CMP R3, #0
-	BEQ CONT
-	ADD R1, R1, #1
-	MOV R3, R3, LSR #1
-	B W2
-CONT:
-	MOV R0, R0, LSL #2
-	ORR R0, R0, R1
-	MOV PC, LR
+	/*If col has no key start over*/	
+	cmp 	r3, r4
+	bne 	DECODE_KEY
+	mov 	r6, #0
+	b 		GET_KEY
 	
-/*	
-COUNT:
-	MOV R0,#0
-W:
-	CMP R1, #0
-	MOVEQ PC, LR
-	ADD R0, R0, #1
-	MOV R1, R1, LSR #1
-	B W
-*/
+DECODE_KEY:	
+	/* R2 = ROW e R3 = COL*/
+	eor 	r2, r2, r5
+	eor 	r3, r3, r4
 
+	/*Check Bitmap to see key change*/
+	orrs 	r0, r2, r3
+	cmp 	r6, r0
+	beq 	GET_KEY
+	
+	/*Check is new key is NO_KEY*/
+	cmp		r6,	#0
+	beq		GET_KEY
+	
+	/*save current key to last key*/
+	/*ldr 	r1, LAST_KEY_ADDR
+	str 	r0, [r1]*/
+	mov 	r6, r0
+	
+	/*Key decoding*/
+	/*shift results to the right and remove one unit to adjust to
+		keyboard values*/
+	mov 	r2, r2, lsr #9
+	mov 	r3, r3, lsr #5
+	mov 	r0,#0
+	mov 	r1,#0
+W1:
+	cmp 	r2, #0
+	beq 	W2
+	add 	r0, r0, #1
+	mov 	r2, r2, lsr #1
+	b 		W1
+W2:
+	cmp 	r3, #0
+	beq 	CONT
+	add 	r1, r1, #1
+	mov 	r3, r3, lsr #1
+	b 		W2
+CONT:
+	mov 	r0, r0, lsl #2
+	orr 	r0, r0, r1
+	mov 	pc, lr
+
+
+/*	LAST_KEY_ADDR: .word LAST_KEY*/
+	
 LED_BLINK:
 
 	/* PIN Function Selection Register */
-	LDR R1, =PINSEL0
-	EOR R2, R2, R2
-	STR R2, [R1]
+	ldr 	r1, =PINSEL0
+	eor 	r2, r2, r2
+	str 	r2, [r1]
 
 	/*Activate Led Pin output*/
-    LDR R1, =IODIR
-	LDR R2, =LED_MASK
-    STR R2, [R1]
+    ldr 	r1, =IODIR
+	ldr 	r2, =LED_MASK
+    str 	r2, [r1]
 	/*make sure the led is off*/
-	LDR R1, =IOCLR
-	STR R2, [R1]
+	ldr 	r1, =IOCLR
+	str 	r2, [r1]
 	
 BLINK:	
-	CMP R0, #0 
-	MOVEQ PC, LR
+	cmp 	r0, #0 
+	moveq 	PC, LR
 	
 	/*LED ON*/
-	LDR R1, =IOSET
-	STR R2, [R1]
+	ldr 	r1, =IOSET
+	str 	r2, [r1]
 	
-	MOV R3, #0x100000
+	ldr 	r3, =SLEEP_MASK
 SLEEP:
-	SUBS R3, R3, #1
-	BNE SLEEP 
+	subs 	r3, r3, #1
+	bne 	SLEEP 
 	
 	/*LED OFF*/		
-	LDR R1, =IOCLR
-	STR R2, [R1]
+	ldr 	r1, =IOCLR
+	str 	r2, [r1]
 
-	MOV R3, #0x100000
+	ldr 	r3, =SLEEP_MASK
 SLEEP1:
-	SUBS R3, R3, #1
-	BNE SLEEP1
-	SUB R0, R0, #1
-	B BLINK
+	subs 	r3, r3, #1
+	bne 	SLEEP1
+	sub 	r0, r0, #1
+	b 		BLINK
 
-
-_start:
+MAIN:
 	bl 	KEYBOARD_READ
 	bl 	LED_BLINK
-	b 	_start
+	b 	MAIN
