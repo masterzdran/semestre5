@@ -50,7 +50,7 @@ ifdef ROM
 LDSCRIPT_FILE	= $(MYLIB)/ldscript_rom
 END_EXEC		= main_rom.elf
 else
-LDSCRIPT_FILE	= $(MYLIB)/ldscript_rom
+LDSCRIPT_FILE	= $(MYLIB)/ldscript_ram
 END_EXEC		= main_ram.elf
 endif
 #=======================================================================
