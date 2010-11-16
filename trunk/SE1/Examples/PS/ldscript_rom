@@ -31,7 +31,7 @@ __rom_data_start__ = .;
     __data_end__ = ABSOLUTE(.);
 } > ram
 
-end = .;
+end = .;							/*some compilers need end label after data*/
 
 .bss ALIGN(4) : {
     __bss_start__ = ABSOLUTE(.);

@@ -7,14 +7,14 @@
  	IOCLR=		0xE002800C
 
 	LED_MASK=	0x00002000
-	SLEEP_MASK=	0x20000
+	SLEEP_MASK=	100000
 
 .text
 	
 LED_BLINK:
 
 	cmp 	r0, #0
-	moveq 	PC, LR
+	movle 	PC, LR
 
 	/* PIN Function Selection Register */
 	ldr 	r1, =PINSEL0
@@ -30,26 +30,23 @@ LED_BLINK:
 	ldr 	r1, =IOCLR
 	str 	r2, [r1]
 	
-BLINK:	
+BLINK:
 	/*LED ON*/
 	ldr 	r1, =IOSET
 	str 	r2, [r1]
 	
 	ldr 	r3, =SLEEP_MASK
-SLEEP:
 	subs 	r3, r3, #1
-	bne 	SLEEP 
+	subne	pc, pc, #3*4
 	
 	/*LED OFF*/		
 	ldr 	r1, =IOCLR
 	str 	r2, [r1]
 
 	ldr 	r3, =SLEEP_MASK
-SLEEP1:
 	subs 	r3, r3, #1
-	bne 	SLEEP1
+	subne	pc, pc, #3*4
 	
-	sub 	r0, r0, #1
-	cmp		r0, #0
+	subs 	r0, r0, #1
 	bne		BLINK
 	mov		pc, lr
