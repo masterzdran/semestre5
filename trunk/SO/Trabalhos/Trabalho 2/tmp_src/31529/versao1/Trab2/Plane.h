@@ -7,12 +7,14 @@ class Plane
 public:
 	int _idPlane;
 	int _idLane;
+	bool _finishedWork;
 	Plane * next;
 	Plane * prev;
 	char * name;
 	
 	Plane()
 	{
+		_finishedWork=true;
 		name = new char[SIZE];
 	}
 	

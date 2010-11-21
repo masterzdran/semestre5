@@ -19,22 +19,21 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
-int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
-{
-
-
-	// criar Dialog do 2º trabalho prático
-	
-	//DialogBox(hInst, MAKEINTRESOURCE(IDD_TRAB2_DIALOG), NULL, About);
-	DialogBox(hInst, MAKEINTRESOURCE(IDD_RUNWAY), NULL, About);
-	
-
-
-	return (int) 0;
-}
+//int APIENTRY _tWinMain(HINSTANCE hInstance,
+//                     HINSTANCE hPrevInstance,
+//                     LPTSTR    lpCmdLine,
+//                     int       nCmdShow)
+//{
+//
+//	// criar Dialog do 2º trabalho prático
+//	
+//	//DialogBox(hInst, MAKEINTRESOURCE(IDD_TRAB2_DIALOG), NULL, About);
+//	DialogBox(hInst, MAKEINTRESOURCE(IDD_RUNWAY), NULL, About);
+//	
+//
+//
+//	return (int) 0;
+//}
 
 int Landing_Animate_Id[] = {
     IDC_AT0,  IDC_AT1,  IDC_AT2,  IDC_AT3,  IDC_AT4,  IDC_AT5,  IDC_AT6,  IDC_AT7,  IDC_AT8,

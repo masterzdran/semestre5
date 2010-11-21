@@ -29,16 +29,16 @@ class GestorDePistas : IGestorDePistas
 	/***************************************/
 
 	/********TESTAR********/
-	void AddLast(Plane * planeList)
+	Plane* AddLast(Plane * planeList)
 	{
-		if(planeList==0)
-		{
-			planeList = new Plane();
-			planeList->next = planeList;
-			planeList->prev = planeList;
-			planeList->_idPlane = InterlockedIncrement(&_planeCount);
-			return;
-		}
+		//if(planeList==0)
+		//{
+		//	(*planeList) = *(new Plane());
+		//	planeList->next = planeList;
+		//	planeList->prev = planeList;
+		//	planeList->_idPlane = InterlockedIncrement(&_planeCount);
+		//	return;
+		//}
 
 		Plane * p = new Plane();
 
@@ -48,30 +48,29 @@ class GestorDePistas : IGestorDePistas
 		planeList->prev = p;
 
 		p->_idPlane = InterlockedIncrement(&_planeCount);
-		return;
+		return p;
 	}
 	/********TESTAR********/
 	/***PRINCIPALMENTE A REMOCAO DO ULTIMO ELEMENTO***/
-	int Remove(Plane * elemToRemove)
+	void Remove(Plane * elemToRemove)
 	{
 		int id = elemToRemove->_idPlane;
 
 		if(elemToRemove->prev==elemToRemove)
 		{
-			//último elemento;
-			elemToRemove=0;
+			//significa que é o sentinela, logo não é para remover
+			return;
 		}
 
 		elemToRemove->next->prev = elemToRemove->prev;
 		elemToRemove->prev->next = elemToRemove->next;
-		return id;
 	}
 
 	int findLaneTo(PlaneDirection direction)
 	{
 		for(int i = 0;i<_nLanes;++i)
 		{
-			if(_pdLanes[i]==direction)
+			if(_pdLanes[i] == direction && _bLanes[i])
 			{
 				return i;
 			}
@@ -85,9 +84,9 @@ class GestorDePistas : IGestorDePistas
 	virtual Plane * UseLaneTo(PlaneDirection direction, Plane * planeList, Semaforo * mPlaneList, Semaforo * sWaitingList)
 	{
 		mPlaneList->Wait();
-		AddLast(planeList);
+		Plane * p = AddLast(planeList);
+		p->_finishedWork = false;
 		mPlaneList->Signal();
-		Plane * p;
 		do{
 			_mLanes->Wait();
 			int nLane = findLaneTo(direction);
@@ -102,13 +101,16 @@ class GestorDePistas : IGestorDePistas
 				_mLanes->Signal();
 				//obter o aviao consoante a direccao
 				mPlaneList->Wait();
-				p = planeList;
-				Remove(planeList);
+				p = planeList->next;
+				Remove(p);
 				mPlaneList->Signal();
+
+				p->_finishedWork = true;
 				p->_idLane = nLane;
 				break;
 			}
 		}while(true);
+		
 		return p;
 	}
 
@@ -121,10 +123,20 @@ public:
 		_sWaitingListLiftoff = new Semaforo(0);
 		_mPlaneListToLand = new Semaforo(1,1);
 		_mPlaneListToLift = new Semaforo(1,1);
+		
+		_planeListToLift = new Plane();
+		_planeListToLift->next = _planeListToLift;
+		_planeListToLift->prev = _planeListToLift;
+
+		_planeListToLand = new Plane();
+		_planeListToLand->next = _planeListToLand;
+		_planeListToLand->prev = _planeListToLand;
 
 		_planeCount=0;
 
 		_bLanes = new bool[nLanes];
+		for(int i = 0;i<nLanes;++i)
+			_bLanes[i]=true;
 		_mLanes = new Semaforo(1,1);
 		_pdLanes = new PlaneDirection[nLanes];		
 	}
@@ -141,6 +153,8 @@ public:
 
 	virtual void ReleaseLaneUsedBy(Plane * p)
 	{
+		if(!p->_finishedWork)
+			return;
 		_mLanes->Wait();
 		_bLanes[p->_idLane]=true;
 		PlaneDirection pd = _pdLanes[p->_idLane];
@@ -154,12 +168,21 @@ public:
 		{
 			_sWaitingListLiftoff->Signal();
 		}
+		//erro ao apagar o aviao.
 		delete p;
 	}
 
-	virtual void SetLanePriorityTo (PlaneDirection direction)
+	virtual bool SetLanePriorityTo (PlaneDirection direction, int idLane)
 	{
-		;
+		_mLanes->Wait();
+		if (!_bLanes[idLane])
+		{
+			_mLanes->Signal();
+			return false;
+		}
+		_pdLanes[idLane] = direction;
+		_mLanes->Signal();
+		return true;
 	}
 
 	virtual void fecharPista (int idPista)
