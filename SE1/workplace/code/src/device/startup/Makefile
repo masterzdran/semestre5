@@ -36,13 +36,13 @@ DEBUGSTABS		= --gstabs
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-all: startosc.o init.o
+all: chrono.o chrono_test.o
 
-startosc.o: startosc.c
+chrono.o: chrono.c
 	$(CC) -g -c $(OUTPUT) $(MYLIB)/$@  $^
-
-init.o: init.S
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $^
+	
+chrono_test.o: chrono_test.c
+	$(CC) -g -c $(OUTPUT) $(MYLIB)/$@  $^
 	
 clean:
 	rm  $(MYLIB)/startosc.o $(MYLIB)/init.o

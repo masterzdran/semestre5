@@ -17,7 +17,7 @@
 #=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-PROJECT_PATH	=/home/nac/ISEL/SE1/code
+PROJECT_PATH	= /mnt/hgfs/Semestre5/SE1/workplace/code
 #HOME 
 HOME			= $(PROJECT_PATH)/src
 #Target Path
@@ -79,6 +79,9 @@ $(LYBRARY): $(OBJECT)
 #Generate Object
 
 init.o:
+
+LPC2106.o:	
+	$(MAKE) -C $(DEVICE)/LPC2106/
 startosc.o:
 	$(MAKE) -C $(DEVICE)/startup/
 keyboard.o:

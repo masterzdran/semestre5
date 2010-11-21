@@ -36,11 +36,19 @@ DEBUGSTABS		= --gstabs
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-main.o: main.S
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $^
+all: led_test.o keyboard_test.o chrono_test.o
+
+led_test.o: led_test.c
+	$(CC) -g -c $(OUTPUT) $@  $^
+
+keyboard_test.o: keyboard_test.S
+	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
+	
+chrono_test.o: chrono_test.c
+	$(CC) -g -c $(OUTPUT) $@  $^
 	
 clean:
-	rm  $(MYLIB)/main.o
+	rm  *.o
 
 clear:
 	clear

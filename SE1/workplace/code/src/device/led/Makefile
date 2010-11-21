@@ -36,7 +36,12 @@ DEBUGSTABS		= --gstabs
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-led.o: led.S
+all: led.o led_blink.o
+
+led.o: led.c
+	$(CC) -g -c $(OUTPUT) $(MYLIB)/$@  $^
+
+led_blink.o: led_blink.S
 	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $^
 
 clean:
