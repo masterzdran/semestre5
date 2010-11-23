@@ -1,52 +1,104 @@
-#include "..\headers\Semaforo.h"
-#include "..\headers\Plane.h"
+#include "../headers/Semaforo.h"
+#include "../headers/Plane.h"
+#include "../headers/IGestorDePistas.h"
+#include <list>
 
-class GestorDePistas{ 
-	bool aeroportoFechado;
-	bool pista1Fechada;
-	bool pista2Fechada;
-	bool alertaFuracao;
+class GestorDePistas:IGestorDePistas { 
+	bool pista[2];
+	bool lockLane[2];
+	bool furacao;
+	int nbrPlanesToLand;
+	int nbrPlanesTakeoff;
 	
-	Semaforo *sAterrar;
-	Semaforo *sLevantar;
-	Semaforo *p1mutex;
-	Semaforo *p2mutex;
-	Semaforo *furacaoMutex;
-	Semaforo *aeroportoFechadoMutex;
+	std::list<Plane*> landList;
+	std::list<Plane*> takeOffList;
 
+	Semaforo* mutexLand;
+	Semaforo* mutexTakeOff;
 
 public: 
 	GestorDePistas(){
-		aeroportoFechado = false;
-		pista1Fechada = false;
-		pista2Fechada = false;
-		alertaFuracao = false;
-		sAterrar = new Semaforo(0);
-		sLevantar = new Semaforo(0);
-		p1mutex = new Semaforo(1);
-		p2mutex = new Semaforo(1);
-		furacaoMutex=  new Semaforo(1);
-		aeroportoFechadoMutex = new Semaforo(1);
+		pista[0]=false;
+		pista[1]=false;
+
+		lockLane[0] = false;
+		lockLane[1] = false;
+
+		furacao = false;
+		nbrPlanesTakeoff = 0;
+		nbrPlanesToLand = 0;
+
+		mutexLand =  new Semaforo(1);
+		mutexTakeOff =  new Semaforo(1);
 	}
 
 	~GestorDePistas(){
+		pista[0]=false;
+		pista[1]=false;
+
+		lockLane[0] = false;
+		lockLane[1] = false;
+
+		furacao = false;
+		nbrPlanesTakeoff = 0;
+		nbrPlanesToLand = 0;
+
+		delete(mutexLand);
+		delete(mutexTakeOff);
 	}
 
-	int  esperarPistaParaAterrar (){
-		p1mutex->Wait();
+	virtual int  esperarPistaParaAterrar (){
+		mutexLand->Wait();
 
-		while ( aeroportoFechado || pista1Fechada){
-			p1mutex->Signal();
-			sAterrar->Wait();
-			p1mutex->Wait();
+		while (!(pista[0]) && !((pista[1] && nbrPlanesTakeoff == 0))){
+			nbrPlanesToLand++;
+			mutexLand->Signal();
+			mutexLand->Wait();
 		}
-		pista1Fechada = true;
-		p1mutex->Signal();
-		return 1;
+		int lane = 0;
+		if (pista[0]){
+			lockLane[0]= true;
+			lane = 0;
+		}else if(pista[1] && nbrPlanesTakeoff == 0){
+			lockLane[1]= true;
+			lane = 1;
+		}
+		mutexLand->Signal();
+		return lane;
+	} 
+	
+	virtual int  esperarPistaParaDescolar (){
+		if( furacao){
+			nbrPlanesTakeoff++;
+		}else{
+			if (pista[0]){
+				lockLane[0]= true;
+				return 0;
+			}else if(pista[1] && nbrPlanesToLand == 0){
+				lockLane[1]= true;
+				return 1;
+			}else{
+				nbrPlanesTakeoff++;
+			}
+		}	
+	} 
+	
+	virtual void libertarPista (int idPista){
+		lockLane[idPista]= false;	
 	}
+	
+	virtual void fecharPista (int idPista){
+		pista[idPista] = false;
+	}
+	
+	virtual void abrirPista (int idPista){
+		pista[idPista] = true;
+	}
+	virtual void alertaFuracao(bool alerta){
+		furacao= alerta;
+	}
+};
+int _tmain(){
 
-	int  esperarPistaParaDescolar (){} 
-	void libertarPista (int idPista){}
-	void fecharPista (int idPista){}
-	void abrirPista (int idPista){}
-}; 
+return 0;
+}

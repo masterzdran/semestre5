@@ -1,6 +1,16 @@
 #include "..\headers\Semaforo.h"
 
-struct Plane{
+class Plane{
 	int id;
 	Semaforo *sPlane;
-}
+
+public:
+	Plane(){
+		id = GetCurrentThreadId();
+		sPlane = new Semaforo(0);
+	}
+	~Plane(){
+		id= 0;
+		delete(sPlane);
+	}
+};
