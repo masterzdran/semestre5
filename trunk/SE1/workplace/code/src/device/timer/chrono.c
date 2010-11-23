@@ -9,5 +9,6 @@ U32 chrono_elapsed(U32 initial) {
 }
 
 void chrono_delay(U32 msec){
-	while(chrono_elapsed(timer_read()) == msec){}		
+	U32 start = timer_read();
+	while(chrono_elapsed(start) <= msec){}		
 }

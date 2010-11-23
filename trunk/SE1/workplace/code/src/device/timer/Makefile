@@ -36,7 +36,7 @@ DEBUGSTABS		= --gstabs
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-all: chrono.o chrono_test.o
+all: chrono.o
 
 chrono.o: chrono.c
 	$(CC) -g -c $(OUTPUT) $(MYLIB)/$@  $^

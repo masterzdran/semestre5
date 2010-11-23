@@ -56,18 +56,20 @@ COMPILE_ONLY 	= -c
 #Set the Correct LdScript
 ifdef ROM
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_rom
-END_EXEC		= $(TARGET)/main_rom.elf
+END_EXEC		= $(TARGET)/rom.elf
 else
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_ram
-END_EXEC		= $(TARGET)/main.elf
+END_EXEC		= $(TARGET)/ram.elf
 endif
 #=======================================================================
-OBJECT			= init.o startosc.o led.o keyboard.o main.o
+OBJECT			= init.o startosc.o led.o keyboard.o LPC2106.o chrono.o
 #=======================================================================
 all: $(END_EXEC)
 
 #Generate the executable
-$(END_EXEC): $(LYBRARY)
+#$(END_EXEC): $(LYBRARY)
+#	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@ $^
+led_test.elf: $(LYBRARY) led_test.o
 	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@ $^
 
 #Create the device library
@@ -77,9 +79,12 @@ $(LYBRARY): $(OBJECT)
 
 
 #Generate Object
+led_test.o: led_test.c
+	$(MAKE) -C $(DEVICE)/main/
+
 
 init.o:
-
+	$(MAKE) -C $(DEVICE)/startup/
 LPC2106.o:	
 	$(MAKE) -C $(DEVICE)/LPC2106/
 startosc.o:
@@ -88,9 +93,10 @@ keyboard.o:
 	$(MAKE) -C $(DEVICE)/keyboard/
 led.o:
 	$(MAKE) -C $(DEVICE)/led/
-main.o:	
-	$(MAKE) -C $(DEVICE)/main/
-	
+#LCD.o:
+#	$(MAKE) -C $(DEVICE)/LCD/
+chrono.o:
+	$(MAKE) -C $(DEVICE)/timer/	
 
 #Start the Debugger	
 debug: $(END_EXEC)

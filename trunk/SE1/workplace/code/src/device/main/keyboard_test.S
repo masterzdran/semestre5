@@ -1,9 +1,9 @@
-.global MAIN
+.global main
 
 .text
 	
 
-MAIN:
+main:
 	bl 		KEYBOARD_READ
 	bl 		LED_BLINK
 	b 		MAIN

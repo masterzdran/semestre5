@@ -64,7 +64,7 @@ end_set_loop:
         bx    	r10
 
 		/*Call main program*/
-       	ldr   	r10, =MAIN
+       	ldr   	r10, =main
         mov   	lr, pc
         bx    	r10
 

@@ -8,8 +8,8 @@ int main() {
     led_init();
     while (1) {
         led_write(1);
-        chrono_delay(500);
+        chrono_delay(2000);
         led_write(0);
-        chrono_delay(500);
+        chrono_delay(2000);
     }
 }
