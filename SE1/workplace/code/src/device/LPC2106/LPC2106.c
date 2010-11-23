@@ -3,17 +3,14 @@
 void lpc2106_init(){
 	
 	
-	
 }
 
-void io_write_u32(U32 address, U32 value){
-	U32* p = address;
-	(*p) = value;
+void io_write_u32(U32* address, U32 value){
+	*address = value;
 }
 
-U32 io_read_u32(U32 address){
-	U32* p = address;
-	return (*p);
+U32 io_read_u32(U32* address){
+	return (*address);
 }
 
 void timer_init(){
@@ -23,6 +20,6 @@ void timer_init(){
 }
 
 U32 timer_read(){
-	io_read_u32(Tx_TC);		
+	return io_read_u32(T0_IR + Tx_TC);		
 }
 

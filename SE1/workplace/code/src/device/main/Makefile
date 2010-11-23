@@ -38,14 +38,14 @@ DEBUGSTABS		= --gstabs
 #=======================================================================
 all: led_test.o keyboard_test.o chrono_test.o
 
-led_test.o: led_test.c
-	$(CC) -g -c $(OUTPUT) $@  $^
+led_test.o: led_test.c $(MYLIB)/LPC2106.o
+	$(CC) -g -c $(OUTPUT) $(PROJECT_PATH)/device/tests/$@  $<
 
-keyboard_test.o: keyboard_test.S
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
+keyboard_test.o: keyboard_test.S $(MYLIB)/LPC2106.o
+	$(AS) $(DEBUGSTABS) $(OUTPUT) $(PROJECT_PATH)/device/tests/$@  $<
 	
-chrono_test.o: chrono_test.c
-	$(CC) -g -c $(OUTPUT) $@  $^
+chrono_test.o: chrono_test.c $(MYLIB)/LPC2106.o
+	$(CC) -g -c $(OUTPUT) $(PROJECT_PATH)/device/tests/$@  $<
 	
 clean:
 	rm  *.o
