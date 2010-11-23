@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 //      Funções Genéricas para manipulação das Slide Bars
 //
-#include "../Include/SlideBar.h"
+#include "../headers/SlideBar.h"
 
 
 

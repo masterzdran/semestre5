@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="resources\IGestorDePistas.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\GestorDePistas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -25,9 +22,6 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="lib\SlideBar.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\TestAndSet.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Plane.cpp">
@@ -45,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\SlideBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\IGestorDePistas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

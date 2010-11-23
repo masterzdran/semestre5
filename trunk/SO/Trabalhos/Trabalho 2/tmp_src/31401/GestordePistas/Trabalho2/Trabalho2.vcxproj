@@ -76,13 +76,12 @@
   <ItemGroup>
     <ClCompile Include="lib\SesError.cpp" />
     <ClCompile Include="lib\SlideBar.cpp" />
-    <ClCompile Include="lib\TestAndSet.c" />
-    <ClCompile Include="resources\IGestorDePistas.cpp" />
     <ClCompile Include="source\GestorDePistas.cpp" />
     <ClCompile Include="source\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\BeginThreadex.h" />
+    <ClInclude Include="headers\IGestorDePistas.h" />
     <ClInclude Include="headers\Semaforo.h" />
     <ClInclude Include="headers\SesError.h" />
     <ClInclude Include="headers\SlideBar.h" />
