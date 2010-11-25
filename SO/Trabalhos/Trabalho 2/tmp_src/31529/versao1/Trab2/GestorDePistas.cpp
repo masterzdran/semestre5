@@ -3,7 +3,7 @@
 #ifndef GESTORDEPISTAS_CPP
 #define GESTORDEPISTAS_CPP
 
-class GestorDePistas : IGestorDePistas
+class GestorDePistas : public IGestorDePistas
 {
 	char _nLanes;
 	//semaforos que vao bloquear as threads
@@ -14,7 +14,10 @@ class GestorDePistas : IGestorDePistas
 	Semaforo * _mPlaneListToLift;
 	//listas de avioes para aterrar/descolar
 	Plane * _planeListToLand;
+	volatile LONG _countPlaneToLand;
 	Plane * _planeListToLift;
+	volatile LONG _countPlaneToLift;
+	Plane * _planesOnTheGround;
 	//nº de avioes criados ate' ao momento.
 	long _planeCount;
 	/***************************************/
@@ -25,29 +28,22 @@ class GestorDePistas : IGestorDePistas
 		//indica se a pista esta em uso
 		bool * _bLanes;
 		//direccao prioritaria da pista
-		PlaneDirection * _pdLanes;
+		Plane::PlaneDirection * _pdLanes;
 	/***************************************/
 
 	/********TESTAR********/
-	Plane* AddLast(Plane * planeList)
+	Plane* AddNewPlaneInEndOf(Plane * planeList, Plane::PlaneDirection pd)
 	{
-		//if(planeList==0)
-		//{
-		//	(*planeList) = *(new Plane());
-		//	planeList->next = planeList;
-		//	planeList->prev = planeList;
-		//	planeList->_idPlane = InterlockedIncrement(&_planeCount);
-		//	return;
-		//}
-
-		Plane * p = new Plane();
-
+		Plane * p = new Plane(pd,InterlockedIncrement(&_planeCount));
+		AddPlaneIn(planeList,p);
+		return p;
+	}
+	Plane* AddPlaneIn(Plane * planeList,Plane * p)
+	{
 		planeList->prev->next = p;
 		p->prev = planeList->prev;
 		p->next = planeList;
 		planeList->prev = p;
-
-		p->_idPlane = InterlockedIncrement(&_planeCount);
 		return p;
 	}
 	/********TESTAR********/
@@ -66,7 +62,7 @@ class GestorDePistas : IGestorDePistas
 		elemToRemove->prev->next = elemToRemove->next;
 	}
 
-	int findLaneTo(PlaneDirection direction)
+	int findLaneTo(Plane::PlaneDirection direction)
 	{
 		for(int i = 0;i<_nLanes;++i)
 		{
@@ -81,21 +77,32 @@ class GestorDePistas : IGestorDePistas
 	//As threads são desbloqueadas através de um método que indicará 
 	//qual a pista a libertar e consoante a sua prioridade irá libertar
 	//uma thread da lista correspondente ou uma de outra, caso não haja.
-	virtual Plane * UseLaneTo(PlaneDirection direction, Plane * planeList, Semaforo * mPlaneList, Semaforo * sWaitingList)
+	Plane * UseLaneTo(Plane::PlaneDirection direction, Plane * planeList,
+		Semaforo * mPlaneList, Semaforo * sWaitingList)
 	{
-		mPlaneList->Wait();
-		Plane * p = AddLast(planeList);
-		p->_finishedWork = false;
-		mPlaneList->Signal();
+		Plane * p;
 		do{
 			_mLanes->Wait();
 			int nLane = findLaneTo(direction);
 			if(nLane == -1)
 			{
-				_mLanes->Signal();
-				sWaitingList->Wait();
+				if(direction==Plane::LAND && _planeListToLift->next==_planeListToLift)
+				{
+					nLane = findLaneTo(Plane::LIFTOFF);
+				}
+				else if(direction==Plane::LIFTOFF && _planeListToLand->next==_planeListToLand)
+				{
+					nLane = findLaneTo(Plane::LAND);
+				}
+				
+				if(nLane==-1)
+				{
+					_mLanes->Signal();
+					sWaitingList->Wait();
+				}
 			}
-			else
+
+			if(nLane!=-1)
 			{
 				_bLanes[nLane]=false;
 				_mLanes->Signal();
@@ -104,7 +111,6 @@ class GestorDePistas : IGestorDePistas
 				p = planeList->next;
 				Remove(p);
 				mPlaneList->Signal();
-
 				p->_finishedWork = true;
 				p->_idLane = nLane;
 				break;
@@ -112,6 +118,20 @@ class GestorDePistas : IGestorDePistas
 		}while(true);
 		
 		return p;
+	}
+
+	void SignalRespectiveWaitingList(Plane::PlaneDirection pd)
+	{
+		if(pd==Plane::LAND && _planeListToLand->next != _planeListToLand 
+			|| pd==Plane::LIFTOFF && _planeListToLift->next == _planeListToLift)
+		{
+			_sWaitingListLanding->Signal();
+		}
+		else if(pd==Plane::LIFTOFF && _planeListToLift->next != _planeListToLift 
+			|| pd==Plane::LAND && _planeListToLand->next == _planeListToLand)
+		{
+			_sWaitingListLiftoff->Signal();
+		}
 	}
 
 public:
@@ -127,10 +147,16 @@ public:
 		_planeListToLift = new Plane();
 		_planeListToLift->next = _planeListToLift;
 		_planeListToLift->prev = _planeListToLift;
+		_countPlaneToLift = 0;
 
 		_planeListToLand = new Plane();
 		_planeListToLand->next = _planeListToLand;
 		_planeListToLand->prev = _planeListToLand;
+		_countPlaneToLand = 0;
+
+		_planesOnTheGround = new Plane();
+		_planesOnTheGround->next = _planesOnTheGround;
+		_planesOnTheGround->prev = _planesOnTheGround;
 
 		_planeCount=0;
 
@@ -138,41 +164,77 @@ public:
 		for(int i = 0;i<nLanes;++i)
 			_bLanes[i]=true;
 		_mLanes = new Semaforo(1,1);
-		_pdLanes = new PlaneDirection[nLanes];		
+		_pdLanes = new Plane::PlaneDirection[nLanes];		
 	}
 
-	virtual Plane * LandPlane()
+	virtual Plane * criarAviaoPara(Plane::PlaneDirection direction)
 	{
-		return UseLaneTo(LAND,_planeListToLand,_mPlaneListToLand,_sWaitingListLanding);
+		Semaforo * mPlaneList;
+		Plane * planeList;
+		if(direction==Plane::LAND)
+		{
+			mPlaneList = _mPlaneListToLand;
+			planeList = _planeListToLand;
+			InterlockedIncrement(&_countPlaneToLand);
+		}
+		else if(direction==Plane::LIFTOFF)
+		{
+			InterlockedIncrement(&_countPlaneToLift);
+			mPlaneList = _mPlaneListToLift;
+			planeList = _planeListToLift;
+		}
+		mPlaneList->Wait();
+		Plane * p = AddNewPlaneInEndOf(planeList,direction);
+		p->_finishedWork = false;
+		mPlaneList->Signal();
+		return p;
 	}
-
-	virtual Plane * LiftoffPlane()
+	virtual Plane * esperarPistaParaAterrar()
 	{
-		return UseLaneTo(LIFTOFF,_planeListToLift,_mPlaneListToLift,_sWaitingListLiftoff);
+		Plane * p = UseLaneTo(Plane::LAND,_planeListToLand,_mPlaneListToLand,_sWaitingListLanding);
+		InterlockedDecrement(&_countPlaneToLand);
+		return p;
 	}
 
-	virtual void ReleaseLaneUsedBy(Plane * p)
+	virtual Plane * esperarPistaParaDescolar()
+	{
+		Plane * p = UseLaneTo(Plane::LIFTOFF,_planeListToLift,_mPlaneListToLift,_sWaitingListLiftoff);
+		InterlockedDecrement(&_countPlaneToLift);
+		return p;
+	}
+
+	virtual INT getCountPlanesToLand()
+	{
+		return (INT)_countPlaneToLand;
+	}
+	virtual INT getCountPlanesToLift()
+	{
+		return (INT)_countPlaneToLift;
+	}
+	virtual void libertarPista(Plane * p)
 	{
 		if(!p->_finishedWork)
 			return;
 		_mLanes->Wait();
 		_bLanes[p->_idLane]=true;
-		PlaneDirection pd = _pdLanes[p->_idLane];
+		Plane::PlaneDirection pd = _pdLanes[p->_idLane];
 		_mLanes->Signal();
 
-		if(pd==LAND)
-		{
-			_sWaitingListLanding->Signal();
-		}
-		else if(pd==LIFTOFF)
-		{
-			_sWaitingListLiftoff->Signal();
-		}
-		//erro ao apagar o aviao.
-		delete p;
+		SignalRespectiveWaitingList(pd);
+		//DELETE TÁ A ATRUFIAR ISTO.
+		//delete p;
 	}
 
-	virtual bool SetLanePriorityTo (PlaneDirection direction, int idLane)
+	virtual Plane::PlaneDirection getLaneDirectionUsedBy(Plane* p)
+	{
+		Plane::PlaneDirection direction;
+		_mLanes->Wait();
+		direction = _pdLanes[p->_idLane];
+		_mLanes->Signal();
+
+		return direction;
+	}
+	virtual BOOL SetLanePriorityTo (Plane::PlaneDirection direction, int idLane)
 	{
 		_mLanes->Wait();
 		if (!_bLanes[idLane])
@@ -187,12 +249,24 @@ public:
 
 	virtual void fecharPista (int idPista)
 	{
-		;
+		_mLanes->Wait();
+		if(_pdLanes[idPista]==Plane::LAND)
+			_pdLanes[idPista]=Plane::LAND_CLOSED;
+		else
+			_pdLanes[idPista]=Plane::LIFT_CLOSED;
+		_mLanes->Signal();
 	}
 
 	virtual void abrirPista (int idPista)
 	{
-		;
+		_mLanes->Wait();
+		if(_pdLanes[idPista]==Plane::LAND_CLOSED)
+			_pdLanes[idPista]=Plane::LAND;
+		else
+			_pdLanes[idPista]=Plane::LIFTOFF;
+
+		SignalRespectiveWaitingList(_pdLanes[idPista]);
+		_mLanes->Signal();
 	}
 };
 #endif GESTORDEPISTAS_CPP

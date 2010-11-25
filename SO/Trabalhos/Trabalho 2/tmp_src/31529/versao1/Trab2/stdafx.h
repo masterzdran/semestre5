@@ -18,6 +18,7 @@
 #include <tchar.h>
 
 //My Header Files
+#include <windowsx.h>
 
 #include "SesError.h"
 #include "BeginThreadex.h"

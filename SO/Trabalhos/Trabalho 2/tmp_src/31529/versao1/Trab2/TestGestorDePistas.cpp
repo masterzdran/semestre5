@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#include "assert.h"
-
 const int N_PLANES = 10;
 const char N_LANES = 2;
 
@@ -22,8 +20,9 @@ void InitializeLanes()
 
 DWORD WINAPI LandPlanes(LPVOID param)
 {
-	_planesLanded[(DWORD)param] = igdp->LandPlane();
-	
+	DWORD idx = (DWORD)param;
+	_planesLanded[idx] = igdp->LandPlane();
+	printf("[%d] Plane %c Landed on Lane %d\n",_planesLanded[idx]->_idPlane,_planesLanded[idx]->GetName(),_planesLanded[idx]->_idLane);
 	return 0;
 }
 
