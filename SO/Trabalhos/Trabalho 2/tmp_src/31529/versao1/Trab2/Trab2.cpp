@@ -14,8 +14,12 @@ TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 GestorDePistas * gestor;
+//Objecto de sincronização utilizado para assegurar de que há somente uma thread de cada vez
+//a remover itens da ListBox.
 Semaforo * sDelFromLB;
+//buffer utilizado para efectuar as leituras dos objectos existentes na parte gráfica
 TCHAR buffer[MAX_BUFFER];
+
 typedef INT (*CountPlanesFunc)(void);
 typedef Plane * (*LandOrLiftPlanesFunc)(void);
 
@@ -163,21 +167,32 @@ DWORD WINAPI thAviaoDescolar(LPVOID p)
     return 0;
 }
 
+VOID WINAPI fecharOuAbrirPista(HWND hControl,INT idLane)
+{
+	Button_GetText(hControl,buffer,MAX_BUFFER);
+	if(buffer[0]=='A')
+	{
+		gestor->abrirPista(idLane);
+		Button_SetText(hControl,_T("Fechar"));
+	}
+	else if(buffer[0]=='F')
+	{
+		gestor->fecharPista(idLane);
+		Button_SetText(hControl,_T("Abrir"));
+	}
+}
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static HANDLE hAviaoAterrar;
-    static HANDLE hAviaoDescolar;
 	int n_planes;
-
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	case WM_INITDIALOG:
 		gestor = new GestorDePistas(2);
-		gestor->SetLanePriorityTo(Plane::LAND,0);
-		gestor->SetLanePriorityTo(Plane::LIFTOFF,1);
+		gestor->SetLanePriorityTo(Plane::LAND,1);
+		gestor->SetLanePriorityTo(Plane::LIFTOFF,0);
 		// é necessário para trabalhar sobre a parte grafica,
 		//porque quando vai obter o indice do elemento a remover,
 		//pode haver um contextswitch que provoca erros.
@@ -208,9 +223,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					CreateThread(NULL, 0, thAviaoAterrar, (LPVOID)hDlg, 0, NULL);
 				}
-				
                 break;
-
             case IDC_CREATE_TAKEOFF:
 				Edit_GetText(GetDlgItem(hDlg,IDC_N_LIFT),buffer,MAX_BUFFER);
 				n_planes = _ttoi(buffer);
@@ -219,7 +232,12 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 					CreateThread(NULL, 0, thAviaoDescolar, (LPVOID)hDlg, 0, NULL);
 				}
                 break;
-
+			case IDC_OPEN_LANE0:
+				fecharOuAbrirPista(GetDlgItem(hDlg,IDC_OPEN_LANE0),0);
+				break;
+			case IDC_OPEN_LANE1:
+				fecharOuAbrirPista(GetDlgItem(hDlg,IDC_OPEN_LANE1),1);
+				break;
             case IDCANCEL:
                 EndDialog(hDlg, LOWORD(wParam));
 			    return (INT_PTR)TRUE;

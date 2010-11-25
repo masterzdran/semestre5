@@ -23,7 +23,6 @@
 #define IDC_BUTTON8                     1006
 #define IDC_EDIT3                       1007
 #define IDC_LIST4                       1007
-#define IDC_LANDING_LIST                1007
 #define IDC_LAND_LIST                   1007
 #define IDC_EDIT4                       1008
 #define IDC_BUTTON2                     1009
@@ -93,6 +92,11 @@
 #define IDC_DS25                        1071
 #define IDC_N_LIFT_LIST                 1072
 #define IDC_N_LAND_LIST                 1073
+#define IDC_CLOSE_LANE0                 1074
+#define IDC_LIFT_LANE0                  1074
+#define IDC_OPEN_LANE0                  1075
+#define IDC_OPEN_LANE1                  1076
+#define IDC_LAND_LANE1                  1077
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -102,7 +106,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1074
+#define _APS_NEXT_CONTROL_VALUE         1078
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
