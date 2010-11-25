@@ -252,7 +252,7 @@ public:
 		_mLanes->Wait();
 		if(_pdLanes[idPista]==Plane::LAND)
 			_pdLanes[idPista]=Plane::LAND_CLOSED;
-		else
+		else if (_pdLanes[idPista]==Plane::LIFTOFF)
 			_pdLanes[idPista]=Plane::LIFT_CLOSED;
 		_mLanes->Signal();
 	}
@@ -262,7 +262,7 @@ public:
 		_mLanes->Wait();
 		if(_pdLanes[idPista]==Plane::LAND_CLOSED)
 			_pdLanes[idPista]=Plane::LAND;
-		else
+		else if (_pdLanes[idPista]==Plane::LIFT_CLOSED)
 			_pdLanes[idPista]=Plane::LIFTOFF;
 
 		SignalRespectiveWaitingList(_pdLanes[idPista]);
