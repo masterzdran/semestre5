@@ -49,7 +49,7 @@ public:
 	{
 		if((*name)==0) 
 		{
-			_stprintf_s(name,sizeof(_TCHAR)*SIZE,_T("A%d"),_idPlane);
+			_stprintf(name,_T("A%d"),_idPlane);
 		}
 		return name; 
 	}
