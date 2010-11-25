@@ -14,6 +14,7 @@ TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 GestorDePistas * gestor;
+Semaforo * sDelFromLB;
 TCHAR buffer[MAX_BUFFER];
 typedef INT (*CountPlanesFunc)(void);
 typedef Plane * (*LandOrLiftPlanesFunc)(void);
@@ -91,6 +92,12 @@ INT * getAnimationEditText(Plane::PlaneDirection direction)
 	}
 
 }
+void doAnimation(Plane * plane, HWND hDlg, INT animationEditTexts)
+{
+		Edit_SetText(GetDlgItem(hDlg, animationEditTexts), plane->GetName());
+        Sleep(200);
+        Edit_SetText(GetDlgItem(hDlg, animationEditTexts), TEXT("   "));
+}
 void perform(HWND hDlg, HWND hList, HWND hEditList,Plane::PlaneDirection direction
 			 //,CountPlanesFunc cpf,LandOrLiftPlanesFunc lolpf,
 			 )
@@ -103,8 +110,10 @@ void perform(HWND hDlg, HWND hList, HWND hEditList,Plane::PlaneDirection directi
 	Edit_SetText(hEditList,buffer);
 	
 	plane = executeLandOrListFunction(direction);
+	sDelFromLB->Wait();
 	int temp = ListBox_FindStringExact(hList,0,plane->GetName());
 	ListBox_DeleteString(hList,temp);
+	sDelFromLB->Signal();
 
 	//_itot_s(cpf(),buffer,sizeof(_TCHAR)*MAX_BUFFER,10);
 	loadIntoBufferPlanesCount(direction);
@@ -112,14 +121,24 @@ void perform(HWND hDlg, HWND hList, HWND hEditList,Plane::PlaneDirection directi
 
 	INT * animationEditTexts = getAnimationEditText(gestor->getLaneDirectionUsedBy(plane));
 
-	for (int i=0; i < 26; ++i) {
-		Edit_SetText(GetDlgItem(hDlg, animationEditTexts[i]), plane->GetName());
-        Sleep(200);
-        Edit_SetText(GetDlgItem(hDlg, animationEditTexts[i]), TEXT("   "));
-    }
+	if(plane->GetDirection()==Plane::LAND)
+	{
+		for (int i=0; i < 26; ++i) {
+			doAnimation(plane,hDlg,animationEditTexts[i]);
+		}
+	}
+	else if(plane->GetDirection()==Plane::LIFTOFF)
+	{
+		for(int i = 25; i>=0;--i)
+		{
+			doAnimation(plane,hDlg,animationEditTexts[i]);
+		}
+	}
 
 	gestor->libertarPista(plane);
 }
+
+
 
 DWORD WINAPI thAviaoAterrar(LPVOID param) 
 {
@@ -159,6 +178,10 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		gestor = new GestorDePistas(2);
 		gestor->SetLanePriorityTo(Plane::LAND,0);
 		gestor->SetLanePriorityTo(Plane::LIFTOFF,1);
+		// é necessário para trabalhar sobre a parte grafica,
+		//porque quando vai obter o indice do elemento a remover,
+		//pode haver um contextswitch que provoca erros.
+		sDelFromLB = new Semaforo(1,1);
 
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LAND), TEXT("0"));
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LIFT), TEXT("0"));
@@ -189,7 +212,12 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
 
             case IDC_CREATE_TAKEOFF:
-				CreateThread(NULL, 0, thAviaoDescolar, (LPVOID)hDlg, 0, NULL);
+				Edit_GetText(GetDlgItem(hDlg,IDC_N_LIFT),buffer,MAX_BUFFER);
+				n_planes = _ttoi(buffer);
+				for(int i = 0;i<n_planes;++i)
+				{
+					CreateThread(NULL, 0, thAviaoDescolar, (LPVOID)hDlg, 0, NULL);
+				}
                 break;
 
             case IDCANCEL:
