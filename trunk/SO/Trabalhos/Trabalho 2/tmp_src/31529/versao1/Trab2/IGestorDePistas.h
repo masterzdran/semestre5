@@ -5,13 +5,11 @@
 
 class IGestorDePistas {
 public:
-
-	static enum PlaneDirection { LAND,LIFTOFF,LAND_AND_LIFTOFF };
-
-	virtual Plane * LandPlane() = 0;
-	virtual Plane * LiftoffPlane() = 0;
-	virtual void ReleaseLaneUsedBy(Plane * p) = 0;
-	virtual bool SetLanePriorityTo (PlaneDirection direction, int idLane) = 0;
+	virtual Plane * criarAviaoPara(Plane::PlaneDirection direction)= 0;
+	virtual Plane * esperarPistaParaAterrar() = 0;
+	virtual Plane * esperarPistaParaDescolar() = 0;
+	virtual void libertarPista(Plane * p) = 0;
+	virtual BOOL SetLanePriorityTo (Plane::PlaneDirection direction, int idLane) = 0;
 	virtual void fecharPista (int idPista) = 0;
 	virtual void abrirPista (int idPista) = 0;
 };

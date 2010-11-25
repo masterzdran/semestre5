@@ -3,26 +3,53 @@
 
 class Plane
 {
-	static const char SIZE = 20;
+	static const _TCHAR SIZE = 20;
 public:
-	int _idPlane;
-	int _idLane;
-	bool _finishedWork;
+	static enum PlaneDirection { LAND,LIFTOFF,LAND_CLOSED,LIFT_CLOSED };
+
+	INT _idPlane;
+	INT _idLane;
+	PlaneDirection _pd;
+	BOOL _finishedWork;
 	Plane * next;
 	Plane * prev;
-	char * name;
+	_TCHAR * name;
 	
 	Plane()
 	{
 		_finishedWork=true;
-		name = new char[SIZE];
+		name = new _TCHAR[SIZE];
+		(*name)=0;
 	}
-	
-	char * GetName()
+
+	Plane(PlaneDirection pd)
 	{
-		if(name==0) 
+		_finishedWork=true;
+		name = new _TCHAR[SIZE];
+		(*name)=0;
+		_pd = pd;
+	}
+
+	Plane(PlaneDirection pd,INT idPlane)
+	{
+		_finishedWork=true;
+		name = new _TCHAR[SIZE];
+		(*name)=0;
+		_pd = pd;
+		_idPlane=idPlane;
+		
+	}
+
+	PlaneDirection GetDirection()
+	{
+		return _pd;
+	}
+
+	_TCHAR* GetName()
+	{
+		if((*name)==0) 
 		{
-			sprintf_s(name,sizeof(char)*SIZE,"A%d",_idPlane); 
+			_stprintf_s(name,sizeof(_TCHAR)*SIZE,_T("A%d"),_idPlane);
 		}
 		return name; 
 	}
