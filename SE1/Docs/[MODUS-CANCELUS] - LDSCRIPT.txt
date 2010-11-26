@@ -1,0 +1,263 @@
+LD SCRIPT:
+ * You may include comments in linker scripts just as in C, delimited by
+  `/*' and `*/'. As in C, comments are syntactically equivalent to whitespace. 
+
+  * COMMANDS
+    * SECTIONS{}
+    * . (dot): position counter
+        If you do not specify the address of an output section in some 
+        other way (other ways are described later), the address is set 
+        from the current value of the location counter. The location 
+        counter is then incremented by the size of the output section. 
+        At the start of the `SECTIONS' command, the location counter has
+         the value `0'. 
+  * 3.4.1 Setting the Entry Point
+    * ENTRY(symbol)
+        * The first instruction to execute in a program is called the 
+        entry point. 
+        * Each of the following methods in order, and stopping when one 
+        of them succeeds: 
+            * the `-e' entry command-line option;
+            * the ENTRY(symbol) command in a linker script;
+            * the value of the symbol start, if defined;
+            * the address of the first byte of the `.text' section, if 
+            present;
+            * The address 0. 
+  * 3.4.2 Commands Dealing with Files
+    * INCLUDE filename
+        * Include the linker script filename at this point. The file 
+        will be searched for in the current directory, and in any 
+        directory specified with the -L option. You can nest calls to 
+        INCLUDE up to 10 levels deep. 
+    * INPUT(file file ...) or INPUT(file, file, ...)
+        * The INPUT command directs the linker to include the named 
+        files in the link, as though they were named on the command line. 
+        In fact, if you like, you can list all of your input files in 
+        the linker script, and then invoke the linker with nothing but a
+        `-T' option. 
+    * GROUP(file file ...) or GROUP(file, file, ...)
+        * The GROUP command is like INPUT, except that the named files 
+        should all be archives, and they are searched repeatedly until 
+        no new undefined references are created.    
+    * AS_NEEDED(file file ...) or AS_NEEDED(file, file, ...)
+        * This construct can appear only inside of the INPUT or GROUP 
+        commands, among other filenames.
+    * OUTPUT(filename)
+        * The OUTPUT command names the output file. 
+        Using OUTPUT(filename)in the linker script is exactly like using
+        `-o filename' on the command line
+    * SEARCH_DIR(path)
+        * The SEARCH_DIR command adds path to the list of paths where ld
+        looks for archive libraries.
+    * STARTUP(filename)
+        * The STARTUP command is just like the INPUT command, except 
+        that filename will become the first input file to be linked, as 
+        though it were specified first on the command line.
+  * 3.4.3 Commands Dealing with Object File Formats
+    * OUTPUT_FORMAT(bfdname) or OUTPUT_FORMAT(default, big, little)
+        * The OUTPUT_FORMAT command names the BFD format to use for the 
+        output file
+    * TARGET(bfdname)
+        * The TARGET command names the BFD format to use when reading 
+        input files. It affects subsequent INPUT and GROUP commands
+  * 3.4.4 Assign alias names to memory regions
+    * REGION_ALIAS(alias, region)
+        * Alias names can be added to existing memory regions created 
+        with the MEMORY command. Each name corresponds to at most one 
+        memory region. 
+  * 3.4.5 Other Linker Script Commands
+    * ASSERT(exp, message)
+        * Ensure that exp is non-zero. If it is zero, then exit the 
+        linker with an error code, and print message. 
+    * EXTERN(symbol symbol ...)
+        * Force symbol to be entered in the output file as an undefined 
+        symbol
+    * FORCE_COMMON_ALLOCATION
+        * This command has the same effect as the `-d' command-line 
+        option: to make ld assign space to common symbols even if a 
+        relocatable output file is specified (`-r'). 
+    * INHIBIT_COMMON_ALLOCATION
+        * This command has the same effect as the `--no-define-common' 
+        command-line option: to make ld omit the assignment of addresses
+         to common symbols even for a non-relocatable output file. 
+    * INSERT [ AFTER | BEFORE ] output_section
+        * This command is typically used in a script specified by `-T' 
+        to augment the default SECTIONS with, for example, overlays
+    * NOCROSSREFS(section section ...)
+        * This command may be used to tell ld to issue an error about 
+        any references among certain output sections.
+    * OUTPUT_ARCH(bfdarch)
+        * Specify a particular output machine architecture. 
+  * 3.5.1 Simple Assignments
+    * symbol = expression ;
+    * symbol += expression ;
+    * symbol -= expression ;
+    * symbol *= expression ;
+    * symbol /= expression ;
+    * symbol <<= expression ;
+    * symbol >>= expression ;
+    * symbol &= expression ;
+    * symbol |= expression ;
+  * 3.5.2 PROVIDE
+    * In some cases, it is desirable for a linker script to define a 
+    symbol only if it is referenced and is not defined by any object 
+    included in the link
+  * 3.5.3 PROVIDE_HIDDEN
+    * Similar to PROVIDE. For ELF targeted ports, the symbol will be 
+    hidden and won't be exported. 
+  * 3.6 SECTIONS Command
+    * SECTIONS
+      {
+      sections-command
+      sections-command
+      ...
+      }
+    * Each sections-command may of be one of the following:
+        * an ENTRY command (see Entry command)
+        * a symbol assignment (see Assignments)
+        * an output section description
+        * an overlay description 
+  * 3.6.1 Output Section Description
+       section [address] [(type)] :
+       [AT(lma)]
+       [ALIGN(section_align)]
+       [SUBALIGN(subsection_align)]
+       [constraint]
+       {
+         output-section-command
+         output-section-command
+         ...
+       } [>region] [AT>lma_region] [:phdr :phdr ...] [=fillexp]
+  * 3.7 MEMORY Command
+    * The attr string must consist only of the following characters:
+        `R'
+            Read-only section
+        `W'
+            Read/write section
+        `X'
+            Executable section
+        `A'
+            Allocatable section
+        `I'
+            Initialized section
+        `L'
+            Same as `I'
+        `!'
+            Invert the sense of any of the preceding attributes 
+  * 3.8 PHDRS Command
+    * PHDRS
+     {
+       name type [ FILEHDR ] [ PHDRS ] [ AT ( address ) ]
+             [ FLAGS ( flags ) ] ;
+     }
+    * The type may be one of the following. The numbers indicate the value of the keyword.
+        PT_NULL (0)
+            Indicates an unused program header.
+        PT_LOAD (1)
+            Indicates that this program header describes a segment to be
+             loaded from the file.
+        PT_DYNAMIC (2)
+            Indicates a segment where dynamic linking information can be
+             found.
+        PT_INTERP (3)
+            Indicates a segment where the name of the program 
+            interpreter may be found.
+        PT_NOTE (4)
+            Indicates a segment holding note information.
+        PT_SHLIB (5)
+            A reserved program header type, defined but not specified by
+             the ELF ABI.
+        PT_PHDR (6)
+            Indicates a segment where the program headers may be found.
+        expression
+            An expression giving the numeric type of the program header.
+             This may be used for types not defined above. 
+  * 3.9 VERSION Command
+    * VERSION { version-script-commands }
+  * 3.10 Expressions in Linker Scripts
+    * 3.10.1 Constants
+        * As in C, the linker considers an integer beginning with `0' to
+         be octal, and an integer beginning with `0x' or `0X' to be 
+         hexadecimal. Alternatively the linker accepts suffixes of `h' 
+         or `H' for hexadeciaml, `o' or `O' for octal, `b' or `B' for 
+         binary and `d' or `D' for decimal. Any integer value without a 
+         prefix or a suffix is considered to be decimal.
+    * 3.10.2 Symbolic Constants
+        * MAXPAGESIZE
+            The target's maximum page size.
+        * COMMONPAGESIZE
+            The target's default page size. 
+    * 3.10.3 Symbol Names
+        * Unless quoted, symbol names start with a letter, underscore,
+        or period and may include letters, digits, underscores, periods,
+        and hyphens
+    * 3.10.5 The Location Counter
+        * The special linker variable dot `.' always contains the 
+        current output location counter. Since the . always refers to a 
+        location in an output section, it may only appear in an 
+        expression within a SECTIONS command. The . symbol may appear 
+        anywhere that an ordinary symbol is allowed in an expression. 
+    * 3.10.6 Operators
+        The linker recognizes the standard C set of arithmetic operators
+        , with the standard bindings and precedence levels:
+         precedence      associativity   Operators                Notes
+         (highest)
+         1               left            !  -  ~                  (1)
+         2               left            *  /  %
+         3               left            +  -
+         4               left            >>  <<
+         5               left            ==  !=  >  <  <=  >=
+         6               left            &
+         7               left            |
+         8               left            &&
+         9               left            ||
+         10              right           ? :
+         11              right           &=  +=  -=  *=  /=       (2)
+    * 3.10.9 Builtin Functions
+        * ABSOLUTE(exp)
+            * Return the absolute (non-relocatable, as opposed to 
+            non-negative) value of the expression exp
+        * ADDR(section)
+            * Return the absolute address (the VMA) of the named section.
+        * ALIGN(align)
+        * ALIGN(exp,align)
+            * Return the location counter (.) or arbitrary expression 
+            aligned to the next align boundary.
+        * ALIGNOF(section)
+            * Return the alignment in bytes of the named section, if 
+            that section has been allocated.
+        * BLOCK(exp)
+            * This is a synonym for ALIGN, for compatibility with older
+            linker scripts. 
+        * DATA_SEGMENT_ALIGN(maxpagesize, commonpagesize)
+        * DATA_SEGMENT_END(exp)
+            * This defines the end of data segment for 
+            DATA_SEGMENT_ALIGN evaluation purposes
+        * DATA_SEGMENT_RELRO_END(offset, exp)
+            * This defines the end of the PT_GNU_RELRO segment when `-z 
+            relro' option is used. Second argument is returned
+        * DEFINED(symbol)
+            * Return 1 if symbol is in the linker global symbol table 
+            and is defined before the statement using DEFINED in the 
+            script, otherwise return 0
+        * LENGTH(memory)
+            * Return the length of the memory region named memory. 
+        * LOADADDR(section)
+            * return the absolute LMA of the named section. 
+        * MAX(exp1, exp2)
+            * Returns the maximum of exp1 and exp2. 
+        * MIN(exp1, exp2)
+            * Returns the minimum of exp1 and exp2. 
+        * NEXT(exp)
+            * Return the next unallocated address that is a multiple of 
+            exp.
+        * ORIGIN(memory)
+            * Return the origin of the memory region named memory. 
+        * SEGMENT_START(segment, default)
+            * Return the base address of the named segment. 
+        * SIZEOF(section)
+            * return the size in bytes of the named section, if that 
+            section has been allocated.
+        * SIZEOF_HEADERS
+        * sizeof_headers
+            * Return the size in bytes of the output file's headers
