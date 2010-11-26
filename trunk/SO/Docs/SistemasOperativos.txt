@@ -384,4 +384,15 @@ herdáveis são herdados pelo processo filho
  * Espera Limitada:
    * Numero de vezes que um processo é preterido no acesso à secção critica 
    deve ser limitado.
-   pag 20
+ * SPIN LOCK
+   * Exclusão Mútua baseada numa variável de bloqueio (lock) com espera activa
+   * Deve ser evitado porque gasta tempo de CPU
+   * Utilizado quando é expectável uma espera breve
+   * Implementado em arquitectatura com base de operação Test and Set
+   * Utilizado pelo kernel para definir a exclusão mútua em sistemas com arquitecturas multi-processador
+= Capitulo 8 =
+== Sincronismo com semáforos ==
+    * tipos de espera
+      * Activa: consome ciclos de CPU
+      * Passiva: suspensão, não consome CPU
+    * Semaforo tem duas operações (Segundo Dijkstra)
