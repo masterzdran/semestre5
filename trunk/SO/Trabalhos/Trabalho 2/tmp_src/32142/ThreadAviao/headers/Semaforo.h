@@ -27,20 +27,18 @@
 // necessário para utilização do system call SignalObjectAndWait utilizado na classe Semaforo
 #define _WIN32_WINNT 0x0400
 #include <windows.h>
-#include "ListThreads.h"
+
 #include "headers\SESError.h"
 
 
 class Semaforo {
 private:
 	HANDLE hSemaforo;
-	ListThreads* _head;
-	ListThreads* _tail;
+
 public:
 	Semaforo(int numUnidades=1, int maxUnidades=MAXLONG, TCHAR * nomeSem=NULL) {
 		if ( (hSemaforo = CreateSemaphore(NULL, numUnidades, maxUnidades, nomeSem)) == NULL )
 		    FatalErrorSystem( TEXT("Erro ao criar o semaforo(1)") );
-		_head = _tail = NULL;
 	}
 
     Semaforo(TCHAR * nomeSem) {
@@ -63,45 +61,14 @@ public:
 			FatalErrorSystem( TEXT("Erro na operação de Signal do semáforo") );
 	}
 
-	//obrigatorio antes da invocaçao deste metodo fazer Wait a qualquer semaforo!!!
-	void Wait() {
-		P();
-		ListThreads* ret = GetHeadSemaforo();
-		if(ret!=NULL){
-			Semaforo* s = ret->_s;
-			s->Signal();
-		}
-	}
-	void Wait(Semaforo* f) {
-		AddTailSemaforo(f);
-		//P(); 
-	}
+	void Wait() { P(); }
 
-	void Signal() {
-		V();
-	}
+	void Signal() {	V(); }
 
 	void SignalAndWait(Semaforo *sWait){
 		SignalObjectAndWait(hSemaforo, sWait->hSemaforo, INFINITE, FALSE);
 	}
 
-private:
-	void AddTailSemaforo(Semaforo* s){
-		if(_head==NULL){
-			_head = _tail = new ListThreads(s);
-		}
-		else{
-			ListThreads* l = new ListThreads(s);
-			_tail->_next = l;
-			_tail = l;
-		}
-	}
-	ListThreads* GetHeadSemaforo(){
-		if(_head==NULL)return NULL;
-		ListThreads* ret = _head;
-		_head = _head->_next;
-		return ret;
-	}
 };
 
 #endif	// _SEMAFORO_H_

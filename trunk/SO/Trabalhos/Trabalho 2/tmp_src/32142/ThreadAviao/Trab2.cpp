@@ -6,6 +6,12 @@
 
 #define MAX_LOADSTRING 100
 
+typedef struct _PlaneThread {
+  DWORD id;
+  char* name;
+  DWORD operation;
+} PlaneThread, * PPlaneThread;
+
 // Global Variables:
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
@@ -55,9 +61,12 @@ DWORD WINAPI thAviaoAterrar(LPVOID p)
 
     for (int i=0; i < 26; ++i) {
 
-		Edit_SetText(GetDlgItem(hDlg, Landing_Animate_Id[i]), TEXT("A01"));
+		/*Edit_SetText(GetDlgItem(hDlg, Landing_Animate_Id[i]), TEXT("A01"));
         Sleep(200);
-        Edit_SetText(GetDlgItem(hDlg, Landing_Animate_Id[i]), TEXT("   "));
+        Edit_SetText(GetDlgItem(hDlg, Landing_Animate_Id[i]), TEXT("   "));*/
+		Edit_SetText(GetDlgItem(hDlg, Takeoff_Animate_Id[i]), TEXT("A13"));
+        Sleep(300);
+        Edit_SetText(GetDlgItem(hDlg, Takeoff_Animate_Id[i]), TEXT("   "));
     }
 
     return 0;
@@ -69,9 +78,12 @@ DWORD WINAPI thAviaoDescolar(LPVOID p)
     HWND hDlg = (HWND)p;
 
     for (int i=26; i >= 0; --i) {
-        Edit_SetText(GetDlgItem(hDlg, Takeoff_Animate_Id[i]), TEXT("A13"));
+        /*Edit_SetText(GetDlgItem(hDlg, Takeoff_Animate_Id[i]), TEXT("A13"));
         Sleep(300);
-        Edit_SetText(GetDlgItem(hDlg, Takeoff_Animate_Id[i]), TEXT("   "));
+        Edit_SetText(GetDlgItem(hDlg, Takeoff_Animate_Id[i]), TEXT("   "));*/
+		Edit_SetText(GetDlgItem(hDlg, Landing_Animate_Id[i]), TEXT("A01"));
+        Sleep(200);
+        Edit_SetText(GetDlgItem(hDlg, Landing_Animate_Id[i]), TEXT("   "));
     }
 
     return 0;
