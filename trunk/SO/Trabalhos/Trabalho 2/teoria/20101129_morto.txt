@@ -1,0 +1,42 @@
+1 - Considere uma região crítica protegida por um semáforo de exclusão mútua e uma tarefa em execução dentro da zona de exclusão. Indique, para um SO multiutilizador, se pode existir preempção da tarefa enquanto esta se encontra dentro da região.
+	
+	Pode existir preempção dependendo da politica de schedule utilizada pelo SO. Seria preferivel que não existisse preempção enquanto a tarefa se encontrar dentro da zona de exclusão, pois nenhuma tarefa conseguirá entrar enquanto a tarefa não a libertar.
+	
+2 - 
+
+class GestorAcessoGrutas : IGestorAcessoGrutas
+{
+	HANDLE sGaleria = CreateSemaphore(NULL,30,30,NULL);
+	HANDLE sPassagem = CreateSemaphore(NULL,3,3,NULL);
+public:
+	virtual void esperarAcederGaleria ()
+	{
+		WaitForSingleObject(sGaleria,INFINITE);
+	}
+	virtual void sairGaleria ()
+	{
+		ReleaseSemaphore(sGaleria,1,NULL);
+	}
+	virtual void esperarAcessoPassagem ()
+	{
+		WaitForSingleObject(sPassagem,INFINETE);
+	}
+	virtual void sairPassagem ()
+	{
+		ReleaseSemaphore(sPassagem,1,NULL);
+	}
+};
+
+void functionToInvoke()
+{
+
+//DEADLOCKKKKKKKKKK
+//entram 30 threads, outras 3 para a passagem e não dá para sair da galeria
+	esperarAcessoPassagem();
+	esperarAcederGaleria();
+	sairPassagem();
+	//visitar galeria
+	esperarAcessoPassagem();
+	sairGaleria();
+	sairPassagem();
+}
