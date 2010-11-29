@@ -20,6 +20,7 @@ class GestorDePistas : public IGestorDePistas
 	Plane * _planesOnTheGround;
 	//nº de avioes criados ate' ao momento.
 	long _planeCount;
+	bool _bFuracao;
 	/***************************************/
 	/********Criar um objecto pista?!*******/
 	/***************************************/
@@ -66,7 +67,7 @@ class GestorDePistas : public IGestorDePistas
 	{
 		for(int i = 0;i<_nLanes;++i)
 		{
-			if(_pdLanes[i] == direction && _bLanes[i])
+			if((_pdLanes[i] == direction || _bFuracao) && _bLanes[i])
 			{
 				return i;
 			}
@@ -122,13 +123,13 @@ class GestorDePistas : public IGestorDePistas
 
 	void SignalRespectiveWaitingList(Plane::PlaneDirection pd)
 	{
-		if(pd==Plane::LAND && _planeListToLand->next != _planeListToLand 
+		if(_bFuracao || pd==Plane::LAND && _planeListToLand->next != _planeListToLand 
 			|| pd==Plane::LIFTOFF && _planeListToLift->next == _planeListToLift)
 		{
 			_sWaitingListLanding->Signal();
 		}
-		else if(pd==Plane::LIFTOFF && _planeListToLift->next != _planeListToLift 
-			|| pd==Plane::LAND && _planeListToLand->next == _planeListToLand)
+		else if(!_bFuracao && (pd==Plane::LIFTOFF && _planeListToLift->next != _planeListToLift 
+			|| pd==Plane::LAND && _planeListToLand->next == _planeListToLand))
 		{
 			_sWaitingListLiftoff->Signal();
 		}
@@ -159,6 +160,7 @@ public:
 		_planesOnTheGround->prev = _planesOnTheGround;
 
 		_planeCount=0;
+		_bFuracao=false;
 
 		_bLanes = new bool[nLanes];
 		for(int i = 0;i<nLanes;++i)
@@ -237,11 +239,11 @@ public:
 	virtual BOOL SetLanePriorityTo (Plane::PlaneDirection direction, int idLane)
 	{
 		_mLanes->Wait();
-		if (!_bLanes[idLane])
-		{
-			_mLanes->Signal();
-			return false;
-		}
+		//if (!_bLanes[idLane])
+		//{
+		//	_mLanes->Signal();
+		//	return false;
+		//}
 		_pdLanes[idLane] = direction;
 		_mLanes->Signal();
 		return true;
@@ -266,6 +268,20 @@ public:
 			_pdLanes[idPista]=Plane::LIFTOFF;
 
 		SignalRespectiveWaitingList(_pdLanes[idPista]);
+		_mLanes->Signal();
+	}
+	virtual void alertaFuracao(bool bFuracao)
+	{
+		//se alguma das pistas se encontrar fechada os aviões irão aterrar nela de qualquer forma.
+		_bFuracao=bFuracao;
+		_mLanes->Wait();
+		for(int i = 0;i<N_LANES;++i)
+		{
+			if(_bLanes[i])
+			{
+				SignalRespectiveWaitingList(_pdLanes[i]);
+			}
+		}
 		_mLanes->Signal();
 	}
 };

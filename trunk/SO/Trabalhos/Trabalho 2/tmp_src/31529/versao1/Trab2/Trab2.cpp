@@ -19,6 +19,8 @@ GestorDePistas * gestor;
 Semaforo * sDelFromLB;
 //buffer utilizado para efectuar as leituras dos objectos existentes na parte gráfica
 TCHAR buffer[MAX_BUFFER];
+//indica se o alerta de furacao esta ligado ou não
+bool _bFuracao;
 
 typedef INT (*CountPlanesFunc)(void);
 typedef Plane * (*LandOrLiftPlanesFunc)(void);
@@ -34,14 +36,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-
 	// criar Dialog do 2º trabalho prático
-	
 	//DialogBox(hInst, MAKEINTRESOURCE(IDD_TRAB2_DIALOG), NULL, About);
 	DialogBox(hInst, MAKEINTRESOURCE(IDD_RUNWAY), NULL, About);
-	
-
-
 	return (int) 0;
 }
 
@@ -84,13 +81,13 @@ Plane* executeLandOrListFunction(Plane::PlaneDirection direction)
 	}
 }
 
-INT * getAnimationEditText(Plane::PlaneDirection direction)
+INT * getAnimationEditText(INT idLane)
 {
-	if(Plane::LAND==direction)
+	if(idLane==1)
 	{
 		return Landing_Animate_Id;
 	}
-	else if(Plane::LIFTOFF==direction)
+	else if(idLane==0)
 	{
 		return Takeoff_Animate_Id;
 	}
@@ -123,8 +120,8 @@ void perform(HWND hDlg, HWND hList, HWND hEditList,Plane::PlaneDirection directi
 	loadIntoBufferPlanesCount(direction);
 	Edit_SetText(hEditList,buffer);
 
-	INT * animationEditTexts = getAnimationEditText(gestor->getLaneDirectionUsedBy(plane));
-
+	INT * animationEditTexts = getAnimationEditText(plane->_idLane);
+	
 	if(plane->GetDirection()==Plane::LAND)
 	{
 		for (int i=0; i < 26; ++i) {
@@ -167,18 +164,37 @@ DWORD WINAPI thAviaoDescolar(LPVOID p)
     return 0;
 }
 
-VOID WINAPI fecharOuAbrirPista(HWND hControl,INT idLane)
+VOID WINAPI fecharOuAbrirPista(HWND hControl,INT idLane, HWND hStatic)
 {
 	Button_GetText(hControl,buffer,MAX_BUFFER);
 	if(buffer[0]=='A')
 	{
 		gestor->abrirPista(idLane);
 		Button_SetText(hControl,_T("Fechar"));
+		Static_SetText(hStatic,_T("Encontra-se aberta"));
 	}
 	else if(buffer[0]=='F')
 	{
 		gestor->fecharPista(idLane);
 		Button_SetText(hControl,_T("Abrir"));
+		Static_SetText(hStatic,_T("Encontra-se fechada"));
+	}
+}
+
+VOID WINAPI pistaParaAterrarOuDescolar(HWND hControl, INT idLane, HWND hStatic)
+{
+	Button_GetText(hControl,buffer,MAX_BUFFER);
+	if(buffer[0]=='A')
+	{
+		gestor->SetLanePriorityTo(Plane::LAND,idLane);
+		Button_SetText(hControl,_T("Descolar"));
+		Static_SetText(hStatic,_T("Dá prioridade a aterragens"));
+	}
+	else if(buffer[0]=='D')
+	{
+		gestor->SetLanePriorityTo(Plane::LIFTOFF,idLane);
+		Button_SetText(hControl,_T("Aterrar"));
+		Static_SetText(hStatic,_T("Dá prioridade a descolagens"));
 	}
 }
 
@@ -193,23 +209,22 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		gestor = new GestorDePistas(2);
 		gestor->SetLanePriorityTo(Plane::LAND,1);
 		gestor->SetLanePriorityTo(Plane::LIFTOFF,0);
+
+		Static_SetText(GetDlgItem(hDlg,IDC_PISTA1_LL),_T("Dá prioridade a aterragens"));
+		Static_SetText(GetDlgItem(hDlg,IDC_PISTA0_LL),_T("Dá prioridade a descolagens"));
+		Static_SetText(GetDlgItem(hDlg,IDC_PISTA1_OC),_T("Encontra-se aberta"));
+		Static_SetText(GetDlgItem(hDlg,IDC_PISTA0_OC),_T("Encontra-se aberta"));
 		// é necessário para trabalhar sobre a parte grafica,
 		//porque quando vai obter o indice do elemento a remover,
 		//pode haver um contextswitch que provoca erros.
 		sDelFromLB = new Semaforo(1,1);
+		_bFuracao = false;
 
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LAND), TEXT("0"));
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LIFT), TEXT("0"));
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LAND_LIST), TEXT("0"));
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LIFT_LIST), TEXT("0"));
-
-		//ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A03"));
-		//ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A04"));
-		//ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A06"));
-		//ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A08"));
-		//ListBox_AddString(GetDlgItem(hDlg, IDC_LIST1),TEXT("A05"));	
-		//ListBox_AddString(GetDlgItem(hDlg, IDC_LIST1),TEXT("A07"));
-
+		
 		//Button_SetCheck(GetDlgItem(hDlg, IDC_CHECK1), TRUE);
 		//Button_SetCheck(GetDlgItem(hDlg, IDC_CHECK2), TRUE);
 		return (INT_PTR)TRUE;
@@ -233,10 +248,33 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				}
                 break;
 			case IDC_OPEN_LANE0:
-				fecharOuAbrirPista(GetDlgItem(hDlg,IDC_OPEN_LANE0),0);
+				fecharOuAbrirPista(GetDlgItem(hDlg,IDC_OPEN_LANE0),0,GetDlgItem(hDlg,IDC_PISTA0_OC));
 				break;
 			case IDC_OPEN_LANE1:
-				fecharOuAbrirPista(GetDlgItem(hDlg,IDC_OPEN_LANE1),1);
+				fecharOuAbrirPista(GetDlgItem(hDlg,IDC_OPEN_LANE1),1,GetDlgItem(hDlg,IDC_PISTA1_OC));
+				break;
+			case IDC_LIFT_LANE0:
+				pistaParaAterrarOuDescolar(GetDlgItem(hDlg,IDC_LIFT_LANE0),0,GetDlgItem(hDlg,IDC_PISTA0_LL));
+				break;
+			case IDC_LAND_LANE1:
+				pistaParaAterrarOuDescolar(GetDlgItem(hDlg,IDC_LAND_LANE1),1,GetDlgItem(hDlg,IDC_PISTA1_LL));
+				break;
+			case IDC_FURACAO:
+				if(!_bFuracao)
+				{
+					gestor->fecharPista(0);
+					Button_SetText(GetDlgItem(hDlg,IDC_OPEN_LANE0),_T("Abrir"));
+					Static_SetText(GetDlgItem(hDlg,IDC_PISTA0_OC),_T("Encontra-se fechada"));
+					gestor->fecharPista(1);
+					Button_SetText(GetDlgItem(hDlg,IDC_OPEN_LANE1),_T("Abrir"));
+					Static_SetText(GetDlgItem(hDlg,IDC_PISTA1_OC),_T("Encontra-se fechada"));
+					Static_SetText(GetDlgItem(hDlg,IDC_LBL_FURACAO),_T("AVISO: FURACÃO!"));
+				}else
+				{
+					Static_SetText(GetDlgItem(hDlg,IDC_LBL_FURACAO),_T(""));
+				}
+				_bFuracao = !_bFuracao;
+				gestor->alertaFuracao(_bFuracao);
 				break;
             case IDCANCEL:
                 EndDialog(hDlg, LOWORD(wParam));
