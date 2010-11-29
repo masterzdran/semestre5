@@ -92,11 +92,18 @@
 #define IDC_DS25                        1071
 #define IDC_N_LIFT_LIST                 1072
 #define IDC_N_LAND_LIST                 1073
-#define IDC_CLOSE_LANE0                 1074
 #define IDC_LIFT_LANE0                  1074
 #define IDC_OPEN_LANE0                  1075
 #define IDC_OPEN_LANE1                  1076
 #define IDC_LAND_LANE1                  1077
+#define IDC_PISTA0                      1078
+#define IDC_PISTA1                      1079
+#define IDC_PISTA0_LL                   1080
+#define IDC_PISTA1_LL                   1081
+#define IDC_PISTA0_OC                   1082
+#define IDC_PISTA1_OC                   1083
+#define IDC_FURACAO                     1084
+#define IDC_LBL_FURACAO                 1086
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -106,7 +113,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1078
+#define _APS_NEXT_CONTROL_VALUE         1087
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
