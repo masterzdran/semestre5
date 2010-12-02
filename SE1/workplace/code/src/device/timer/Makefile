@@ -15,34 +15,32 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#								TIMER
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-#Environmental Paths
-SVN_PATH		= /mnt/hgfs/Semestre5/SE1
-PROJECT_PATH	= $(SVN_PATH)/SE1/code
-APP				= $(PROJECT_PATH)/app
 MYLIB			= ../../lib
+MYINCLUDE		= ../../include
 #Executables
-CC 				= arm-eabi-gcc
-AS				= arm-eabi-as
-LD				= arm-eabi-ld
-#Debugger
-DEBUGGER		= arm-eabi-insight
+CC 				= arm-eabi-gcc 
+COPY			= cp 
 #Commom Options
 OUTPUT 			= -o
-LDSCRIPT		= -T 
-DEBUGSTABS		= --gstabs
+DEBUGGER		= -g
+COPTIONS 		= -Wall -pedantic
+COMPILE_ONLY 	= -c 
 #Phony Target
 .PHONY 			= clean
 .PHONY			= clear
-#=======================================================================
-all: chrono.o
+#=======================================================================all: chrono.o
 
-chrono.o: chrono.c
-	$(CC) -g -c $(OUTPUT) $(MYLIB)/$@  $^
+chrono.o: chrono.c chrono.h
+	$(CC) $(DEBUGGER) $(COMPILE_ONLY) $(COPTIONS) $(OUTPUT) $(MYLIB)/$@  $<
+	$(COPY) chrono.h $(MYINCLUDE)/chrono.h
 	
 clean:
-	rm  $(MYLIB)/chrono*.o 
+	rm  $(MYLIB)/chrono.o 
+	rm	$(MYINCLUDE)/chrono.h
 
 clear:
 	clear

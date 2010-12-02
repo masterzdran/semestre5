@@ -36,7 +36,6 @@ LYBRARY			= $(MYLIB)/library.ar
 CC 				= arm-eabi-gcc 
 AS				= arm-eabi-as
 LD				= arm-eabi-ld 
-
 #=======================================================================
 #Debugger
 DEBUGGER		= arm-eabi-insight
