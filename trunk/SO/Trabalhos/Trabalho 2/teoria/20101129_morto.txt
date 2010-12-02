@@ -1,14 +1,27 @@
 1 - Considere uma região crítica protegida por um semáforo de exclusão mútua e uma tarefa em execução dentro da zona de exclusão. Indique, para um SO multiutilizador, se pode existir preempção da tarefa enquanto esta se encontra dentro da região.
 	
 	Pode existir preempção dependendo da politica de schedule utilizada pelo SO. Seria preferivel que não existisse preempção enquanto a tarefa se encontrar dentro da zona de exclusão, pois nenhuma tarefa conseguirá entrar enquanto a tarefa não a libertar.
-	
+
+-----------------------------------------------------------------------------------------	
 2 - 
+
+Para que o gestor que se encontra abaixo funcione, terá de ser utilizado do modo sugerido na função functionToInvoke, para que fique protegido para a eventualidade de existirem mais de 30 pessoas a querer visitar a galeria. Como está desenhado somente 30 pessoas conseguiram entrar, também é garantido que a passagem é utilizada, em simultaneo e no máximo, por 3 pessoas. Se a galeria estiver cheia de visitantes não haverá ninguém a impedir a saída de qualquer visitante que esteja no interior.
 
 class GestorAcessoGrutas : IGestorAcessoGrutas
 {
-	HANDLE sGaleria = CreateSemaphore(NULL,30,30,NULL);
-	HANDLE sPassagem = CreateSemaphore(NULL,3,3,NULL);
+	HANDLE sGaleria;
+	HANDLE sPassagem;
 public:
+	GestorAcessoGrutas()
+	{
+		sGaleria = CreateSemaphore(NULL,30,30,NULL);
+		sPassagem = CreateSemaphore(NULL,3,3,NULL);
+	}
+	~GestorAcessoGrutas()
+	{
+		CloseHandle(sGaleria);
+		CloseHandle(sPassagem);
+	}
 	virtual void esperarAcederGaleria ()
 	{
 		WaitForSingleObject(sGaleria,INFINITE);
@@ -29,14 +42,38 @@ public:
 
 void functionToInvoke()
 {
-
-//DEADLOCKKKKKKKKKK
-//entram 30 threads, outras 3 para a passagem e não dá para sair da galeria
-	esperarAcessoPassagem();
 	esperarAcederGaleria();
-	sairPassagem();
-	//visitar galeria
 	esperarAcessoPassagem();
-	sairGaleria();
+	//a utilizar a passagem para entrar
 	sairPassagem();
+
+	//dentro da galeria
+
+	esperarAcessoPassagem();
+	//a utilizar a passagem para sair
+	sairPassagem();
+	sairGaleria();
 }
+
+-----------------------------------------------------------------------------------------
+3 - Na Win32 existe a função InitializeCriticalSection e a função InitializeCriticalSectionAndSpinCount para iniciar o mecanismo de sincronismo CriticalSection. Compare o comportamento do mecanismo de sincronismo CriticalSection em arquitecturas monoprocessador e em arquitecturas multiprocessador e qual a razão da existência das duas funções de iniciação.
+
+	O mecanismo de sincronização critical section é para evitar que existam outras threads a executar o código que se encontre dentro da zona delimitada pelo bloco de secção crítica, mesmo em monoprocessador é possível que a thread que está a ser executada perca o processador e haja outra a tentar executar esse código.
+	Uma secção crítica sem SpinCount funciona do mesmo modo quer seja em monoprocessador ou em multiprocessador, uma thread que tente entrar dentro da secção quando outra ainda não libertou, ficará bloqueada em um objecto kernel até que a thread que se encontrava dentro da secção critica saia.
+	Se a secção crítica possuir SpinCount o funcionamento é análogo, a distinção reside no facto de a thread que tente entrar em uma secção crítica que esteja ocupada por outra thread, ficará num ciclo a tentar aquirir a secção crítica (espera activa) tantas vezes quantas o valor de SpinCount que foi passado como argumento. Quando o valor for igual a zero, a thread ficará bloqueada em um objecto kernel até que a thread que se encontrava dentro da secção crítica saia.
+	
+-----------------------------------------------------------------------------------------
+4 - Na versão do Sistema Operativos superior à 6 suporta o conceito de variável de condição (WakeConditionVariable, SleepConditionVariableCS). Compare este mecanismo face à utilização do mecanismo de sincronismo semáforo.
+
+	A primeira grande distinção reside em uma variável de condição ser um objecto de user-mode enquanto que um objecto Semaphore é de kernel-mode.
+	
+	Uma variável de condição tem de ser utilizada em conjunto com uma Secção Crítica ou com um Slim Reader/Writer, sendo que estas duas últimas fazem o controlo da sincronização que seja necessária implementar e a condição de variável é responsável por libertar o objecto que esteja a ser utilizado e colocar a thread no modo de sleep, voltando a adquirir a posse do objecto quando acordar. Para acordar uma thread utiliza-se a função WakeConditionVariable ou se quisermos acordar todas as threads utiliza-se a função WakeAllConditionVariables.
+
+	Um semáforo não depende de mais nenhum objecto de sincronização para concretizar o mesmo que uma variável de condição em conjunto com uma secção crítica e à semelhança do objecto SRW (quando adquirido para leitura), permite que um conjunto de threads ultrapasse a barreira imposta pela aquisição do semáforo. O semáforo permite acordar N threads numa única operação, o que dependendo da situação poderá ser uma vantagem ou desvantagem, pois se quisermos acordar todas as threads teremos que possuir um contador.
+
+
+
+
+
+
+
