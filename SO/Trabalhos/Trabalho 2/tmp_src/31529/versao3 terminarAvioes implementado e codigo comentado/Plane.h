@@ -4,6 +4,14 @@
 class Plane
 {
 	static const _TCHAR SIZE = 20;
+	_TCHAR * name;
+	void Initialize()
+	{
+		_terminateQuickly=FALSE;
+		_finishedWork=TRUE;
+		name = new _TCHAR[SIZE];
+		(*name)=0;
+	}
 public:
 	static enum PlaneDirection { LAND,LIFTOFF,LAND_CLOSED,LIFT_CLOSED };
 
@@ -13,31 +21,28 @@ public:
 	BOOL _finishedWork;
 	Plane * next;
 	Plane * prev;
-	_TCHAR * name;
+	
+	BOOL _terminateQuickly;
 	
 	Plane()
 	{
-		_finishedWork=true;
-		name = new _TCHAR[SIZE];
-		(*name)=0;
+		Initialize();
 	}
-
 	Plane(PlaneDirection pd)
 	{
-		_finishedWork=true;
-		name = new _TCHAR[SIZE];
-		(*name)=0;
 		_pd = pd;
+		Initialize();
 	}
 
 	Plane(PlaneDirection pd,INT idPlane)
 	{
-		_finishedWork=true;
-		name = new _TCHAR[SIZE];
-		(*name)=0;
-		_pd = pd;
 		_idPlane=idPlane;
-		
+		_pd = pd;
+		Initialize();
+	}
+	~Plane()
+	{
+		delete name;
 	}
 
 	PlaneDirection GetDirection()
@@ -53,9 +58,9 @@ public:
 		}
 		return name; 
 	}
-	~Plane()
+	BOOL terminateQuickly()
 	{
-		delete name;
+		return _terminateQuickly;
 	}
 };
 
