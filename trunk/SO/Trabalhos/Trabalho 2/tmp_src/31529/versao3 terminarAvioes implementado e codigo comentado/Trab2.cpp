@@ -16,7 +16,7 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 GestorDePistas * gestor;
 //Objecto de sincronização utilizado para assegurar de que há somente uma thread de cada vez
 //a remover itens da ListBox.
-Semaforo * sDelFromLB;
+CRITICAL_SECTION csDelFromLB;
 //buffer utilizado para efectuar as leituras dos objectos existentes na parte gráfica
 TCHAR buffer[MAX_BUFFER];
 //indica se o alerta de furacao esta ligado ou não
@@ -111,32 +111,33 @@ void perform(HWND hDlg, HWND hList, HWND hEditList,Plane::PlaneDirection directi
 	Edit_SetText(hEditList,buffer);
 	
 	plane = executeLandOrListFunction(direction);
-	sDelFromLB->Wait();
-	int temp = ListBox_FindStringExact(hList,0,plane->GetName());
-	ListBox_DeleteString(hList,temp);
-	sDelFromLB->Signal();
+	
+	EnterCriticalSection(&csDelFromLB);
+	ListBox_DeleteString(hList,ListBox_FindStringExact(hList,0,plane->GetName()));
+	LeaveCriticalSection(&csDelFromLB);
 
 	//_itot_s(cpf(),buffer,sizeof(_TCHAR)*MAX_BUFFER,10);
 	loadIntoBufferPlanesCount(direction);
 	Edit_SetText(hEditList,buffer);
 
-	INT * animationEditTexts = getAnimationEditText(plane->_idLane);
-	
-	if(plane->GetDirection()==Plane::LAND)
+	if(!(plane->terminateQuickly()))
 	{
-		for (int i=0; i < 26; ++i) {
-			doAnimation(plane,hDlg,animationEditTexts[i]);
-		}
-	}
-	else if(plane->GetDirection()==Plane::LIFTOFF)
-	{
-		for(int i = 25; i>=0;--i)
+		INT * animationEditTexts = getAnimationEditText(plane->_idLane);
+		if(plane->GetDirection()==Plane::LAND)
 		{
-			doAnimation(plane,hDlg,animationEditTexts[i]);
+			for (int i=0; i < 26; ++i) {
+				doAnimation(plane,hDlg,animationEditTexts[i]);
+			}
 		}
+		else if(plane->GetDirection()==Plane::LIFTOFF)
+		{
+			for(int i = 25; i>=0;--i)
+			{
+				doAnimation(plane,hDlg,animationEditTexts[i]);
+			}
+		}
+		gestor->libertarPista(plane);
 	}
-
-	gestor->libertarPista(plane);
 }
 
 
@@ -154,9 +155,9 @@ DWORD WINAPI thAviaoAterrar(LPVOID param)
     return 0;
 }
 
-DWORD WINAPI thAviaoDescolar(LPVOID p) 
+DWORD WINAPI thAviaoDescolar(LPVOID param) 
 {
-    HWND hDlg = (HWND)p;
+    HWND hDlg = (HWND)param;
 	HWND hList = GetDlgItem(hDlg,IDC_LIFT_LIST);
 	HWND hEditList = GetDlgItem(hDlg,IDC_N_LIFT_LIST);
 
@@ -217,7 +218,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		// é necessário para trabalhar sobre a parte grafica,
 		//porque quando vai obter o indice do elemento a remover,
 		//pode haver um contextswitch que provoca erros.
-		sDelFromLB = new Semaforo(1,1);
+		InitializeCriticalSectionAndSpinCount(&csDelFromLB,5000);
 		_bFuracao = false;
 
 		Edit_SetText(GetDlgItem(hDlg, IDC_N_LAND), TEXT("0"));
@@ -262,12 +263,6 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			case IDC_FURACAO:
 				if(!_bFuracao)
 				{
-					gestor->fecharPista(0);
-					Button_SetText(GetDlgItem(hDlg,IDC_OPEN_LANE0),_T("Abrir"));
-					Static_SetText(GetDlgItem(hDlg,IDC_PISTA0_OC),_T("Encontra-se fechada"));
-					gestor->fecharPista(1);
-					Button_SetText(GetDlgItem(hDlg,IDC_OPEN_LANE1),_T("Abrir"));
-					Static_SetText(GetDlgItem(hDlg,IDC_PISTA1_OC),_T("Encontra-se fechada"));
 					Static_SetText(GetDlgItem(hDlg,IDC_LBL_FURACAO),_T("AVISO: FURACÃO!"));
 				}else
 				{
@@ -275,6 +270,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				_bFuracao = !_bFuracao;
 				gestor->alertaFuracao(_bFuracao);
+				break;
+			case IDTerminarAvioes:
+				gestor->terminar();
 				break;
             case IDCANCEL:
                 EndDialog(hDlg, LOWORD(wParam));
