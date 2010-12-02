@@ -15,32 +15,31 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#								LPC2106
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-#Environmental Paths
-SVN_PATH		= /mnt/hgfs/Semestre5/SE1
-PROJECT_PATH	= $(SVN_PATH)/SE1/code
-APP				= $(PROJECT_PATH)/app
 MYLIB			= ../../lib
+MYINCLUDE		= ../../include
 #Executables
-CC 				= arm-eabi-gcc
-AS				= arm-eabi-as
-LD				= arm-eabi-ld
-#Debugger
-DEBUGGER		= arm-eabi-insight
+CC 				= arm-eabi-gcc 
+COPY			= cp 
 #Commom Options
 OUTPUT 			= -o
-LDSCRIPT		= -T 
-DEBUGSTABS		= --gstabs
+DEBUGGER		= -g
+COPTIONS 		= -Wall -pedantic
+COMPILE_ONLY 	= -c 
 #Phony Target
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-LPC2106.o: LPC2106.c
-	$(CC) -g -c $(OUTPUT) $(MYLIB)/$@  $^
+LPC2106.o: LPC2106.c LPC2106.h
+	$(CC) $(DEBUGGER) $(COMPILE_ONLY) $(COPTIONS) $(OUTPUT) $(MYLIB)/$@  $<
+	$(COPY) LPC2106.h $(MYINCLUDE)/LPC2106.h
 
 clean:
-	rm  $(MYLIB)/led.o 
+	rm  $(MYLIB)/LPC2106.c
+	rm  $(MYINCLUDE)/LPC2106.h
 
 clear:
 	clear

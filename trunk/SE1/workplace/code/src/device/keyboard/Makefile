@@ -15,32 +15,29 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#								KEYBOARD
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-#Environmental Paths
-SVN_PATH		= /mnt/hgfs/Semestre5/SE1
-PROJECT_PATH	= $(SVN_PATH)/SE1/code
-APP				= $(PROJECT_PATH)/app
 MYLIB			= ../../lib
+MYINCLUDE		= ../../include
 #Executables
-CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
-LD				= arm-eabi-ld
-#Debugger
-DEBUGGER		= arm-eabi-insight
+COPY			= cp 
 #Commom Options
 OUTPUT 			= -o
-LDSCRIPT		= -T 
 DEBUGSTABS		= --gstabs
 #Phony Target
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-keyboard.o: keyboard.S
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $^
+keyboard.o: keyboard.S keyboard.h
+	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $<
+	$(COPY) keyboard.h $(MYINCLUDE)/keyboard.h
 	
 clean:
 	rm  $(MYLIB)/keyboard.o
+	rm 	$(MYINCLUDE)/keyboard.h
 
 clear:
 	clear
