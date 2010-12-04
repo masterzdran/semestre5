@@ -39,25 +39,28 @@ class GestorAcessoGrutas : IGestorAcessoGrutas{
 		_passagem->Signal();
 	}
 	
-	void visitarGaleria(int numeroPessoas){
-		while(numeroPessoas!=0){
-			//tenho bilhete para entrar na galeria
-			esperarAcederGaleria();
-			//esperar que pasagem esteja vaga
-			esperarAcessoPassagem();
-			//estou a espera de sair da passagem para entrar na galeria
-			sairPassagem();
-			//entrei na galeria
-			
-			//visitei galeria...
-			
-			//quero sair da galeria
-			sairGaleria();
-			//ja estou na passagem...porque para sair da galeria
-			//ja precisava de estar na passagem
-			sairPassagem();
-			//ja voltei a entrada
-			--numeroPessoas;
-		}
+	void visitarGaleria(){
+		//tenho bilhete para entrar na galeria
+		esperarAcederGaleria();
+		//esperar que pasagem esteja vaga
+		esperarAcessoPassagem();
+		//estou a espera de sair da passagem para entrar na galeria
+		sairPassagem();
+		//entrei na galeria
+		
+		//visitei galeria...
+		
+		//quero sair da galeria
+		sairGaleria();
+		//ja estou na passagem...porque para sair da galeria
+		//ja precisava de estar na passagem
+		sairPassagem();
+		//ja voltei a entrada
 	}
 }
+
+Exercício 3:
+Resposta na net:
+http://msdn.microsoft.com/en-us/library/ms682530(VS.85).aspx
+"On single-processor systems, the spin count is ignored and the critical section spin count is set to 0 (zero). On multiprocessor systems, if the critical section is unavailable, the calling thread spins dwSpinCount times before performing a wait operation on a semaphore that is associated with the critical section. If the critical section becomes free during the spin operation, the calling thread avoids the wait operation."
+O objecto critical section permite que apenas uma tarefa de cada vez aceda a uma região crítica, podendo este objecto ser utilizado em aplicações com processos simples, tal como os mutexs, events e semaphores, mas o objecto critical section disponibiliza um mecanismo mais rápido e eficiente no sincronismo da exclusão mútua. Estas funcionalidades mantêm-se em arquitecturas monoprocessador e multiprocessador, a grande diferença está presente no spin count. O spin count é o periodo que uma tarefa está bloqueada para adquirir a critical section, este´período é adquirido através de um ciclo de espera activa, valor do spin count. Esta caracterista não é verificável em arquitecturas monoprocessador porque não existem duas tarefas a competir pela região de exclusão mútua e por isso o spin count ser ignorado neste tipo de arquitecturas e o valor do sipn count é nulo. A criação de duas funções de inicialização da critical section tem o intuito de distingir estas duas noções. Por isso, a função InitializaCriticalSection é utilizada em arquitecturas monoprocessador e a função InitializeCriticalSectionAndSpinCount para multi-processador.
