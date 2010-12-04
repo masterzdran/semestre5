@@ -1,0 +1,317 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "..\headers\resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "../headers/targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_TRAB2               ICON                    "../icons/Trab2.ico"
+IDI_SMALL               ICON                    "../icons/small.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_TRAB2 MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       IDM_EXIT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About ...",                  IDM_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_TRAB2 ACCELERATORS
+BEGIN
+    "?",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Trab2"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            128,IDC_STATIC,14,14,21,20
+    LTEXT           "Trab2, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2008",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "..\\headers\\resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""../headers/targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE           "Trab2"
+    IDC_TRAB2               "TRAB2"
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Portuguese (Portugal) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTG)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TRAB2_DIALOG DIALOGEX 0, 0, 394, 265
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Trabalho Prático - Sincronismo e GUI"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Sair",IDOK,168,244,50,14
+    PUSHBUTTON      "Terminar Aviões",IDTerminarAvioes,137,35,119,14
+    GROUPBOX        "Pista Levantar",IDC_STATIC,143,89,106,41
+    GROUPBOX        "Pista Aterrar",IDC_STATIC,143,136,105,41
+    LTEXT           "Nº de aviões à espera de Levantar:",IDC_STATIC,7,41,108,18
+    EDITTEXT        IDC_EDIT1,47,51,40,14,ES_AUTOHSCROLL
+    CONTROL         "L - 1",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,165,106,31,10
+    CONTROL         "A - 2",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,165,154,31,10
+    LTEXT           "Nº de aviões a criar para Aterrar:",IDC_STATIC,270,7,117,18
+    EDITTEXT        IDC_EDIT2,269,18,40,14,ES_AUTOHSCROLL
+    LISTBOX         IDC_LIST1,18,73,95,178,LBS_SORT | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST3,276,73,95,177,LBS_SORT | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Abrir",IDC_BUTTON1,205,95,38,16,WS_DISABLED
+    PUSHBUTTON      "Fechar",IDC_BUTTON2,205,112,38,16
+    PUSHBUTTON      "Abrir",IDC_BUTTON3,205,142,38,16,WS_DISABLED
+    PUSHBUTTON      "Fechar",IDC_BUTTON4,205,159,38,16
+    EDITTEXT        IDC_EDIT4,7,18,40,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Criar",IDC_BUTTON5,55,18,50,14
+    LTEXT           "Nº Aviões a criar para Levantar:",IDC_STATIC,7,7,104,8
+    PUSHBUTTON      "Criar",IDC_BUTTON6,319,18,50,14
+    LTEXT           "Nº de aviões à espera de Aterrar:",IDC_STATIC,270,41,88,18
+    EDITTEXT        IDC_EDIT3,301,50,40,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Alerta de furacão",IDC_BUTTON7,137,15,119,14
+END
+
+IDD_RUNWAY DIALOGEX 0, 0, 436, 327
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SOi - Sincronismo: Aeroporto da Lapónia"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Terminar",IDCANCEL,164,292,108,14
+    GROUPBOX        "Pista 0",IDC_STATIC,7,62,421,49,BS_LEFT
+    CONTROL         "",IDC_AT0,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,415,7,14,10,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT1,402,16,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT2,388,26,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT3,374,34,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT4,359,45,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT5,345,55,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT6,332,64,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT7,318,74,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT8,304,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT9,290,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT10,276,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT11,261,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT12,247,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT13,233,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT14,219,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT15,205,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT16,191,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT17,177,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT18,163,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT19,149,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT20,135,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT21,121,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT22,107,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT23,93,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT24,79,82,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_AT25,65,82,14,10,0,WS_EX_STATICEDGE
+    GROUPBOX        "Pista 1",IDC_STATIC,7,114,421,49,BS_LEFT
+    CONTROL         "",IDC_DS0,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,415,60,14,10,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS1,402,69,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS2,388,79,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS3,374,88,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS4,359,98,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS5,345,108,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS6,332,117,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS7,318,127,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS8,304,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS9,290,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS10,276,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS11,261,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS12,247,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS13,233,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS14,219,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS15,205,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS16,191,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS17,177,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS18,163,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS19,149,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS20,135,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS21,121,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS22,107,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS23,93,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS24,79,136,14,10,0,WS_EX_STATICEDGE
+    CTEXT           "",IDC_DS25,65,136,14,10,0,WS_EX_STATICEDGE
+    PUSHBUTTON      "Abrir",OPEN_RUNWAY1,7,74,38,16
+    PUSHBUTTON      "Fechar",CLOSE_RUNWAY1,7,90,38,16
+    PUSHBUTTON      "Abrir",OPEN_RUNWAY2,7,125,38,16
+    PUSHBUTTON      "Fechar",CLOSE_RUNWAY2,7,143,38,16
+    LISTBOX         IDC_LIST1,12,201,95,117,LBS_SORT | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Nº de aviões à espera de Descolar:",IDC_STATIC,13,173,50,25
+    EDITTEXT        IDC_EDIT1,67,184,40,14,ES_AUTOHSCROLL | ES_READONLY,WS_EX_RIGHT | WS_EX_STATICEDGE
+    LISTBOX         IDC_LIST4,328,201,95,117,LBS_SORT | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Nº de aviões à espera de Aterrar:",IDC_STATIC,328,172,48,25
+    EDITTEXT        IDC_EDIT4,383,183,40,14,ES_AUTOHSCROLL | ES_READONLY,WS_EX_RIGHT | WS_EX_STATICEDGE
+    EDITTEXT        NUMBER_TAKEOFF,164,227,40,14,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
+    PUSHBUTTON      "Criar",IDC_CREATE_TAKEOFF,222,227,50,14
+    LTEXT           "Nº Aviões a criar para Descolar:",IDC_STATIC,164,216,108,8
+    LTEXT           "Nº de aviões a criar para Aterrar:",IDC_STATIC,164,179,108,8
+    EDITTEXT        NUMBER_LANDING,164,190,40,14,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
+    PUSHBUTTON      "Criar",IDC_CREATE_LANDING,222,190,50,14
+    PUSHBUTTON      "Terminar Aviões",IDYES,164,273,108,14
+    PUSHBUTTON      "Alerta de furacão",HURRICANE_WARNING,164,253,108,14
+    GROUPBOX        "",IDC_STATIC,151,166,133,154
+    GROUPBOX        "",IDC_STATIC,7,166,107,154
+    GROUPBOX        "",IDC_STATIC,322,166,107,154
+    LTEXT           "Aberta",STATE_RUNWAY2,69,151,30,8
+    LTEXT           "Aberta",STATE_RUNWAY1,71,100,31,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_TRAB2_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 387
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 258
+    END
+
+    IDD_RUNWAY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 429
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 320
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Portuguese (Portugal) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
