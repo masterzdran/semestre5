@@ -1,0 +1,63 @@
+Exercício 1:
+Num sistema operativo multi-utilizador pode existir preempção da tarefa dentro da região crítica protegida por um semáforo de exclusão mútua porque o Sheduler divide o time-slice por cada utilizador. Sendo o time-slice menor, mais é a probabilidade de existeir preempção.
+
+Exercício 2:
+class GestorAcessoGrutas : IGestorAcessoGrutas{
+	Semaforo* _galeria;
+	Semaforo* _passagem;
+	
+	GestorAcessoGrutas(){
+		_galeria = new Semaforo(0,30);
+		_passagem = new Semaforo(0,3);
+	}
+	
+	~GestorAcessoGrutas(){
+		delete _galeria;
+		delete _passagem;
+	}
+	
+	void esperarAcederGaleria(){
+		//so entram na passagem 3 pessoas de cada vez
+		//mas o numero de pessoas para a galeria e
+		//controlado atraves do semaforo galeria...
+		_galeria->Wait();
+	}
+	void sairGaleria(){
+		//primeiro garante que existe lugar na passagem
+		//e so depois faz sinal de que ja saiu da galeria
+		_passagem->Wait();
+		//faz sinal as pessoas que estao na entrada de que ira sair
+		_galeria->Signal();
+	}
+	void esperarAcessoPassagem(){
+		//aguarda que passagem esteja livre
+		_passagem->Wait();
+	}
+	void sairPassagem(){
+		//basta dar sinal as pessoas que estao na entrada de que ja
+		//existe uma vaga na passagem
+		_passagem->Signal();
+	}
+	
+	void visitarGaleria(int numeroPessoas){
+		while(numeroPessoas!=0){
+			//tenho bilhete para entrar na galeria
+			esperarAcederGaleria();
+			//esperar que pasagem esteja vaga
+			esperarAcessoPassagem();
+			//estou a espera de sair da passagem para entrar na galeria
+			sairPassagem();
+			//entrei na galeria
+			
+			//visitei galeria...
+			
+			//quero sair da galeria
+			sairGaleria();
+			//ja estou na passagem...porque para sair da galeria
+			//ja precisava de estar na passagem
+			sairPassagem();
+			//ja voltei a entrada
+			--numeroPessoas;
+		}
+	}
+}
