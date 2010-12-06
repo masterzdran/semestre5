@@ -235,7 +235,7 @@ public:
 		InterlockedDecrement(&_countPlaneToLand);
 		return p;
 	}
-	//Tenta com que o primeiro aviao da lista de avioes para levantar voo parta.
+	//Tenta com que o p8rimeiro aviao da lista de avioes para levantar voo parta.
 	virtual Plane * esperarPistaParaDescolar()
 	{
 		static HANDLE listAndEvent[] = {_sWaitingListLiftoff, _eTerminate};
