@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.model.LSDate;
 
 public class EventOutputTest {
 
@@ -34,17 +35,17 @@ public class EventOutputTest {
 	public void getDocumentTest(){
 		// Test Event
 		ArrayList<Event> list = new ArrayList<Event>();
-		list.add(new Event("Calendario", "20101026", "20101021"));
-		list.add(new Event("Calendario", "20101026", "20101022" ));
-		list.add(new Event("Calendario", "20101026", "20101023" ));
+		list.add(new Event("Calendario", new LSDate(), new LSDate("20101021")));
+		list.add(new Event("Calendario", new LSDate(), new LSDate("20101022" )));
+		list.add(new Event("Calendario", new LSDate(), new LSDate("20101023" )));
 		EventOutput evtOut = new EventOutput(list);
 		//evtOut.setEventListHtmlOutputTags();
 		//evtOut.setCmdLineTableTags();
 		//evtOut.showAsCommandLineList();
 		//evtOut.showAsCommandLineTable();
 		evtOut.showAsHtmlTable();
-		evtOut.appendRecord(new Event("teste","20101028","20101024"));
-		evtOut.appendRecord(new Event("Mais 1 teste","20101028","20101023"));
+		evtOut.appendRecord(new Event("teste",new LSDate(),new LSDate()));
+		evtOut.appendRecord(new Event("Mais 1 teste",new LSDate(),new LSDate()));
 		evtOut.buildDocument();
 		evtOut.writeToFile(new File("/tmp/teste.html"));
 			

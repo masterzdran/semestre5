@@ -1,6 +1,5 @@
 package pt.isel.deetc.ls.startup;
 
-import java.util.UUID;
 
 public class testing {
 
@@ -9,13 +8,10 @@ public class testing {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		for (int x = 0; x < 10000; ++x) {
-			int z = 0x7FFFFFFF;
-			UUID u = UUID.randomUUID();
-			int i = ((int) u.getLeastSignificantBits())&z;
-			//System.out.println(x+" :U: " + u);
-			System.out.println(i);
-		}
+
+		char i =0x28;
+		System.out.println((int)i);
+		System.out.println((int)i>>4);
+		System.out.println((int)i);
 	}
 }

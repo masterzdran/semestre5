@@ -1,19 +1,26 @@
 package pt.isel.deetc.ls.cmd;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 import pt.isel.deetc.ls.mapper.EventMapper;
 import pt.isel.deetc.ls.model.ComponentRule;
 import pt.isel.deetc.ls.model.Event;
-import pt.isel.deetc.ls.output.EventOutput;
+import pt.isel.deetc.ls.report.EventListLayout;
+import pt.isel.deetc.ls.report.EventTableLayout;
+import pt.isel.deetc.ls.report.format.HTMLListLayout;
+import pt.isel.deetc.ls.report.format.HTMLTableLayout;
+import pt.isel.deetc.ls.report.format.IFormat;
+import pt.isel.deetc.ls.report.format.TracListLayout;
+import pt.isel.deetc.ls.report.format.TracTableLayout;
+import pt.isel.deetc.ls.report.layout.ILayout;
+import pt.isel.deetc.ls.report.layout.IListLayout;
+import pt.isel.deetc.ls.report.layout.ITableLayout;
 
 public class GetEventsAll extends Command {
 	private static final String _NAME = "get-events-all";
 	private static final String _DESCRIPTION = "Show the information of ALL Events";
-	private ArrayList<Event> _list;
-	EventOutput _eOutput;
-
 	public GetEventsAll(String name, String description) {
 		super(name, description);
 
@@ -36,11 +43,6 @@ public class GetEventsAll extends Command {
 		addParameter(p1);
 		addParameter(p2);
 		addParameter(p3);
-
-		// _report= new HashMap<String, Report<Event>>();
-		// _report.put("commandline", new EventCLReport());
-		_list = new ArrayList<Event>();
-		// _eOutput = new EventOutput(_list);
 	}
 
 	public GetEventsAll() {
@@ -50,24 +52,43 @@ public class GetEventsAll extends Command {
 	@Override
 	public void execute() {
 		EventMapper e = new EventMapper();
-		setList(e.select());
-		sR();
-
+		Iterable<Event> events = e.select();
+		report(events);
 	}
 
-	public void setList(ArrayList<Event> l) {
-		_list = l;
-	}
+	protected void report(Iterable<Event> collection){
+		ILayout<Event> layout 	= null;
+		IFormat format 			= null;
 
-	public void sR() {
-		// _report.get("commandline").show(_list);
-		_eOutput = new EventOutput(_list);
-		if (getValue("layout").equals("table") && getValue("format").equals("html")) _eOutput.showAsHtmlTable();
-		if (getValue("layout").equals("list") && getValue("format").equals("html")) _eOutput.showAsHtmlList();
-		if (getValue("layout").equals("table") && getValue("format").equals("wiki")) _eOutput.showAsWikiTable();
-		if (getValue("layout").equals("list") && getValue("format").equals("wiki")) _eOutput.showAsWikiList();
-		_eOutput.buildDocument();
-		if (getValue("output-file") != null && !getValue("output-file").trim().isEmpty()) _eOutput.writeToFile(new File(getValue("output-file")));
-		System.out.println(_eOutput.getDocument());
+		if (getValue("format").equals("html")){
+			if (getValue("layout").equals("table")){
+				layout = new EventTableLayout(collection);
+				format = new HTMLTableLayout<Event>((ITableLayout<Event>)layout);
+			}else if (getValue("layout").equals("list")){
+				layout = new EventListLayout(collection);
+				format = new HTMLListLayout<Event>((IListLayout<Event>)layout);
+			}
+		}else if (getValue("format").equals("wiki")){
+			if (getValue("layout").equals("table")){
+				layout = new EventTableLayout(collection);
+				format = new TracTableLayout<Event>((ITableLayout<Event>)layout);
+			}else if (getValue("layout").equals("list")){
+				layout = new EventListLayout(collection);
+				format = new TracListLayout<Event>((IListLayout<Event>)layout);
+			}
+		}
+		
+		PrintStream ps = null;
+		String filename = null;
+		if ((filename=getValue("output-file")) != null && !filename.trim().isEmpty()){
+			try {
+				ps = new PrintStream(new FileOutputStream(filename));
+			} catch (FileNotFoundException e1) {
+				System.err.println("Unable to create "+filename+" file.");
+			}
+		}else{
+			ps = new PrintStream(System.out);
+		}
+		format.render(ps);		
 	}
 }

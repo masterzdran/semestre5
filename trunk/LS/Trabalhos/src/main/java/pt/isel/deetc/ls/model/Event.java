@@ -6,24 +6,23 @@ public class Event extends Component{
   private String _location;
   private String _summary;
  
-  public Event(String calname,String beginDate, String endDate) {
+  public Event(String calname,LSDate beginDate, LSDate endDate) {
     super(calname,beginDate,endDate);
     _description = null;
     _location = null;
     _summary = null;
+    setComponetType("EVENT");
   }
-  public Event (String calname,String beginDate, String endDate, String description, String location, String summary){
-	  super(calname,beginDate,endDate);
+  public Event (String calname,LSDate beginDate, LSDate endDate, String description, String location, String summary){
+	  this(calname,beginDate,endDate);
 	    _description = (description == null ||description.trim().isEmpty())?null:description;
 	    _location = (location == null ||location.trim().isEmpty())?null:location;
 	    _summary = (summary == null ||summary.trim().isEmpty())?null:summary;
   }
-  public Event (String calname,String beginDate, String endDate, String description, String location, String summary, int id){
-	  super(calname,beginDate,endDate);
-	    _description = (description == null ||description.trim().isEmpty())?null:description;
-	    _location = (location == null ||location.trim().isEmpty())?null:location;
-	    _summary = (summary == null ||summary.trim().isEmpty())?null:summary;
-	    setId(id); 
+  public Event (String calname,LSDate beginDate, LSDate endDate, String description, String location, String summary, int id){
+	  this(calname,beginDate,endDate,description,location,summary);
+	    setId(id);
+	    
   }
  public Event(){
 	 this(null,null,null,null,null,null,-1);

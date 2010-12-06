@@ -127,6 +127,9 @@
 				<filename name="*.jar"/>
 			</fileset>
 		</copy>
+        <copy todir="${target-apps}/${target-app}" verbose="true">
+            <fileset file="${vendor-lib}/default.properties"/>
+        </copy>
 		<!--echo message="${toString:jar-fileset}"/-->
 	</target>
 </project>

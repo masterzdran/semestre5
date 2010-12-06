@@ -3,56 +3,57 @@ package pt.isel.deetc.ls.model;
 public class Todo extends Component {
 	private String _sumary;
 	private String _description;
-	private String _state;
+	private int  _state; // 0 : 
 	private double _donepercent;
 	private int _priority;
 
-	public Todo(String calname, String beginDate, String endDate) {
-		super(calname, beginDate, endDate);
-		set_description(null);
-		set_donepercent(0);
-		set_priority(0);
-		set_state(null);
-		set_sumary(null);		
+	public Todo(String calname, LSDate beginDate, LSDate endDate) {
+		this(calname, beginDate,endDate,null, null,0,0,0);
+	}
+	
+	public Todo(String calname, LSDate beginDate, LSDate endDate, 
+		String description, String summary, int state, double donepercent, int priority) {
+	    super(calname, beginDate, endDate);
+	    setDescription(description);
+	    setSummary(summary);
+	    setState(state);
+	    setDonePercent(donepercent);
+	    setPriority(priority);
+	    setComponetType("TODO");
 	}
 	
 	public Todo(){
-		super(null,null,null);
+		this(null,null,null,null,null,0,0,0);
 		setId(-1);
-		set_description(null);
-		set_donepercent(0);
-		set_priority(0);
-		set_state(null);
-		set_sumary(null);
 	}
-	public String get_sumary() {
+	public String getSummary() {
 		return _sumary;
 	}
-	public void set_sumary(String sumary) {
+	public void setSummary(String sumary) {
 		_sumary = sumary;
 	}
-	public String get_description() {
+	public String getDescription() {
 		return _description;
 	}
-	public void set_description(String description) {
+	public void setDescription(String description) {
 		_description = description;
 	}
-	public String get_state() {
+	public int getState() {
 		return _state;
 	}
-	public void set_state(String state) {
+	public void setState(int state) {
 		_state = state;
 	}
-	public double get_donepercent() {
+	public double getDonePercent() {
 		return _donepercent;
 	}
-	public void set_donepercent(double donepercent) {
+	public void setDonePercent(double donepercent) {
 		_donepercent = donepercent;
 	}
-	public int get_priority() {
+	public int getPriority() {
 		return _priority;
 	}
-	public void set_priority(int priority) {
+	public void setPriority(int priority) {
 		_priority = priority;
 	}
 

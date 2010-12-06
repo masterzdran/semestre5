@@ -88,8 +88,7 @@ abstract public class Command {
 	public String help() {
 		processSyntax();
 		StringBuffer help = new StringBuffer(getCommandName() + " [options] \n");
-		help
-				.append("--------------------------------------------------------------------------------\n");
+		help.append("--------------------------------------------------------------------------------\n");
 		help.append(getSyntax());
 		return help.toString();
 	}

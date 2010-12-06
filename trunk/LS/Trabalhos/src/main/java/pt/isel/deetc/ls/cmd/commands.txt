@@ -1,0 +1,15 @@
+CreateCalendar
+CreateEvent
+CreateTodo
+DeleteEvent
+DeleteTodo
+GetEvent
+GetEventsAll
+GetEventsCal
+GetEvents
+GetTodo
+GetTodosAll
+GetTodosCal
+GetTodos
+Init
+UpdateEvent

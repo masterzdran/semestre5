@@ -19,13 +19,23 @@ public class DBDataSource {
     private Properties _configFile;
     private SQLServerDataSource _datasourse;
     private static final String DEFAULT_CONFIG_FILE = "default";
-    
-    public DBDataSource() throws FileNotFoundException, IOException {
+    private static final DBDataSource _INSTANCE = new DBDataSource();
+    public static DBDataSource getInstace(){
+    	return _INSTANCE;
+    }
+    public SQLServerDataSource getDataSource() throws SQLServerException {
+        if (_datasourse == null) {
+            this.setDataSource();
+        }
+        return _datasourse;
+
+    }
+    private DBDataSource() {
     	//this(InetAddress.getLocalHost().getHostName());
     	this(DEFAULT_CONFIG_FILE);
     }
 
-    public DBDataSource(String host) throws FileNotFoundException, IOException {
+    private DBDataSource(String host) {
         try {
             DBConfigReader dbcr = new DBConfigReader(host);
             _configFile = dbcr.getConfigFile();
@@ -34,7 +44,13 @@ public class DBDataSource {
         } catch (UnknownHostException ex) {
             Logger.getLogger(DBDataSource.class.getName()).log(Level.SEVERE, null, ex);
             _configFile = null;
-        }
+        } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void setDataSource() {
@@ -65,11 +81,4 @@ public class DBDataSource {
                 );
     }
 
-    public SQLServerDataSource getDataSource() throws SQLServerException {
-        if (_datasourse == null) {
-            this.setDataSource();
-        }
-        return _datasourse;
-
-    }
 }

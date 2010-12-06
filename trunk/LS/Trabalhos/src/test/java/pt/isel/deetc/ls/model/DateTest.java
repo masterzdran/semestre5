@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pt.isel.deetc.ls.model.Date;
+import pt.isel.deetc.ls.model.LSDate;
 
 public class DateTest {
 	
@@ -30,17 +30,17 @@ public class DateTest {
 	
 	@Test
 	public void tests() {
-		// Construtor por omissao
-		Date calDate1 = new Date();
-		System.out.println("calDate1="+calDate1.toString());
-		
-		//Construtor com parametro
-		Date calDate2;
-		try {
-			calDate2 = new Date("20101005060600","3");
-			System.out.println("calDate2="+calDate2.toString());
-		} catch (ParseException e) {
-			System.out.println("Data inv�lida");
-		}
+//		// Construtor por omissao
+//		Date calDate1 = new Date();
+//		System.out.println("calDate1="+calDate1.toString());
+//		
+//		//Construtor com parametro
+//		Date calDate2;
+//		try {
+//			calDate2 = new Date("20101005060600","3");
+//			System.out.println("calDate2="+calDate2.toString());
+//		} catch (ParseException e) {
+//			System.out.println("Data inv�lida");
+//		}
 	}
 }

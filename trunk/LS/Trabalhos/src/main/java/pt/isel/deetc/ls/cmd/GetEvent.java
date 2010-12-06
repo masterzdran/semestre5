@@ -9,21 +9,18 @@ public class GetEvent extends GetEventsAll {
 	private static final String _DESCRIPTION = "show the information of ONE Event given his ID";
 	public GetEvent() {
 		super(_NAME, _DESCRIPTION);
-		Parameter p1 = new Parameter("event-id", "identificador do evento",true);
+		Parameter p1 = new Parameter("event-id", "event identifier",true);
 		p1.addRule(ComponentRule.isRequired(p1));
 		p1.addRule(ComponentRule.allowNoEmpty(p1));
 		addParameter(p1);
-//       _report= new HashMap<String, Report<Event>>();
-//       _report.put("commandline", new EventCLReport());
-//       _list= new ArrayList<Event>();
 	}
 
 	@Override
 	public void execute() {
-		Event event= new Event("none", "20101010", "20101010");
+		Event event= new Event();
 		event.setId(Integer.parseInt(getValue("event-id")));
     	EventMapper e = new EventMapper();
-    	setList(e.selectByID(event));
-    	sR();
+    	Iterable<Event> events = e.selectByID(event);
+    	report(events);
 	}
 }
