@@ -24,6 +24,7 @@
 #define OPEN_RUNWAY2                    1006
 #define IDC_EDIT3                       1007
 #define IDC_LIST4                       1007
+#define LIST_TAKEOFF                    1007
 #define IDC_EDIT4                       1008
 #define IDC_BUTTON2                     1009
 #define IDC_BUTTON3                     1010
@@ -95,6 +96,10 @@
 #define CLOSE_RUNWAY2                   1074
 #define STATE_RUNWAY1                   1075
 #define STATE_RUNWAY2                   1076
+#define LIST_LANDING                    1077
+#define NUMBER_PLANES_LANDING           1078
+#define NUMBER_PLANES_TAKEOFF           1079
+#define HURRICANE_ID                    1080
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -104,7 +109,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1077
+#define _APS_NEXT_CONTROL_VALUE         1081
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

@@ -17,14 +17,11 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
-
-//includes para teste!!!
 #include "GestorDePistas.cpp"
 #include "Plane.cpp"
 
 GestorDePistas* gestor = new GestorDePistas();
-DWORD number_Next_Plane_Land = 1;
-DWORD number_Next_Plane_takeoff = 1;
+DWORD number_Next_Plane = 1;
 bool hurricane = false;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -32,8 +29,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {	
+	
 	//DialogBox(hInst, MAKEINTRESOURCE(IDD_TRAB2_DIALOG), NULL, About);
 	DialogBox(hInst, MAKEINTRESOURCE(IDD_RUNWAY), NULL, About);
+	
 	return (int) 0;
 }
 
@@ -52,53 +51,60 @@ int Takeoff_Animate_Id[] = {
 DWORD WINAPI thAviaoAterrar(LPVOID p) 
 {
     HWND hDlg = (HWND)p;
-	int number = number_Next_Plane_Land++;
 	//criar aviao
-	Plane* plane = new Plane();
+	Plane* plane = new Plane(number_Next_Plane++);
+	ListBox_AddString(GetDlgItem(hDlg, LIST_LANDING),plane->GetName());
 	int idPista = 1;
 	//valor retornado pelo esperaPistaparaAterrar!!
 	idPista = gestor->esperarPistaParaAterrar(plane);
-	_TCHAR buffer[20];
-	_itot(number,buffer,10);
+	//_TCHAR buffer[20];
+	//_itot(number,buffer,10);
 	HWND hWnd;
 	int sleep = 0;
 	for (int i=0; i <= 25; ++i) {
 		if(idPista == 0) hWnd =  GetDlgItem(hDlg, Landing_Animate_Id[i]);
 		else hWnd = GetDlgItem(hDlg, Takeoff_Animate_Id[i]);
-		Edit_SetText(hWnd, buffer);
+		Edit_SetText(hWnd, plane->GetName()/*buffer*/);
         Sleep(200);
         Edit_SetText(hWnd, TEXT("   "));
 	}
 	//invocar libertarPista
 	gestor->libertarPista(idPista);
+	
+	//decrementar valor de avioes que faltam aterrar
+	Edit_SetText(GetDlgItem(hDlg, NUMBER_PLANES_LANDING),
+		gestor->RemoveOneNumberPlanesLanding());
+	ListBox_DeleteString(GetDlgItem(hDlg, LIST_LANDING),
+						 ListBox_FindString(GetDlgItem(hDlg, LIST_LANDING), 0, plane->GetName()));
     return 0;
 }
 
 DWORD WINAPI thAviaoDescolar(LPVOID p) 
 {
     HWND hDlg = (HWND)p;
-
-	int number = number_Next_Plane_takeoff++;
-
 	//criar aviao
-	Plane* plane = new Plane();
+	Plane* plane = new Plane(number_Next_Plane++);
+	ListBox_AddString(GetDlgItem(hDlg, LIST_TAKEOFF),plane->GetName());
 	int idPista = 0;
 	//valor retornado pelo esperaPistaparaAterrar!!
 	idPista = gestor->esperarPistaParaDescolar(plane);
 
-	_TCHAR buffer[20];
-	_itot(number,buffer,10);
 	HWND hWnd;
-	int sleep = 0;
 	for (int i=25; i >= 0; --i) {
 		if(idPista == 0) hWnd =  GetDlgItem(hDlg, Landing_Animate_Id[i]);
 		else hWnd = GetDlgItem(hDlg, Takeoff_Animate_Id[i]);
-		Edit_SetText(hWnd, buffer);
+		Edit_SetText(hWnd, plane->GetName());
         Sleep(300);
         Edit_SetText(hWnd, TEXT("   "));
 	}
 	//invocar libertarPista
 	gestor->libertarPista(idPista);
+	
+	//decrementar valor de avioes que faltam descolar
+	Edit_SetText(GetDlgItem(hDlg, NUMBER_PLANES_TAKEOFF), 
+		gestor->RemoveOneNumberPlanesTakeOff());
+	ListBox_DeleteString(GetDlgItem(hDlg, LIST_TAKEOFF),
+						 ListBox_FindString(GetDlgItem(hDlg, LIST_TAKEOFF), 0, plane->GetName()));
     return 0;
 }
 
@@ -107,38 +113,22 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static HANDLE hAviaoAterrar;
     static HANDLE hAviaoDescolar;
-
+	_TCHAR buffer[10];
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	case WM_INITDIALOG:
-
-		//Method: Edit_SetText -  Sets the text of an edit control.
-		Edit_SetText(GetDlgItem(hDlg, NUMBER_LANDING), TEXT("0"));
-		Edit_SetText(GetDlgItem(hDlg, NUMBER_TAKEOFF), TEXT("0"));
-		//Edit_SetText(GetDlgItem(hDlg, IDC_EDIT1), TEXT("2"));
-		//Edit_SetText(GetDlgItem(hDlg, IDC_EDIT4), TEXT("4"));
-
-		//Method: ListBox_AddString - Adds a string to a list box.
-		/*ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A03"));
-		ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A04"));
-		ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A06"));
-		ListBox_AddString(GetDlgItem(hDlg, IDC_LIST4),TEXT("A08"));
-		ListBox_AddString(GetDlgItem(hDlg, IDC_LIST1),TEXT("A05"));	
-		ListBox_AddString(GetDlgItem(hDlg, IDC_LIST1),TEXT("A07"));*/
-		
-
-		//Method: Button_SetCheck - Sets the check state of a radio button or check box.
 		Button_SetCheck(GetDlgItem(hDlg, IDC_CHECK1), TRUE);
 		Button_SetCheck(GetDlgItem(hDlg, IDC_CHECK2), TRUE);
 		return (INT_PTR)TRUE;
-	_TCHAR buffer[10];
 	case WM_COMMAND:
         switch ( LOWORD(wParam) ) {
             case IDC_CREATE_LANDING:
 				//ler numero de avioes a aterrar
 				Edit_GetText(GetDlgItem(hDlg,NUMBER_LANDING),buffer, 10);
 				for(int i = 0; i < _ttoi(buffer); ++i){
+					Edit_SetText(GetDlgItem(hDlg, NUMBER_PLANES_LANDING), 
+						gestor->AddOneNumberPlanesLanding());
 					CreateThread(NULL, 0, thAviaoAterrar, (LPVOID)hDlg, 0, NULL);
 				}
                 break;
@@ -147,6 +137,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				//ler numero de avioes a descolar
 				Edit_GetText(GetDlgItem(hDlg,NUMBER_TAKEOFF),buffer, 10);
 				for(int i = 0; i < _ttoi(buffer); ++i){
+					Edit_SetText(GetDlgItem(hDlg, NUMBER_PLANES_TAKEOFF), 
+						gestor->AddOneNumberPlanesTakeOff());
 					CreateThread(NULL, 0, thAviaoDescolar, (LPVOID)hDlg, 0, NULL);
 				}
                 break;
@@ -154,6 +146,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			case HURRICANE_WARNING:
 				gestor->alertaFuracao(!hurricane);
 				hurricane = !hurricane;
+				if(hurricane) Edit_SetText(GetDlgItem(hDlg, HURRICANE_ID), TEXT("Alerta Furacao"));
+				else Edit_SetText(GetDlgItem(hDlg, HURRICANE_ID), TEXT("    "));
 				break;
 
 			case OPEN_RUNWAY1:
@@ -176,6 +170,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 				Edit_SetText(GetDlgItem(hDlg, STATE_RUNWAY2), TEXT("Fechada"));
 				break;
 
+			/*case IDYES:
+				gestor->EndAllPlanes();
+				break;*/
             case IDCANCEL:
 				//Method: EndDialog - Destroys a modal dialog box, causing the system to end any processing for the dialog box. 
                 EndDialog(hDlg, LOWORD(wParam));
