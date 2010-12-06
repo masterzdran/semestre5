@@ -1,0 +1,14 @@
+#ifndef WATCHDOG_H
+#define WATCHDOG_H
+
+#define pWatchDog     ((pLPC_WATCHDOG)  0xE0000000)
+
+typedef struct _WATCHDOG{
+    U32		MODE_REGISTER;
+    U32		TIMER_CONSTANT;
+    U32		FEED_SEQUENCE;
+    U32		TIMER_VALUE;
+}LPC_WATCHDOG, *pLPC_WATCHDOG;
+
+
+#endif
