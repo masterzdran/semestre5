@@ -1,0 +1,184 @@
+BEGIN:VCALENDAR
+VERSION:1.0
+PRODID:CalendarManager2010/2011
+
+  BEGIN:VEVENT
+    UID:uid1@example.com
+    DTSTAMP:19970714T170000Z
+    ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+    DTSTART:19970714T170000Z
+    DTEND:19970715T035959Z
+    SUMMARY:Bastille Day Party
+  END:VEVENT
+
+
+END:VCALENDAR
+---------------------------------------------------------------------------------
+"BEGIN" ":" "VEVENT" CRLF
+      Properties;
+                class / created / description / dtstart / geo /
+
+                last-mod / location / organizer / priority /
+                dtstamp / seq / status / summary / transp /
+                uid / url / recurid /
+                
+                
+                dtend / duration <--- Mutual Exclusive
+                
+                attach / attendee / categories / comment /
+                contact / exdate / exrule / rstatus / related /
+                resources / rdate / rrule / x-prop
+"END" ":" "VEVENT" CRLF
+---------------------------------------------------------------------------------
+"BEGIN" ":" "VTODO" CRLF
+      Properties;
+                class / completed / created / description / dtstamp /
+                dtstart / geo / last-mod / location / organizer /
+                percent / priority / recurid / seq / status /
+                summary / uid / url /
+          
+                due / duration /  <--- Mutual Exclusive
+
+                attach / attendee / categories / comment / contact /
+                exdate / exrule / rstatus / related / resources /
+                rdate / rrule / x-prop
+
+
+
+"END" ":" "VTODO" CRLF
+---------------------------------------------------------------------------------
+"BEGIN" ":" "VJOURNAL" CRLF
+                ; the following are optional,
+                ; but MUST NOT occur more than once
+                class / created / description / dtstart / dtstamp /
+                last-mod / organizer / recurid / seq / status /
+                summary / uid / url /
+
+                ; the following are optional,
+                ; and MAY occur more than once
+                attach / attendee / categories / comment /
+                contact / exdate / exrule / related / rdate /
+                rrule / rstatus / x-prop
+
+"END" ":" "VJOURNAL" CRLF
+---------------------------------------------------------------------------------
+"BEGIN" ":" "VFREEBUSY" CRLF
+                ; the following are optional,
+                ; but MUST NOT occur more than once
+
+                contact / dtstart / dtend / duration / dtstamp /
+                organizer / uid / url /
+
+                ; the following are optional,
+                ; and MAY occur more than once
+
+                attendee / comment / freebusy / rstatus / x-prop
+
+"END" ":" "VFREEBUSY" CRLF
+---------------------------------------------------------------------------------
+"BEGIN" ":" "VTIMEZONE" CRLF
+                tzid <--- 'tzid' is required, but MUST NOT occur more than once
+                
+                last-mod / tzurl / <--- 'last-mod' and 'tzurl' are optionalbut MUST NOT occur more than once
+                standardc / daylightc / <--- one of 'standardc' or 'daylightc' MUST occur and each MAY occur more than once.
+
+tzprop     = 3*(
+
+                ; the following are each REQUIRED,
+                ; but MUST NOT occur more than once
+
+                dtstart / tzoffsetto / tzoffsetfrom /
+
+                ; the following are optional,
+                ; and MAY occur more than once
+
+                comment / rdate / rrule / tzname / x-prop
+
+                )
+"END" ":" "VTIMEZONE" CRLF
+---------------------------------------------------------------------------------
+"BEGIN" ":" "VALARM" CRLF
+                audioprop: 
+
+                ; 'action' and 'trigger' are both REQUIRED,
+                ; but MUST NOT occur more than once
+                action / trigger /
+                ; 'duration' and 'repeat' are both optional,
+                ; and MUST NOT occur more than once each,
+                ; but if one occurs, so MUST the other
+
+                duration / repeat /
+
+                ; the following is optional,
+                ; but MUST NOT occur more than once
+
+                attach /
+
+                ; the following is optional,
+                ; and MAY occur more than once
+
+                x-prop
+          dispprop:
+                ; the following are all REQUIRED,
+                ; but MUST NOT occur more than once
+
+                action / description / trigger /
+
+                ; 'duration' and 'repeat' are both optional,
+                ; and MUST NOT occur more than once each,
+                ; but if one occurs, so MUST the other
+
+                duration / repeat /
+
+                ; the following is optional,
+
+                ; and MAY occur more than once
+
+                *x-prop
+          
+          emailprop:
+                ; the following are all REQUIRED,
+                ; but MUST NOT occur more than once
+
+                action / description / trigger / summary
+
+                ; the following is REQUIRED,
+                ; and MAY occur more than once
+
+                attendee /
+
+                ; 'duration' and 'repeat' are both optional,
+                ; and MUST NOT occur more than once each,
+                ; but if one occurs, so MUST the other
+
+                duration / repeat /
+
+                ; the following are optional,
+                ; and MAY occur more than once
+
+                attach / x-prop
+          
+          procprop:
+                ; the following are all REQUIRED,
+                ; but MUST NOT occur more than once
+
+                action / attach / trigger /
+
+                ; 'duration' and 'repeat' are both optional,
+                ; and MUST NOT occur more than once each,
+                ; but if one occurs, so MUST the other
+
+                duration / repeat /
+
+                ; 'description' is optional,
+                ; and MUST NOT occur more than once
+
+                description /
+
+                ; the following is optional,
+                ; and MAY occur more than once
+
+                x-prop
+
+"END" ":" "VALARM" CRLF
+                  
