@@ -1,8 +1,6 @@
 package pt.isel.deetc.ls.mapper;
 
 
-import java.util.ArrayList;
-
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -34,7 +32,7 @@ public class CalendarMapperTest {
 	@Test
 	public void showAllCalendarsTest(){
 		CalendarMapper c = new CalendarMapper();
-		ArrayList<Calendar>  list = c.select();
+		Iterable<Calendar>  list = c.select();
 		Assert.assertNotNull(list);
 		//Assert.assertTrue(list.size() > 0);
 		for(Calendar cal : list){

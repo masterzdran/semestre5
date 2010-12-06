@@ -2,7 +2,7 @@ package pt.isel.deetc.lmp.em1.clp;
 
 import java.util.Map;
 
-import pt.isel.deetc.lmp.common.clp.CommandLineParser;
+import pt.isel.deetc.ls.clp.CommandLineParser;
 
 public class CommandLineParserUsageSample {
 

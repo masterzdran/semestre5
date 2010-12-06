@@ -3,6 +3,7 @@ package pt.isel.deetc.ls.cmd;
 import pt.isel.deetc.ls.mapper.EventMapper;
 import pt.isel.deetc.ls.model.ComponentRule;
 import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.model.LSDate;
 
 public class CreateEvent extends Command {
 
@@ -60,7 +61,7 @@ public class CreateEvent extends Command {
 
 	@Override
 	public void execute() {
-		Event event = new Event(getValue("cal-name"), getValue("start"), getValue("end"), getValue("description"), getValue("location"), getValue("summary"));
+		Event event = new Event(getValue("cal-name"),new LSDate(getValue("start")), new LSDate(getValue("end")), getValue("description"), getValue("location"), getValue("summary"));
     	EventMapper e = new EventMapper();
     	e.insert(event);
 		

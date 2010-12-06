@@ -1,19 +1,20 @@
 package pt.isel.deetc.ls.cmd;
 
-import pt.isel.deetc.ls.mapper.EventMapper;
+import pt.isel.deetc.ls.mapper.TodoMapper;
 import pt.isel.deetc.ls.model.ComponentRule;
-import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.model.LSDate;
+import pt.isel.deetc.ls.model.Todo;
 
-public class GetTodos extends GetEventsAll {
+public class GetTodos extends GetTodosAll {
 
-	private static final String _NAME = "get-events";
-	private static final String _DESCRIPTION = "Show the information of a set of Event between a period of time";
+	private static final String _NAME = "get-todos";
+	private static final String _DESCRIPTION = "Show the information of a set of Todo between a period of time";
 	
 	public GetTodos() {
 		super(_NAME, _DESCRIPTION);
-		Parameter p1 = new Parameter("start", "start date of the Event");
-		Parameter p2 = new Parameter("end", "end date of the Event ('end' and 'duration' are both mutually exclusive)");
-		Parameter p3 = new Parameter("duration", "durantion of the Event ('end' and 'duration' are both mutually exclusive)");
+		Parameter p1 = new Parameter("start", "start date of the Todo");
+		Parameter p2 = new Parameter("end", "end date of the Todo ('end' and 'duration' are both mutually exclusive)");
+		Parameter p3 = new Parameter("duration", "durantion of the Todo ('end' and 'duration' are both mutually exclusive)");
 		p1.addRule(ComponentRule.isRequired(p1));
 		p1.addRule(ComponentRule.allowEmpty(p1));
 		
@@ -32,10 +33,9 @@ public class GetTodos extends GetEventsAll {
 
 	@Override
 	public void execute() {
-		//TODO Processar as Datas
-		Event event= new Event("none", getValue("start"), getValue("end"));
-    	EventMapper e = new EventMapper();
-       	setList(e.selectBetweenDates(event));
-    	sR();
+		Todo todo= new Todo("none", new LSDate(getValue("start")), new LSDate(getValue("end")));
+    	TodoMapper t = new TodoMapper();
+    	Iterable<Todo> collection = t.selectBetweenDates(todo);
+    	report(collection);
 	}
 }

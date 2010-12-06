@@ -3,6 +3,7 @@ package pt.isel.deetc.ls.cmd;
 import pt.isel.deetc.ls.mapper.EventMapper;
 import pt.isel.deetc.ls.model.ComponentRule;
 import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.model.LSDate;
 
 public class GetEvents extends GetEventsAll {
 
@@ -32,10 +33,9 @@ public class GetEvents extends GetEventsAll {
 
 	@Override
 	public void execute() {
-		//TODO Processar as Datas
-		Event event= new Event("none", getValue("start"), getValue("end"));
+		Event event= new Event("none", new LSDate(getValue("start")), new LSDate(getValue("end")));
     	EventMapper e = new EventMapper();
-       	setList(e.selectBetweenDates(event));
-    	sR();
+       	Iterable<Event> events = e.selectBetweenDates(event);
+		report(events);
 	}
 }

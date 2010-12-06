@@ -26,6 +26,7 @@ if object_id('Category') is not null
 ;
 
 -- Table Calendar
+use CalendarManager;
 if object_id('Calendar') is not null
 begin
 	if object_id('Calendar_Component') is not null
@@ -35,7 +36,6 @@ begin
 	end
 	drop table Calendar;
 end
-	
 	
 -- Table Component
 if object_id('Component') is not null
@@ -60,6 +60,9 @@ if object_id('ComponentType') is not null
 if object_id('Event') is not null
 	drop table Event;
 
+-- Table Todo
+if object_id('Todo') is not null
+	drop table Todo;
 
 -- --------------------------------------------------------------------------------
 
@@ -110,6 +113,17 @@ create table Event (
 	constraint fk_Event foreign key (componentID) references Component(id)
 );
 
+-- Table Todo
+create table Todo (
+	description char(255),
+	summary char(255),
+	status smallint default 0 check (status <= 2),
+	donepercent real default 0,
+	priority smallint default 0,
+	componentID int not null,
+	constraint fk_Todo foreign key (componentID) references Component(id)
+);
+
 -- Table Calendar_Component 
 
 create table Calendar_Component (
@@ -134,10 +148,11 @@ go
 -- Load Data
 -- Preenchimento da Tabela ComponentType com os tipos de componentes válidos
 insert into ComponentType (id,name,description) values (1,'Event', 'Event description');
-insert into ComponentType (id,name,description) values (2,'Task',  'Task description');
+insert into ComponentType (id,name,description) values (2,'Todo',  'Todo description');
 -- Preenchimento da Tabela Category com os tipos de categorias válidos
 insert into Category (id, name) values (1,'Default');
 
+-- --------------------------------------------------------------------------------
 -- Create Event
 insert into Component (id,begin_date,end_date, componentTypeID) values( ?, ?, ?, 1)
 insert into Event (description, summary, location, componentID) values ( ?, ?, ?, ? )

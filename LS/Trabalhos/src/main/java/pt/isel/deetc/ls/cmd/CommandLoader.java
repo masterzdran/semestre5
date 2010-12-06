@@ -2,9 +2,7 @@ package pt.isel.deetc.ls.cmd;
 
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -15,24 +13,15 @@ import pt.isel.deetc.ls.exceptions.InvalidCommandException;
 public class CommandLoader{
     private Map<String, Command> _commandMap;
     private boolean _exitRequested;
-    private final String _FILECOMMANDS = "commands.txt";
+    private final String _FILECOMMANDS 	= "commands.txt";
+    private final String _PACKAGE		= "/pt/isel/deetc/ls/cmd";
 
     public CommandLoader () {
         _commandMap = new HashMap<String, Command>();
-/*      
-        this.add(new CreateCalendar());
-        this.add(new CreateEvent());
-        this.add(new GetEvent());
-        this.add(new GetEventsAll());
-        this.add(new GetEventsCal());
-        this.add(new GetEvents());
-        this.add(new DeleteEvent());
-        this.add(new Init());
-
-*/
         _exitRequested=false;
         this.add(new Help());
         this.add(new Exit());
+        this.add(new List());
         this.loadCommands();
         
     }
@@ -40,7 +29,7 @@ public class CommandLoader{
     private void loadCommands(){
     	BufferedReader fileInput;
 		try {
-			fileInput = new BufferedReader(new InputStreamReader(CommandLoader.class.getResourceAsStream(_FILECOMMANDS)));
+			fileInput = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(_PACKAGE+"/"+_FILECOMMANDS)));
 			String command;
 			while((command=fileInput.readLine() )!= null ){
 				this.add((Command) Class.forName(CommandLoader.class.getPackage().getName()+"."+command).newInstance());
@@ -119,6 +108,30 @@ public class CommandLoader{
 		@Override
 		public void execute() {
 			_exitRequested = true;
+		}
+    	
+    }
+    /**
+     * Classe Exit
+     * @author nac
+     *
+     */
+    class List extends Command{
+
+		public List() {
+			super("list", "show all available commands");
+		}
+		@Override
+		public void execute() {
+	        for (String name : _commandMap.keySet()) {
+	            try {
+	            	System.out.println("--------------------------------------------------------------------------------");
+	            	System.out.println(name+"\t\t"+getCommand(name).getCommandDescription());
+	            } catch (InvalidCommandException ex) {
+	                Logger.getLogger(CommandLoader.class.getName()).log(Level.SEVERE, null, ex);
+	            }
+	        }
+			
 		}
     	
     }

@@ -10,7 +10,7 @@ public class DeleteEvent extends Command{
 
 	public DeleteEvent() {
 		super(_NAME, _DESCRIPTION);
-		Parameter p1 = new Parameter("event-id", "identificador do evento",true);
+		Parameter p1 = new Parameter("event-id", "Event identifier",true);
 		p1.addRule(ComponentRule.isRequired(p1));
 		p1.addRule(ComponentRule.allowNoEmpty(p1));
 		addParameter(p1);
@@ -18,7 +18,7 @@ public class DeleteEvent extends Command{
 
 	@Override
 	public void execute() {
-		Event event= new Event("none", "20101010", "20101010");
+		Event event= new Event();
 		event.setId(Integer.parseInt(getValue("event-id")));
     	EventMapper e = new EventMapper();
     	if (e.delete(event)> 0){

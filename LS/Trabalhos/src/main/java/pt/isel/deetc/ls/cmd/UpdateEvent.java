@@ -3,6 +3,7 @@ package pt.isel.deetc.ls.cmd;
 import pt.isel.deetc.ls.mapper.EventMapper;
 import pt.isel.deetc.ls.model.ComponentRule;
 import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.model.LSDate;
 
 public class UpdateEvent extends Command {
 	private static final String _NAME = "update-event";
@@ -53,7 +54,7 @@ public class UpdateEvent extends Command {
 
 	@Override
 	public void execute() {
-		Event event = new Event(null, getValue("start"), getValue("end"), getValue("description"), getValue("location"), getValue("summary"));
+		Event event = new Event(null, new LSDate(getValue("start")), new LSDate( getValue("end")), getValue("description"), getValue("location"), getValue("summary"));
 		event.setId(Integer.parseInt(getValue("event-id")));
     	EventMapper e = new EventMapper();
     	if (e.update(event)> 0){

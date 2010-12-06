@@ -1,327 +1,181 @@
 package pt.isel.deetc.ls.mapper;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-import pt.isel.deetc.ls.database.Criteria;
-import pt.isel.deetc.ls.database.Query;
-import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.database.TodoQuery;
+import pt.isel.deetc.ls.model.Alarm;
+import pt.isel.deetc.ls.model.LSDate;
+import pt.isel.deetc.ls.model.Todo;
 
-public class TodoMapper extends Mapper<Event> {
+public class TodoMapper extends Mapper<Todo> {
 	private final String _COMPONENTNAME = "Todo";
-
-	private String _insertStm = "insert into Component (id,begin_date,end_date, componentTypeID) values( ?, ?, ?, ?) "
-			+ "insert into "+_COMPONENTNAME+" (description, summary, location, componentID) values ( ?, ?, ?, ? ) "
-			+ "insert into Component_Category (componentID, categoryID) values ( ?, ?) "
-			+ "insert into Calendar_Component (calendarID,componentID) values(?,?)";
-
-	private String _selectStm = "select ca.id, ca.name,c.id, c.begin_date, c.end_date,e.description"
-			+ ",e.summary,e.location, e.componentID from "+_COMPONENTNAME+" e, Component c, "
-			+ "Calendar_Component cc, Calendar ca where e.componentID=c.id "
-			+ "and c.id=cc.componentID and cc.calendarID=ca.id";
-
-	private String _selectComponentTypeId = "select id from ComponentType where name = ?";
-	private String _selectCalendarByID = "select id from Calendar where name =?";
-
-	private String _deleteStm = "delete from Calendar_Component where componentID = ?;"
-			+ "delete from Component_Category where componentID = ?;"
-			+ "delete from "+_COMPONENTNAME+" where componentID = ?;"
-			+ "delete from Component where ID = ?;";
-
+	private final int _DEFAULT_CATEGORY = 2;
 	
-	
-
 	public TodoMapper() {
 		super();
 	}
-
+	
 	@Override
-	public int delete(Event event) {
-		if (event == null)
-			return 0;
-		Connection c = getConnection();
-		try {
-			c.setAutoCommit(false);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		PreparedStatement p = getDeletePreparedStm(event);
-		int rowNbr = 0;
-		try {
-			int idx = 0, res = 0;
-			rowNbr = p.executeUpdate();
-			if (idx < 7 && res != 0 || idx > 6 && res != 1) {
-				c.rollback();
-				p.close();
-				closeConnection();
-				System.out.println("Debug Mode: Rollback activado");
-				return 0;
-			}
-			c.commit();
-			p.close();
-			closeConnection();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-
-			closeConnection();
-		}
-		return rowNbr;
+	public int update(Todo todo) {
+	    int result = -1;
+	    TodoQuery t = new TodoQuery();
+	    	    
+	    // Updates to Todo Table (if they exist)
+	    t.updateTodo();
+	    
+	    if ( todo.getSummary() != null ) t.setSummary(todo.getSummary());
+	    
+	    if ( todo.getDescription() != null ) t.setDescription(todo.getDescription());
+	    
+	    if ( todo.getState() != 0 ) t.setState(todo.getState());
+	    
+	    if ( todo.getDonePercent() != 0.0 ) t.setDonePercent(todo.getDonePercent());
+	    
+	    if ( todo.getPriority() != 0 ) t.setPriority(todo.getPriority());
+	    
+	    t.whereTodoIdIs(todo.getId());
+	    
+	    result = execute(t.getStatement());
+	    
+	    t.clear();
+	    
+	    /* Updates to Component Table (if they exist) */
+	    t.updateComponent();
+	    
+	    if ( todo.getBeginDate() != null ) t.setBeginDate(todo.getBeginDate());
+	    
+	    if( todo.getEndDate() != null ) t.setEndDate(todo.getEndDate());
+	    
+	    t.whereComponentIdIs(todo.getId());
+	    
+	    result = execute(t.getStatement());
+	    
+		return result;
+	}
+	
+	@Override
+	public int delete(Todo todo) {
+	    	TodoQuery t = new TodoQuery();
+	    	t.deleteComponentById(todo.getId());
+		return execute(t.getStatement());
 	}
 
 	@Override
-	public boolean exists(Event event) {
+	public int insert(Todo todo) {
+	    if ( todo == null ) return 0;
+		return (execute(getInsertPrepStm(todo)));
+	}
+
+	@Override
+	public ArrayList<Todo> select() {
+	    	TodoQuery t = new TodoQuery();
+	    	t.select();
+		return (select(t.getStatement()));
+	}
+	
+	// Method for custom TodoQueries
+	public Iterable<Todo> select(TodoQuery t){
+	    return (select(t.getStatement()));
+	}
+	
+	public ArrayList<Todo> selectBetweenDates(Todo todo) {
+	    TodoQuery t = new TodoQuery();
+	    t.select().where().beginDateBetween(todo.getBeginDate(), todo.getEndDate());
+		return (select(t.getStatement()));
+	}
+
+	public ArrayList<Todo> selectByCal(Todo todo) {
+	    	TodoQuery t = new TodoQuery();
+	    	t.select().where().whereComponentIdIs(todo.getId());
+		return (select(t.getStatement()));
+	}
+
+	public ArrayList<Todo> selectByID(Todo todo) {
+	    TodoQuery t = new TodoQuery();
+	    t.select().where().componentIdIs(todo.getId());
+	    return (select(t.getStatement()));
+	}
+	
+	/*-------------------------------------------- Private methods -----------------------------------------------------------*/
+	
+	private ArrayList<Todo> select(String stm) {
+	    	ArrayList<Todo> list = new ArrayList<Todo>();
+	    	ResultSet result = selectRS(stm);
+	    	rsToal(result,list);
+		return list;
+	}
+	
+	private synchronized void rsToal(ResultSet result, ArrayList<Todo> list) {
+		try {
+			AlarmMapper alm = new AlarmMapper();
+			Alarm alarm = new Alarm();
+			while (result.next()) {
+				Todo todo = new Todo(result.getString(3),
+					new LSDate(result.getDate(4)), 
+					new LSDate(result.getDate(5)),
+					result.getString(6),
+					result.getString(7),
+					result.getInt(8),
+					result.getDouble(9),
+					result.getInt(10)
+				); 
+				todo.setId(result.getInt(9));
+				alarm.setComponentID(todo.getId());
+				Iterable<Alarm> alarmList=alm.selectByComponentID(alarm);
+				if (alarmList.iterator().hasNext())
+					todo.addAlarmList(alarmList);
+				list.add(todo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private String getInsertPrepStm(Todo todo) {
+	    ResultSet rs = null;
+	    TodoQuery t = new TodoQuery();
+	    
+	    t.selectCalendarByName(todo.getCalName());
+	    
+	    // Query calendarID
+	    rs = selectRS(t.getStatement());
+	    if ( rs == null ) System.out.println("....................");
+	    int calendarID = 0;
+	    try {
+		rs.next();
+		calendarID = rs.getInt("id");
+		rs.clearWarnings();
+	    } catch( SQLException e) {
+		e.printStackTrace();
+	    }
+	    
+	    int componentID = todo.getId();
+	    int categoryID = _DEFAULT_CATEGORY;
+	    
+	    t.clear();
+	    t.selectComponentTypeId(_COMPONENTNAME);
+	    rs = selectRS(t.getStatement());
+	    
+	    // Query componentTypeID
+	    int componentTypeID = 0;
+	    try {
+		rs.next();
+		componentTypeID = rs.getInt("id");
+		rs.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }    
+	    t.clear();
+	    t.insertTodo(todo.getId(), todo.getBeginDate(), todo.getEndDate(), componentTypeID, todo.getDescription(),
+		    todo.getSummary(), todo.getState(), todo.getDonePercent(), todo.getPriority(), componentID, categoryID, calendarID);
+		return t.getStatement();
+	}
+	
+	@Override
+	public boolean exists(Todo todo) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
-
-	@Override
-	public int insert(Event event) {
-		if (event == null)
-			return 0;
-		openConnection();
-		PreparedStatement p = getInsertPrepStm(event);
-		int rowNbr = 0;
-		try {
-			rowNbr = p.executeUpdate();
-			p.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-
-			closeConnection();
-		}
-		return rowNbr;
-	}
-
-	@Override
-	public ArrayList<Event> select() {
-		Query q = new Query(_selectStm);
-		PreparedStatement p = null;
-		try {
-			p = getConnection().prepareStatement(q.getQuery());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return (select(p));
-	}
-
-	@Override
-	public int update(Event event) {
-		String _updateEventStm = "update event set ";
-		String _updateComponentStm = "update component set ";
-		int res=0;
-		try {
-			/* NOTES: Used to detect if previous parameters have been used (to be implemented in a more efficient way possibly in Criteria  */
-			int countParams=0;
-			Connection conn = getConnection();
-			Statement stm = conn.createStatement();
-			// BEGIN TRANSACTION
-			conn.setAutoCommit(false);
-
-			// Updates to Event Table (if they exist)
-			if (event.getSummary() != null){
-				_updateEventStm += "summary='" + event.getSummary() + "'";
-				++countParams;
-			}
-			if (event.getLocation() != null){
-				if(countParams>0) _updateEventStm+=",";
-				_updateEventStm += "location='" + event.getLocation() + "'";
-			}
-			if (event.getDescription() != null){
-				if(countParams>0) _updateEventStm+=",";
-				_updateEventStm += "description='" + event.getDescription() + "'";
-			}
-			_updateEventStm += " WHERE componentId=" + event.getId() + ";";
-						
-			if ( (res+=stm.executeUpdate(_updateEventStm))<1) { conn.rollback(); System.out.println("Debug Mode: rollback de Event"); }
-			
-			// Updates to Component Table (if they exist)
-			countParams=0;
-			if (event.getBeginDate() != null){
-				_updateComponentStm += "begin_date='" + event.getBeginDate() + "'";
-				++countParams;
-			}
-			if (event.getEndDate() != null){
-				if(countParams==1) _updateComponentStm+=",";
-				_updateComponentStm += "end_date='" + event.getEndDate() + "'";
-			}
-			_updateComponentStm += " WHERE id=" + event.getId()+";";
-		
-			if ((res+=stm.executeUpdate(_updateComponentStm))<1) { 	conn.rollback(); System.out.println("Debug Mode: rollback de Component"); 	}
-			
-			// END TRANSACTION
-			conn.commit();
-			stm.close();
-			closeConnection();
-		} catch (SQLException e) { e.printStackTrace(); }
-		// Debug Mode
-		System.out.println("Debug Mode: "+_updateEventStm);
-		System.out.println("Debug Mode: "+_updateComponentStm);
-		return res;
-	}
-
-	public ArrayList<Event> selectBetweenDates(Event event) {
-		Query q = new Query(_selectStm);
-		q.add(Criteria.greaterOrEqualThan("c.begin_date"));
-		q.add(Criteria.lessOrEqualThan("c.end_date"));
-		PreparedStatement p = null;
-		try {
-			p = getConnection().prepareStatement(q.getQuery());
-			p.setString(1, event.getBeginDate().toString());
-			p.setString(2, event.getEndDate().toString());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return (select(p));
-	}
-
-	public ArrayList<Event> selectByCal(Event event) {
-		Query q = new Query(_selectStm);
-		q.add(Criteria.equal("ca.name"));
-
-		PreparedStatement p = null;
-		try {
-			p = getConnection().prepareStatement(q.getQuery());
-			p.setString(1, event.getCalName());
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return (select(p));
-	}
-
-	private PreparedStatement getDeletePreparedStm(Event event) {
-		PreparedStatement p = null;
-
-		try {
-			p = getConnection().prepareStatement(_deleteStm);
-			p.setInt(1, event.getId());
-			p.setInt(2, event.getId());
-			p.setInt(3, event.getId());
-			p.setInt(4, event.getId());
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return p;
-	}
-
-	public ArrayList<Event> selectByID(Event event) {
-		Query q = new Query(_selectStm);
-		q.add(Criteria.equal("c.id"));
-
-		PreparedStatement p = null;
-		// System.out.println(q.getQuery());
-		try {
-			p = getConnection().prepareStatement(q.getQuery());
-			p.setInt(1, event.getId());
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return (select(p));
-	}
-
-	private ArrayList<Event> select(PreparedStatement stm) {
-		openConnection();
-		ArrayList<Event> list = new ArrayList<Event>();
-		try {
-			ResultSet result = stm.executeQuery();
-			rsToal(result, list);
-			result.close();
-			stm.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		closeConnection();
-		return list;
-
-	}
-
-	private synchronized void rsToal(ResultSet result, ArrayList<Event> list) {
-		try {
-			while (result.next()) {
-				Event event = new Event(result.getString(3),
-						result.getString(4), result.getString(5),
-						result.getString(6), result.getString(7),
-						result.getString(8));
-				event.setId(result.getInt(9));
-				list.add(event);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private PreparedStatement getInsertPrepStm(Event event) {
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		int calendarID = 0;
-
-		// Query calName
-		try {
-			p = getConnection().prepareStatement(_selectCalendarByID);
-			p.setString(1, event.getCalName());
-			rs = p.executeQuery();
-			rs.next();
-			calendarID = rs.getInt("id");
-			rs.close();
-			p.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		int componentID = event.getId();
-		int componentTypeID = 1;
-		int categoryID = 0;
-		try {
-			p = getConnection().prepareStatement(_selectComponentTypeId);
-			p.setString(1, _COMPONENTNAME);
-			rs = p.executeQuery();
-			rs.next();
-			categoryID = rs.getInt("id");
-			rs.close();
-			p.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			p = getConnection().prepareStatement(_insertStm);
-			p.setInt(1, componentID);
-			p.setString(2, event.getBeginDate().toString());
-			p.setString(3, event.getEndDate().toString());
-			p.setInt(4, componentTypeID);
-
-			p.setString(5, event.getDescription());
-			p.setString(6, event.getSummary());
-			p.setString(7, event.getLocation());
-			p.setInt(8, componentID);
-
-			p.setInt(9, componentID);
-			p.setInt(10, categoryID);
-
-			p.setInt(11, calendarID);
-			p.setInt(12, componentID);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return p;
-	}
-
 }

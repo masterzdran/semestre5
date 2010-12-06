@@ -1,7 +1,5 @@
 package pt.isel.deetc.ls.database;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -13,18 +11,18 @@ public class ConnectionManager {
 	private Connection _con;
 	 
 	public ConnectionManager() {
+		start();
+	}
+	private void start(){
 		try {
-			_ds  = (new DBDataSource()).getDataSource();
+			_ds  = DBDataSource.getInstace().getDataSource();
 			_con = _ds.getConnection(); 
 		} catch (SQLServerException e) {
-			// TODO SQLServerException treatment
-		} catch (FileNotFoundException e) {
-			// TODO FileNotFoundException treatment
-		} catch (IOException e) {
 			// TODO IOException treatment
 		}
 	}
 	public Connection getConnection(){
+		if (_con == null) start();
 		return _con;
 	}
 
@@ -32,6 +30,7 @@ public class ConnectionManager {
 		if (_con != null){
 			try {
 				_con.close();
+				_con=null;
 			} catch (SQLException e) {
 				System.err.print("A error ocorred while attemption to close the connection.[ Error :]"+e.getErrorCode());
 				return false;

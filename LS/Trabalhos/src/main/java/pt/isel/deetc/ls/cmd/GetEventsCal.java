@@ -3,6 +3,7 @@ package pt.isel.deetc.ls.cmd;
 import pt.isel.deetc.ls.mapper.EventMapper;
 import pt.isel.deetc.ls.model.ComponentRule;
 import pt.isel.deetc.ls.model.Event;
+import pt.isel.deetc.ls.model.LSDate;
 
 public class GetEventsCal extends GetEventsAll {
 
@@ -20,10 +21,10 @@ public class GetEventsCal extends GetEventsAll {
 
     @Override
     public void execute() {
-		Event event= new Event(getValue("cal-name"), "", "");
+		Event event= new Event(getValue("cal-name"), new LSDate(),new LSDate());
     	EventMapper e = new EventMapper();
-       	setList(e.selectByCal(event));
-    	sR();
+    	Iterable<Event> collection = e.selectByCal(event);
+    	report(collection);
     }
 
 }

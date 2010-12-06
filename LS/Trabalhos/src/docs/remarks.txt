@@ -1,0 +1,1 @@
+Pensámos em implementar views para simplificar as queries mas eventualmente chegámos à conclusão que o peso, em termos de código, não estava nos selects mas nos updates/inserts (razão: views não permitem actualizações a mais de uma tabela)
