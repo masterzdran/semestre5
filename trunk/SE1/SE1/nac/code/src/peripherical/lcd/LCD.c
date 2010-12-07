@@ -1,11 +1,12 @@
 #include "LCD.h"
 #include "TIMER.h"
 #include "GPIO.h"
+#include 
 
 
 /* 
  * 
- * |     |     |P0.13|P0.12|P0.11|P0.10|P0.09|
+ * |     |P0.13|P0.12|P0.11|P0.10|P0.09|P0.08|
  * | R/!W| EN  | RS  | DB7 | DB6 | DB5 | DB4 |
  * 
  * */
@@ -21,13 +22,13 @@
 
 
 static unsigned char value = 0;
-static 
+static unsigned char isCentered = 0;
 
 void LCD_init(){
     //Pag51: Table 6. Interface Data Length : Four bits
     /* Begin inicialization */
     
-    processValue(0,ENABLE_MASK|RS_MASK|DATA_MASK)
+    processValue(0,ENABLE_MASK|RS_MASK|DATA_MASK);
     timer_sleep_miliseconds(TIMER,46);          //Wait for 45 ms or more after VDD
     processValue(0,0x03);    
     timer_sleep_miliseconds(TIMER,5);           //Wait for 4,1 ms or more
@@ -73,14 +74,14 @@ void displayControlOn() {processValue(0,DISPLAY_ON_MASK | CURSOR_ON_MASK);}
  */
 void displayControlOff() {processValue(0,DISPLAY_OFF_MASK);}
 /**
- * Desactiva o Blik
+ * Desactiva o Blink
  */
 void blinkOff() {processValue(0,DISPLAY_ON_MASK | BLINK_OFF_MASK);}
 
 /**
  * Apaga todos os caracteres do display
  * */
-void clear() {processValue(0,LicConstants.CLEAR_MASK);}
+void clear() {processValue(0,CLEAR_MASK);}
 /**
  * Apaga todos os caracteres de uma linha
  * */
@@ -95,7 +96,7 @@ void clearLine(unsigned char line) {
  * 
  *  Posiciona o cursor na linha (0..1) e coluna (0..15) indicadas
  */
-void posCursor(unsigned char line, unsigned char col) { processValue(0,LicConstants.ADDR_COUNTER_MASK | (0x40 * line + col));}
+void posCursor(unsigned char line, unsigned char col) { processValue(0,ADDR_COUNTER_MASK | (0x40 * line + col));}
 
 /**
  * 
@@ -136,13 +137,11 @@ void writeString(char* txt) {
  * esquerda,dependendo da última chamada a SetCenter()
  */
 void writeLine(unsigned char line, char* txt,) {
-  int length = 0;
-  char* txttmp= txt;
+  int length = Wstrlen(txt);
   if (isCentered){
-    for(;*txttmp;txttmp++, length++); 
     length =  (DISPLAY_SIZE_MASK - length) / 2;
   }
-  posCursor(line, (length);
+  posCursor(line, (length));
   writeString(txt);
 }
 
@@ -150,7 +149,7 @@ void writeLine(unsigned char line, char* txt,) {
  * Indica se o texto escrito com writeLine() nas chamadas
  * seguintes deve ou não ficar centrado na linha
  */
-void setCenter(unsigned char value) {isCentered = value;}
+inline void setCenter(unsigned char value) {isCentered = value;}
 
 /**
  * Recebe uma string e o numero de caracteres a recuar e calcula
@@ -160,9 +159,7 @@ void setCenter(unsigned char value) {isCentered = value;}
  * y -2b)/2 se não centrado pos= y - b
  */
 int getPos(char* txt, unsigned char b) {
-  char* txttmp= txt;
-  int length = 0;
-  for(;*txttmp;txttmp++, length++); 
+  int length = Wstrlen(txt);
   return (isCentered) ? (DISPLAY_SIZE_MASK + length - 2 * b) / 2 : (length - 3);
 }
 

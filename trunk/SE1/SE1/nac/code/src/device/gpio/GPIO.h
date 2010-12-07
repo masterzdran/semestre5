@@ -1,7 +1,8 @@
 #ifndef GPIO_H
 #define GPIO_H
 #include "LPC2106.h"
-#define pGPIO 	((pLPC_GPIO)	0xE0028000)
+
+
 
 typedef struct _GPIO{
 	U32 IOPIN;	/* GPIO Port Pin value register.*/
@@ -9,6 +10,9 @@ typedef struct _GPIO{
 	U32 IODIR;	/* GPIO Port Direction control register.*/
 	U32 IOCLR;	/* GPIO Port Output Clear register.*/
 }LPC_GPIO,*pLPC_GPIO;
+
+#define pGPIO 	((pLPC_GPIO)	0xE0028000)
+
 
 U32 gpio_read(U32 mask);
 void gpio_clear(U32 mask);

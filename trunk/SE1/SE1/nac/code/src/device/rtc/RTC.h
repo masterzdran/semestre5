@@ -1,8 +1,6 @@
 #ifndef RTC_H
 #define RTC_H
 
-
-
 #define     pRTC      (((pLPC_RTC) 0xE0024000))
 
 typedef struct _RTC{
@@ -22,6 +20,7 @@ typedef struct _RTC{
     U32    DOY;
     U32    MONTH;
     U16    YEAR;
+    U16    DUMMY1;
     U32    ALSEC;
     U32    ALMIN;
     U32    ALHOUR;

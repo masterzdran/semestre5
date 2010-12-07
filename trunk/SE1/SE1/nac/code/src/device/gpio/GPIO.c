@@ -24,8 +24,12 @@ void gpio_PINSEL1(){
  * 1 Controlled pin is output.
  * */
 void gpio_write(U32 mask, U32 value ){
-  pGPIO->IODIR = mask;
-  pGPIO->IOSET = ~(value & mask);  
+  pGPIO->IOSET = mask & value;  
+  pGPIO->IOCLR = ~(mask & value);
+}
+
+void gpio_set_direction(U32 mask, unsigned char direction){
+  pGPIO->IODIR &= (direction)?mask:~mask;
 }
 
 void gpio_clear(U32 mask){
@@ -33,6 +37,6 @@ void gpio_clear(U32 mask){
 }
 
 U32 gpio_read(U32 mask){
-	pGPIO->IODIR = ~mask;
-    return  ~(pGPIO->IOPIN& mask);
+	//pGPIO->IODIR = ~mask;
+    return  pGPIO->IOPIN& mask;
 }
