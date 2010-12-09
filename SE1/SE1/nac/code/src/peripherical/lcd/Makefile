@@ -18,9 +18,9 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= /media/78BE-0340/
+SVN_PATH		= ./../../../..
 #=======================================================================
-PROJECT_PATH	= $(SVN_PATH)/SE1/code
+PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
 TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test

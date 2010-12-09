@@ -18,15 +18,13 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= /media/78BE-0340/
+SVN_PATH		= ./../..
 #=======================================================================
-PROJECT_PATH	= $(SVN_PATH)/SE1/code
+PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
 TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test
 #=======================================================================
-LDS_PATH		=  $(SOURCE)/deploy/ldscript
-DEVICE			=  $(SOURCE)/device
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
 HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
@@ -47,7 +45,7 @@ COMPILE_ONLY 		= -c
 #Phony Target
 .PHONY 					= clean
 .PHONY					= clear
-#=======================================================================
+#=========================================================================
 #Set the Correct LdScript
 ifdef ROM
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_rom
