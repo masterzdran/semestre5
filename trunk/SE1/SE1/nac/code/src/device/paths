@@ -1,0 +1,27 @@
+A -> struct
+B -> memory address
+C -> functions created
+D ->
+E -> 
+F -> Makefile
+
+                    | A | B | C | D | E | F |
+---------------------------------------------
+gpio                | V | V | V |   |   |   |
+i2c                 |   |   |   |   |   |   |
+interrupts          |   |   |   |   |   |   |
+LPC2106             |   |   |   |   |   |   |
+mam                 |   |   |   |   |   |   |
+power               |   |   |   |   |   |   |
+pwm                 |   |   |   |   |   |   |
+ram                 |   |   |   |   |   |   |
+rtc                 | V | V |   |   |   |   |Alarm && all get Functions
+scb                 |   |   |   |   |   |   |
+spi                 |   |   |   |   |   |   |
+ssp                 |   |   |   |   |   |   |
+startup             | V | V | V |   |   |   |
+timer               | V | V | V |   |   |   |
+uarts               |   |   |   |   |   |   |
+vic                 |   |   |   |   |   |   |
+watchdog            |   |   |   |   |   |   |
+---------------------------------------------
