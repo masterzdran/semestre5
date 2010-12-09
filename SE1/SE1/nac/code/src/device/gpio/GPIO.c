@@ -37,6 +37,5 @@ void gpio_clear(U32 mask){
 }
 
 U32 gpio_read(U32 mask){
-	//pGPIO->IODIR = ~mask;
     return  pGPIO->IOPIN& mask;
 }
