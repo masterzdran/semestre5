@@ -7,20 +7,20 @@ F -> Makefile
 
                     | A | B | C | D | E | F |
 ---------------------------------------------
-gpio                | V | V | V |   |   |   |
+gpio                | V | V | V | - | - | V |
 i2c                 |   |   |   |   |   |   |
-interrupts          |   |   |   |   |   |   |
+interrupts          |   |   |   |   |   | V |
 LPC2106             |   |   |   |   |   |   |
 mam                 |   |   |   |   |   |   |
 power               |   |   |   |   |   |   |
 pwm                 |   |   |   |   |   |   |
 ram                 |   |   |   |   |   |   |
-rtc                 | V | V |   |   |   |   |Alarm && all get Functions
-scb                 |   |   |   |   |   |   |
+rtc                 | V | V |   |   |   | V |Alarm && all get Functions
+scb                 |   |   |   |   |   |   |DONE
 spi                 |   |   |   |   |   |   |
 ssp                 |   |   |   |   |   |   |
-startup             | V | V | V |   |   |   |
-timer               | V | V | V |   |   |   |
+startup             | V | V | V | - | - | V |
+timer               | V | V | V | - | - | V |
 uarts               |   |   |   |   |   |   |
 vic                 |   |   |   |   |   |   |
 watchdog            |   |   |   |   |   |   |
