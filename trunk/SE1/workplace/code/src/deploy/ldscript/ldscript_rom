@@ -8,6 +8,9 @@ MEMORY
 
 SECTIONS
 {
+  .startup : {
+    *(.startup*)
+  } > rom
 	.text : {
 	__text_start__ = ABSOLUTE(.);
 	*(.text*) *(.glue_7) *(.glue_7t);

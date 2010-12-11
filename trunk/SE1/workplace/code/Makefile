@@ -17,47 +17,39 @@
 #=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-#HOME 
-HOME			= ./
-#SOURCE
-SOURCE			=	$(HOME)/src
-#Target Path
-TARGET			= 	$(HOME)/target
-TODEPLOY		= 	$(SOURCE)/deploy
-DEVICE			=  	$(SOURCE)/device
-MYINCLUDE		=	$(SOURCE)/include
-MYLIB			=  	$(SOURCE)/lib
-
-LDS_PATH		=  	$(TODEPLOY)/ldscript
-OPENOCD_FILE	=	$((TODEPLOY))/openocd/openocd_lpc2106.cfg
-
-#Virtual Paths
-VPATH			= $(MYINCLUDE):$(MYLIB)
-
-#Library
-LYBRARY			= $(MYLIB)/library.ar
+#Environmental Paths
+SVN_PATH		= ./..
 #=======================================================================
+PROJECT_PATH	= $(SVN_PATH)/code
+SOURCE				= $(PROJECT_PATH)/src
+DEVICE				= $(SOURCE)/device
+TODEPLOY			= $(SOURCE)/deploy
+TARGET				= $(PROJECT_PATH)/target
+TEST					= $(PROJECT_PATH)/test
+#=======================================================================
+MYLIB			= $(SOURCE)/lib
+INCLUDE		= $(SOURCE)/include
+HEADER			= 
+SEARCHLIB		= -L$(MYLIB) 
 #Executables
-CC 				= arm-eabi-gcc 
+CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
-LD				= arm-eabi-ld 
-
-#=======================================================================
+LD				= arm-eabi-ld
 #Debugger
 DEBUGGER		= arm-eabi-insight
-#=======================================================================
 #Commom Options
-OUTPUT 			= -o
-LDSCRIPT		= -T 
-DEBUGSTABS		= --gstabs
-DEBUGGER		= -g
-COPTIONS 		= -Wall -pedantic
-COMPILE_ONLY 	= -c 
-#=======================================================================
+OUTPUT 					= -o
+LDSCRIPT				= -T 
+DEBUGSTABS			= --gstabs
+DEBUGSYMBOLS		= -g
+COPTIONS 				= -Wall -pedantic
+COMPILE_ONLY 		= -c 
 #Phony Target
-.PHONY 			= clean
-.PHONY			= clear
+.PHONY 					= clean
+.PHONY					= clear
 #=======================================================================
+LDS_PATH		=  	$(TODEPLOY)/ldscript
+OPENOCD_FILE	=	$(TODEPLOY)/openocd/openocd_lpc2106.cfg
 #Set the Correct LdScript
 ifdef ROM
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_rom
@@ -66,39 +58,26 @@ else
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_ram
 END_EXEC		= $(TARGET)/ram.elf
 endif
-#=======================================================================
 
+VPATH 			= $(MYLIB)
 #=======================================================================
-all: $(END_EXEC)
+OBJECT =		start.o startosc.o TIMER.o GPIO.o  LCD.o  lcd_test.o  
+#=======================================================================
+all: $(END_EXEC) 
 
 #Generate the executable
-$(END_EXEC): $(LYBRARY)
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@ $^
-
-#Create the device library
-$(LYBRARY): $(MYLIB)/*.o
-	$(MAKE) -C $(MYLIB)
-
-init.o:
-	$(MAKE) -C $(DEVICE)/startup/
-
-LPC2106.o:	
-	$(MAKE) -C $(DEVICE)/LPC2106/
-
+$(END_EXEC): $(OBJECT) 
+	$(LD)  $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ 
+	
+start.o:
 startosc.o:
-	$(MAKE) -C $(DEVICE)/startup/
-
-keyboard.o:
-	$(MAKE) -C $(DEVICE)/keyboard/
-
-led.o:
-	$(MAKE) -C $(DEVICE)/led/
-
+TIMER.o:
+GPIO.o:
 LCD.o:
-	$(MAKE) -C $(DEVICE)/LCD/
+	$(MAKE) -C $(DEVICE)
 
-chrono.o:
-	$(MAKE) -C $(DEVICE)/timer/	
+lcd_test.o:
+	$(MAKE) -C $(SOURCE)/tests/lcd-test
 
 #Start the Debugger	
 debug: $(END_EXEC)
@@ -106,10 +85,6 @@ debug: $(END_EXEC)
 
 #clean files
 clean:
-	$(MAKE) -C $(DEVICE)/startup/ clean
-	$(MAKE) -C $(DEVICE)/keyboard/ clean
-	$(MAKE) -C $(DEVICE)/led/ clean
-	$(MAKE) -C $(DEVICE)/main/ clean
-	
+	$(MAKE) -C $(DEVICE) clean	
 clear:
 	clear
