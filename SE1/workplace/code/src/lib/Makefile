@@ -37,7 +37,7 @@ DEBUGSTABS		= --gstabs
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-lybrary: *.o
+all: *.o
 	$(AR) $@ $^
 	
 clean:

@@ -1,26 +1,22 @@
-/* Memory Accelerator Module (MAM) */
-#define MAMCR          (*((volatile unsigned char *) 0xE01FC000))
-#define MAMTIM         (*((volatile unsigned char *) 0xE01FC004))
-/* Phase Locked Loop (PLL) */
-#define PLLCON         (*((volatile unsigned char *) 0xE01FC080))
-#define PLLCFG         (*((volatile unsigned char *) 0xE01FC084))
-#define PLLSTAT        (*((volatile unsigned short*) 0xE01FC088))
-#define PLLFEED        (*((volatile unsigned char *) 0xE01FC08C))
-/* VPB Divider */
-#define VPBDIV         (*((volatile unsigned char *) 0xE01FC100))
-
-#define PLOCK 		0x400
-
+#include  "startosc.h"
 void StartOsc(void) {
-    PLLCFG = 0x23;		// Setting M and P values
-    PLLFEED = 0xAA; PLLFEED = 0x55;
-    PLLCON = 0x1;		// Enabling the PLL 
-    PLLFEED = 0xAA; PLLFEED = 0x55;
-    while ( !(PLLSTAT & PLOCK) );   // Wait for the PLL to lock
-    PLLCON = 0x3;		// Connect the PLL as the clock source
-    PLLFEED = 0xAA; PLLFEED = 0x55;
-    MAMCR = 0x2; 		// Enabling MAM and setting number 
-    MAMTIM = 0x4; 		// of clocks used for Flash memory fetch
-    VPBDIV = 0x1; 		// Setting pclk to cclk
+  
+    pPLL->CONFIGURATION =__PLL_P_VALUE__ | __PLL_M_VALUE__;
+    PLL_FEED();
+    
+    pPLL->CONTROL = __PLLE_ENABLE__;
+    PLL_FEED();
+
+    while (!(pPLL->STATUS & __PLL_PLOCK__));
+
+    pPLL->CONTROL = (__PLLC_CONNECT__<<1) | __PLLE_ENABLE__;
+    
+    PLL_FEED();
+     
+    pMAM->CONTROL_REGISTER = __MAM_FULLY_ENABLE__;
+     
+    pMAM->TIMING = __MAMTIM_FETCH_4_CLOCK__;
+    
+    __VPB_CLOCK__   = __VPB_CLOCK_EQUAL_CLOCK__;
 }
 

@@ -15,31 +15,36 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
-#								LPC2106
-#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-MYLIB			= ../../lib
-MYINCLUDE		= ../../include
-#Executables
-CC 				= arm-eabi-gcc 
-COPY			= cp 
-#Commom Options
-OUTPUT 			= -o
-DEBUGGER		= -g
-COPTIONS 		= -Wall -pedantic
-COMPILE_ONLY 	= -c 
-#Phony Target
-.PHONY 			= clean
-.PHONY			= clear
+#Environmental Paths
+SVN_PATH		= ./../../..
 #=======================================================================
-LPC2106.o: LPC2106.c LPC2106.h
-	$(CC) $(DEBUGGER) $(COMPILE_ONLY) $(COPTIONS) $(OUTPUT) $(MYLIB)/$@  $<
-	$(COPY) LPC2106.h $(MYINCLUDE)/LPC2106.h
-
-clean:
-	rm  $(MYLIB)/LPC2106.c
-	rm  $(MYINCLUDE)/LPC2106.h
-
-clear:
-	clear
+PROJECT_PATH	= $(SVN_PATH)/code
+SOURCE				= $(PROJECT_PATH)/src
+TARGET				= $(PROJECT_PATH)/target
+TEST					= $(PROJECT_PATH)/test
+#=======================================================================
+MYLIB			= $(SOURCE)/lib
+INCLUDE		= $(SOURCE)/include
+HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
+SEARCHLIB		= -I $(HEADER) 
+#Executables
+CC 				= arm-eabi-gcc
+AS				= arm-eabi-as
+LD				= arm-eabi-ld
+#Debugger
+DEBUGGER		= arm-eabi-insight
+#Commom Options
+OUTPUT 					= -o
+LDSCRIPT				= -T 
+DEBUGSTABS			= --gstabs
+DEBUGSYMBOLS		= -g
+COPTIONS 				= -Wall -pedantic
+COMPILE_ONLY 		= -c 
+#Phony Target
+.PHONY 					= clean
+.PHONY					= clear
+#=======================================================================
+#															LPC2106
+#=======================================================================

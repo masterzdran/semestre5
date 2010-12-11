@@ -46,19 +46,18 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-#															TIMER
+#				RTC
 #=======================================================================
-all: TIMER.o
+all: RTC.o
 
-
-TIMER.o:TIMER.c TIMER.h 
+RTC.o:RTC.c RTC.h 
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
 	cp $@ $(MYLIB)/$@
-	cp TIMER.h $(INCLUDE)/
+	cp RTC.h $(INCLUDE)/
 	
 clean:
-	rm  TIMER.o
-	rm  $(MYLIB)/TIMER.o $(INCLUDE)/TIMER.h
+	rm  RTC.o
+	rm  $(MYLIB)/RTC.o $(INCLUDE)/RTC.h
 	
 	
 clear:
