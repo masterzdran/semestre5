@@ -15,39 +15,54 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
-#								STARTUP
-#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
-MYLIB			= ../../lib
-MYINCLUDE		= ../../include
-#Executables
-CC 				= arm-eabi-gcc 
-COPY			= cp 
-AS				= arm-eabi-as
-#Commom Options
-OUTPUT 			= -o
-DEBUGSTABS		= --gstabs
-DEBUGGER		= -g
-COPTIONS 		= -Wall -pedantic
-COMPILE_ONLY 	= -c 
-#Phony Target
-.PHONY 			= clean
-.PHONY			= clear
+#Environmental Paths
+SVN_PATH		= ./../../..
 #=======================================================================
-all: startosc.o init.o
+PROJECT_PATH	= $(SVN_PATH)/code
+SOURCE				= $(PROJECT_PATH)/src
+TARGET				= $(PROJECT_PATH)/target
+TEST					= $(PROJECT_PATH)/test
+#=======================================================================
+MYLIB			= $(SOURCE)/lib
+INCLUDE		= $(SOURCE)/include
+HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
+SEARCHLIB		= -I $(HEADER) 
+#Executables
+CC 				= arm-eabi-gcc
+AS				= arm-eabi-as
+LD				= arm-eabi-ld
+#Debugger
+DEBUGGER		= arm-eabi-insight
+#Commom Options
+OUTPUT 					= -o
+LDSCRIPT				= -T 
+DEBUGSTABS			= --gstabs
+DEBUGSYMBOLS		= -g
+COPTIONS 				= -Wall -pedantic
+COMPILE_ONLY 		= -c 
+#Phony Target
+.PHONY 					= clean
+.PHONY					= clear
+#=======================================================================
+#															Start
+#=======================================================================
+all: startosc.o start.o
 
 startosc.o: startosc.c startosc.h
-	$(CC) $(DEBUGGER) $(COMPILE_ONLY) $(COPTIONS) $(OUTPUT) $(MYLIB)/$@  $<
-	$(COPY) startosc.h $(MYINCLUDE)/startosc.h
-	
-init.o: init.S 
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $<
-	
-clean:
-	rm  $(MYLIB)/startosc.o 
-	rm	$(MYLIB)/init.o 
-	rm	$(MYINCLUDE)/startosc.h
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	cp $@ $(MYLIB)/$@
+	cp *.h $(INCLUDE)/
 
+start.o: start.S
+	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
+	cp $@ $(MYLIB)/$@
+
+clean:
+	rm  startosc.o start.o 
+	rm  $(MYLIB)/startosc.o $(MYLIB)/start.o $(INCLUDE)/startosc.h
+	
+	
 clear:
 	clear
