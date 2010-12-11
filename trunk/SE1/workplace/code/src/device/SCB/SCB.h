@@ -77,14 +77,6 @@ typedef struct _SCS{
     U32   SCS; b  
 }LPC_SCS,*pLPC_SCS;
 
-/*
-  Table 35: Suggestions for MAM timing selection 
-  system clock              Number of MAM fetch cycles in MAMTIM
-  < 20 MHz                    1 CCLK
-  20 MHz to 40 MHz            2 CCLK
-  40 MHz to 60 MHz            3 CCLK
-  >60 MHz                     4 CCLK
-*/
 
 #define __EXTERNAL_INT_EINT0_ENABLE__               ((const unsigned char )0x01)
 #define __EXTERNAL_INT_EINT1_ENABLE__               ((const unsigned char )0x02)
@@ -174,6 +166,14 @@ typedef struct _SCS{
 #define     __MAMTIM_FETCH_7_CLOCK__                ((const unsigned char ) 0x7 )
 #define     __MAMTIM_MASK__                         ((const unsigned char ) 0x7 )
 
-
+/*
+  Table 35.
+  Suggestions for MAM timing selection 
+  system clock              Number of MAM fetch cycles in MAMTIM
+  < 20 MHz                    1 CCLK
+  20 MHz to 40 MHz            2 CCLK
+  40 MHz to 60 MHz            3 CCLK
+  >60 MHz                     4 CCLK
+*/
 
 #endif
