@@ -19,7 +19,7 @@
 */
 #ifndef LPC2106_H
 #define LPC2106_H
-
+/*
 //TYPE DEFINITION
 typedef volatile unsigned int       U32;
 typedef unsigned short int          U16;
@@ -34,7 +34,7 @@ typedef U8  byte;
 typedef PU8 Pbyte;
 typedef PU16 PWord;
 typedef PU32 PDWord;
-
+*/
 
 /*---------------------Mapeamento dos periféricos---------------------*/
 #define     __WatchdogTimer__                (*((Pbyte) 0xE0000000))

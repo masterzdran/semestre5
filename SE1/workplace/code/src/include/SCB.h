@@ -1,6 +1,6 @@
 #ifndef SCB_H
 #define SCB_H
-
+#include "TYPES.h"
 #define    pEXT_INT       ((pLPC_EXT_INT) 0xE01FC140)
 #define    pMAM           ((pLPC_MAM)     0xE01FC000)     
 #define    pPLL           ((pLPC_PLL)     0xE01FC080)     
@@ -74,7 +74,7 @@ typedef struct _APB{
 }LPC_APB,*pLPC_APB;
 
 typedef struct _SCS{
-    U32   SCS; b  
+    U32   SCS;  
 }LPC_SCS,*pLPC_SCS;
 
 
@@ -89,9 +89,9 @@ typedef struct _SCS{
 #define __INTERRUPT_WAKEUP_MASK__                   ((const unsigned char )0x07)
 
 #define __EXTERNAL_INT_MODE_EXTMODE0_ENABLE__       ((const unsigned char )0x01)
-#define __EXTERNAL_INT_MODE_EXTMODE0_ENABLE__       ((const unsigned char )0x02)
-#define __EXTERNAL_INT_MODE_EXTMODE0_ENABLE__       ((const unsigned char )0x04)
-#define __EXTERNAL_INT_MODE_EXTMODE0_ENABLE__       ((const unsigned char )0x07)
+#define __EXTERNAL_INT_MODE_EXTMODE1_ENABLE__       ((const unsigned char )0x02)
+#define __EXTERNAL_INT_MODE_EXTMODE2_ENABLE__       ((const unsigned char )0x04)
+#define __EXTERNAL_INT_MODE_EXTMODE3_ENABLE__       ((const unsigned char )0x07)
 
 #define __EXTERNAL_INT_POLARITY_EXTPOLAR0_ENABLE__  ((const unsigned char )0x01)
 #define __EXTERNAL_INT_POLARITY_EXTPOLAR1_ENABLE__  ((const unsigned char )0x02)

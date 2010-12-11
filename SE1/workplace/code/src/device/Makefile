@@ -49,7 +49,7 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 #															Base Make
 #=======================================================================
-all: LPC2106.h TYPES.h SCB.h GPIO.o
+all: LPC2106.h TYPES.h SCB.h START.o GPIO.o TIMER.o
 
 LPC2106.h: 
 	$(MAKE) -C $(DEVICE)/LPC2106
@@ -59,16 +59,23 @@ TYPES.h:
 	
 SCB.h: 
 	$(MAKE)	-C $(DEVICE)/SCB
-	
+
+START.o:
+	$(MAKE) -C $(DEVICE)/startup
+
 GPIO.o: 
 	$(MAKE)	-C $(DEVICE)/GPIO
 
+TIMER.o: 
+	$(MAKE)	-C $(DEVICE)/timer
 
 clean:
 	$(MAKE) -C $(DEVICE)/LPC2106 clean
 	$(MAKE) -C $(DEVICE)/TYPES  clean
 	$(MAKE) -C $(DEVICE)/SCB  clean
+	$(MAKE) -C $(DEVICE)/startup  clean
 	$(MAKE) -C $(DEVICE)/GPIO clean
+	$(MAKE) -C $(DEVICE)/timer clean
 	
 clear:
 	clear

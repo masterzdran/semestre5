@@ -7,6 +7,9 @@ MEMORY
 
 SECTIONS
 {
+  .startup : {
+    *(.startup*)
+  } > ram
 	.text : {
 	__text_start__ = ABSOLUTE(.);
 	*(.text*) *(.glue_7) *(.glue_7t);

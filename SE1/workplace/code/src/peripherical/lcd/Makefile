@@ -27,8 +27,8 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
-SEARCHLIB		= -I $(HEADER) 
+HEADER			= 
+SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB) 
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -48,3 +48,18 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 #															LCD
 #=======================================================================
+all: LCD.o
+
+
+LCD.o:LCD.c LCD.h 
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	cp $@ $(MYLIB)/$@
+	cp LCD.h $(INCLUDE)/
+	
+clean:
+	rm  LCD.o
+	rm  $(MYLIB)/LCD.o $(INCLUDE)/LCD.h
+	
+	
+clear:
+	clear
