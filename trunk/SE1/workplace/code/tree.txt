@@ -1,0 +1,102 @@
+.
+|-- c-tests
+|-- deploy
+|   |-- ldscript
+|   |   |-- ldscript_ram
+|   |   `-- ldscript_rom
+|   `-- openocd
+|       `-- openocd_lpc2106.cfg
+|-- device
+|   |-- gpio
+|   |   |-- GPIO.c
+|   |   |-- GPIO.h
+|   |   `-- Makefile
+|   |-- i2c
+|   |   |-- I2C.c
+|   |   |-- I2C.h
+|   |   |-- i2c.tar
+|   |   `-- Makefile
+|   |-- interrupts
+|   |-- keyboard
+|   |-- lcd
+|   |-- LPC2106
+|   |   |-- LPC2106.c
+|   |   |-- LPC2106.h
+|   |   |-- LPC2106 .h.orig
+|   |   `-- Makefile
+|   |-- main
+|   |   |-- chrono_test.c
+|   |   |-- keyboard_test.S
+|   |   |-- led_test.c
+|   |   `-- Makefile
+|   |-- mam
+|   |-- paths
+|   |-- power
+|   |   `-- POWER.h
+|   |-- pwm
+|   |-- ram
+|   |   `-- Makefile
+|   |-- rtc
+|   |   |-- Makefile
+|   |   |-- RTC.C
+|   |   |-- RTC.h
+|   |   `-- rtc.tar
+|   |-- scb
+|   |   `-- SCB.h
+|   |-- spi
+|   |   `-- SPI.h
+|   |-- ssp
+|   |-- startup
+|   |   |-- init.S
+|   |   |-- Makefile
+|   |   |-- README.txt
+|   |   |-- startosc.c
+|   |   |-- startosc.h
+|   |   `-- start.S
+|   |-- tests
+|   |-- timer
+|   |   |-- chrono.c
+|   |   |-- chrono.h
+|   |   |-- Makefile
+|   |   |-- TIMER.c
+|   |   `-- TIMER.h
+|   |-- uarts
+|   |   `-- UART.h
+|   |-- vic
+|   |   `-- VIC.h
+|   `-- watchdog
+|       |-- WATCHDOG.c
+|       `-- WATCHDOG.h
+|-- include
+|   |-- chrono.h
+|   |-- GPIO.h
+|   |-- RTC.h
+|   |-- startosc.h
+|   |-- TIMER.h
+|   `-- TYPES.h
+|-- lib
+|   |-- Makefile
+|   `-- uClibc-0.9.31
+|-- Makefile
+|-- peripherical
+|   |-- keyboard
+|   |   |-- keyboard.S
+|   |   `-- Makefile
+|   |-- lcd
+|   |   |-- Java
+|   |   |   |-- Keyboard.java
+|   |   |   |-- Kit.java
+|   |   |   |-- LcdAccess.java
+|   |   |   |-- LcdProtocol.java
+|   |   |   `-- LicConstants.java
+|   |   |-- LCD.c
+|   |   |-- LCD.h
+|   |   `-- Makefile
+|   `-- led
+|       |-- led_blink.S
+|       |-- led.c
+|       |-- led.h
+|       `-- Makefile
+`-- tree.txt
+
+
