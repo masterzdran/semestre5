@@ -18,7 +18,7 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../..
+SVN_PATH		= ./../../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
@@ -27,7 +27,7 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
+HEADER			= $(SOURCE)/device/LPC2106
 SEARCHLIB		= -I $(HEADER) 
 #Executables
 CC 				= arm-eabi-gcc
@@ -48,3 +48,13 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 #															LPC2106
 #=======================================================================
+all: LPC2106
+
+LPC2106: LPC2106.h
+	cp $< $(INCLUDE)/
+
+clean:
+	rm  $(INCLUDE)/LPC2106.h
+
+clear:
+	clear

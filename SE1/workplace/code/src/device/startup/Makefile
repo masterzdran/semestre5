@@ -50,7 +50,7 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 all: startosc.o start.o
 
-startosc.o: startosc.c startosc.h
+startosc.o: startosc.c startosc.h TYPES.h LPC2106.h SCB.h
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
 	cp $@ $(MYLIB)/$@
 	cp *.h $(INCLUDE)/
