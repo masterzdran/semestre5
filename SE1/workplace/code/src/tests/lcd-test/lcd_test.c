@@ -8,7 +8,7 @@
 
 int main(){
   gpio_init(0,0);
-  timer_init(pTIMER0,CCLK);
+  timer_init(pTIMER0,CCLK/MICRO);
   LCD_init(pTIMER0);
   
   writeString("TESTE");
