@@ -1,24 +1,50 @@
 ENTRY(_start)
 
 MEMORY
-{
-	ram : ORIGIN = 0x40000000, LENGTH = 0x10000
-}
-
+  {
+    ram : ORIGIN = 0x40000000, LENGTH = 0x10000 - 32 /* 32 - usado pelo IAP */
+  }
 SECTIONS
-{
-  .startup : {
-    *(.startup*)
-  } > ram
-	.text : {
-	__text_start__ = ABSOLUTE(.);
-	*(.text*) *(.glue_7) *(.glue_7t);
-	__text_end__ = ABSOLUTE(.);
-	} >ram
+  {
+    .debug_aranges 0 : { *(.debug_aranges) }
+    .debug_pubnames 0 : { *(.debug_pubnames) }
+    .debug_info 0 : { *(.debug_info) }
+    .debug_abbrev 0 : { *(.debug_abbrev) }
+    .debug_line 0 : { *(.debug_line) }
+    .debug_frame 0 : { *(.debug_frame) }
+    .debug_str 0 : { *(.debug_str) }
+    .debug_loc 0 : { *(.debug_loc) }
+    .debug_macinfo 0 : { *(.debug_macinfo) }
+    /DISCARD/ 0 : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
 
-	.data ALIGN(4) : {
-	__data_start = ABSOLUTE(.);
-	*(.data*);
-	__data_end__ = ABSOLUTE(.) ;
-	} >ram
+    .text ALIGN(4): {
+      __text_start__ = ABSOLUTE(.);
+      *(.text*) *(.gnu.warning) *(.gnu.linkonce*) *(.init) *(.glue_7)
+      *(.glue_7t);
+      __text_end__ = ABSOLUTE(.);
+    } > ram
+    
+    .rodata ALIGN(4) : {
+      __rodata_start__ = ABSOLUTE(.);
+      *(.rodata*);
+      . = ALIGN(4);
+      __rodata_end__ = ABSOLUTE(.);
+    } > ram
+    .data ALIGN(4) : {
+      __data_start = ABSOLUTE(.);
+      *(.data*);
+      *(.eh_frame);
+      __data_end__ = ABSOLUTE(.) ;
+    } > ram
+    .bss ALIGN(4) : {
+      __bss_start__ = ABSOLUTE(.);
+      *(.bss*) *(COMMON);
+      __bss_end__ = ABSOLUTE(.);
+    } > ram
+    .stack ALIGN(4) : {
+      __stack_start__ = ABSOLUTE(.);
+      *(.stack);
+      . = . + 0x1000;
+      __stack_end__ = ABSOLUTE(.);
+    } > ram    
 }
