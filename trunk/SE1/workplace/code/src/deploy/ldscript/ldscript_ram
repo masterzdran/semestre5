@@ -17,6 +17,10 @@ SECTIONS
     .debug_macinfo 0 : { *(.debug_macinfo) }
     /DISCARD/ 0 : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
 
+    .startup : {
+          *(.startup*)
+    } > ram
+    
     .text ALIGN(4): {
       __text_start__ = ABSOLUTE(.);
       *(.text*) *(.gnu.warning) *(.gnu.linkonce*) *(.init) *(.glue_7)
@@ -30,6 +34,7 @@ SECTIONS
       . = ALIGN(4);
       __rodata_end__ = ABSOLUTE(.);
     } > ram
+
     .data ALIGN(4) : {
       __data_start = ABSOLUTE(.);
       *(.data*);

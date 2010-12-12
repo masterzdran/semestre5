@@ -18,6 +18,10 @@ SECTIONS
     .debug_macinfo 0    : { *(.debug_macinfo) }
     /DISCARD/ 0         : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
     
+    .startup : {
+        *(.startup*)
+    } > rom
+    
     .data : AT (__rodata_end__) {
         __data_start__ = ABSOLUTE(.);
         *(.data*);
