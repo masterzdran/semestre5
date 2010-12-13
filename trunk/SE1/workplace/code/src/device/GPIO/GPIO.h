@@ -18,11 +18,14 @@ U32 gpio_read(U32 mask);
 void gpio_clear(U32 mask, U32 value);
 void gpio_write(U32 mask, U32 value );
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask);
+void gpio_set_direction(U32 mask, unsigned char direction);
 
 #define FUNCTION_0          ((U8)   0x0)
 #define FUNCTION_1          ((U8)   0x1)
 #define FUNCTION_2          ((U8)   0x2)
 #define PORT                ((U8)   0x2)
+#define GPIO_IN             ((U8)   0x0)
+#define GPIO_OUT            ((U8)   0x1)
 
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_0__       (FUNCTION_0 << (PORT * 0))
