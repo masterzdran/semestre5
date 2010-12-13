@@ -3,6 +3,7 @@
 #include "TYPES.h"
 #include "GPIO.h"
 #include "TIMER.h"
+
 // ****************** Mascaras Controlo******************
 #define  CLEAR_MASK             0x01    //Clear do Display
 #define  ENTRY_SET_MASK         0x06    //Clear do Display

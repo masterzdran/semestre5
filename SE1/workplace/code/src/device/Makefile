@@ -69,8 +69,6 @@ TIMER.o:
 GPIO.o: 
 	$(MAKE)	-C $(DEVICE)/GPIO
 
-
-
 clean:
 	$(MAKE) -C $(DEVICE)/LPC2106 clean
 	$(MAKE) -C $(DEVICE)/TYPES  clean

@@ -21,7 +21,7 @@
 
 U8 value = 0;
 U8 isCentered = 0;
-pLPC_TIMER timer;
+pLPC_TIMER ptimer;
 inline U32 Wstrlen(const Pbyte str){
   register Pbyte p;
 
@@ -36,7 +36,7 @@ static void processValue(U8 rs, U8 value){
 void LCD_init(pLPC_TIMER timer){
     //Pag51: Table 6. Interface Data Length : Four bits
     /* Begin inicialization */
-    timer=timer;
+    ptimer=timer;
     processValue(0,(ENABLE_MASK|RS_MASK|DATA_MASK));
     timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
     processValue(0,0x03);    
@@ -62,7 +62,7 @@ void LCD_init(pLPC_TIMER timer){
 
 void LCD_write(U8  byte){
   gpio_write(LCD_GPIO,(byte<<LCD_GPIO_SHIFT)&&LCD_GPIO);
-  timer_sleep_miliseconds(timer,5);       //stable the data for 5ms
+  timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
   gpio_clear(LCD_GPIO,(byte<<LCD_GPIO_SHIFT)&&LCD_GPIO);
 }
 
