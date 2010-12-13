@@ -23,6 +23,7 @@ SVN_PATH		= ./..
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
 DEVICE				= $(SOURCE)/device
+PERIPHERICAL	= $(SOURCE)/peripherical
 TODEPLOY			= $(SOURCE)/deploy
 TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test
@@ -73,8 +74,10 @@ start.o:
 startosc.o:
 TIMER.o:
 GPIO.o:
-LCD.o:
 	$(MAKE) -C $(DEVICE)
+
+LCD.o:
+	$(MAKE) -C $(PERIPHERICAL)/lcd
 
 lcd_test.o:
 	$(MAKE) -C $(SOURCE)/tests/lcd-test
