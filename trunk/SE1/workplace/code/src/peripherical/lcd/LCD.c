@@ -31,25 +31,26 @@ inline U32 Wstrlen(const Pbyte str){
 	return p - str;
 }
 
-void LCD_write(U8  byte){
-  gpio_write(DATA_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&DATA_MASK);
+void LCD_write(U32  byte){
+  gpio_write(DATA_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&DATA_MASK);
   //timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
   //gpio_clear(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
 }
 
+static void processValue_nibble(U8 rs, U8 value){
+  gpio_set(ENABLE_MASK);
+  LCD_write( value );
+  timer_sleep_miliseconds(ptimer,20);
+  gpio_clear(ENABLE_MASK,ENABLE_MASK);
+  
+  
+  
+}
 static void processValue(U8 rs, U8 value){
-  gpio_set(ENABLE_MASK);
-  LCD_write((value >> DATA_BITS_SHIFT)&CLEAN_MASK);
-  gpio_clear(ENABLE_MASK,ENABLE_MASK);
-  
+  processValue_nibble(rs,(((value) >> DATA_BITS_SHIFT)&CLEAN_MASK));
   timer_sleep_miliseconds(ptimer,20);
-  
-  gpio_set(ENABLE_MASK);
-  LCD_write((value  & CLEAN_MASK));
-  gpio_clear(ENABLE_MASK,ENABLE_MASK);
-  
-  timer_sleep_miliseconds(ptimer,20);
-  
+  processValue_nibble(rs,value&CLEAN_MASK);
+ 
 }  
 
 void LCD_init(pLPC_TIMER timer){
@@ -64,28 +65,28 @@ void LCD_init(pLPC_TIMER timer){
   
   
     timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
-    processValue(0,0x30);    
+    processValue_nibble(0,0x3);    
     timer_sleep_miliseconds(timer,5);           //Wait for 4,1 ms or more
-    processValue(0,0x30);    
+    processValue_nibble(0,0x3);    
     timer_sleep_microseconds(timer,110);           //Wait for 100 μs or more
-    processValue(0,0x30);    
+    processValue_nibble(0,0x3);    
 
     
-    gpio_set(ENABLE_MASK);
-    processValue(0,0x02);    //Functon set (interface data length : 4 bits)
-    gpio_clear(ENABLE_MASK,ENABLE_MASK);
+
+    processValue_nibble(0,0x2);    //Functon set (interface data length : 4 bits)
+
     timer_sleep_miliseconds(timer,5);
     
     processValue(0,0x28);    //Function Set (0x28) -> Set Duty
-    processValue(0,0x0E);    //Display OFF (0x08)
+    processValue(0,0x08);    //Display OFF (0x08)
     processValue(0,0x01);    //Display Clear (0x01)
-    processValue(0,0x06);    //Entry Mode Set (0x07) -> Set Increment, Display shift
+    processValue(0,0x07);    //Entry Mode Set (0x07) -> Set Increment, Display shift
     
     /* Entry Mode Set */
-    //processValue(0,ENTRY_SET_MASK);      //Entry Mode 
+    processValue(0,ENTRY_SET_MASK);      //Entry Mode 
     
     /* Activate the Display */
-    //processValue(0,DISPLAY_ON_MASK);    //Display  
+    processValue(0,DISPLAY_ON_MASK);    //Display  
     //processValue(0,CURSOR_ON_MASK);    //Cursor
 }
 
@@ -160,6 +161,7 @@ void writeChar(U8 c) {processValue(1,c);}
  * para a coluna seguinte
  */
 void writeString(Pbyte txt) {
+  gpio_set(RS_MASK);
   while(*txt){
       processValue(1,*txt);
       txt++;

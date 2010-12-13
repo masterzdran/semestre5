@@ -10,7 +10,7 @@
 #define  RETURN_HOME_MASK       0x02    //Set Position 0 on AC(address Counter)
 #define  CURSOR_ON_MASK         0x0A    //Cursor Activo
 #define  CURSOR_OFF_MASK        0x0B    //Cursor InActivo
-#define  DISPLAY_ON_MASK        0x0C    //Display Activo
+#define  DISPLAY_ON_MASK        0x0E    //Display Activo
 #define  DISPLAY_OFF_MASK       0x08    //Display InActivo
 #define  BLINK_ON_MASK          0x09    //Blink Activo
 #define  BLINK_OFF_MASK         0x08    //Blink InActivo
@@ -22,7 +22,7 @@
 #define  MAXTIMEFALL            400;    // in miliseconds
 
 void LCD_init(pLPC_TIMER timer);
-void LCD_write(U8  byte);
+void LCD_write(U32  byte);
 void clearLine(U8 line) ;
 void posCursor(U8 line, U8 col) ;
 void setCursor(U8 visible, U8 blinking);
