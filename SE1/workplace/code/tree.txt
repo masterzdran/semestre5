@@ -17,20 +17,12 @@
 |   |   |-- i2c.tar
 |   |   `-- Makefile
 |   |-- interrupts
-|   |-- keyboard
-|   |-- lcd
 |   |-- LPC2106
 |   |   |-- LPC2106.c
 |   |   |-- LPC2106.h
 |   |   |-- LPC2106 .h.orig
 |   |   `-- Makefile
-|   |-- main
-|   |   |-- chrono_test.c
-|   |   |-- keyboard_test.S
-|   |   |-- led_test.c
-|   |   `-- Makefile
 |   |-- mam
-|   |-- paths
 |   |-- power
 |   |   `-- POWER.h
 |   |-- pwm
@@ -53,7 +45,6 @@
 |   |   |-- startosc.c
 |   |   |-- startosc.h
 |   |   `-- start.S
-|   |-- tests
 |   |-- timer
 |   |   |-- chrono.c
 |   |   |-- chrono.h

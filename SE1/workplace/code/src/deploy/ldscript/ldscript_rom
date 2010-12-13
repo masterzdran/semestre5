@@ -2,56 +2,67 @@ ENTRY(_start)
 
 MEMORY
 {
-    ram : ORIGIN = 0x40000000 + 64, LENGTH = 0x10000 - 64 - 32 /* 64 -tabela de excepções, 32 - usado pelo IAP */
-    rom : ORIGIN = 0x00000000, LENGTH = 0x20000
+	ram : ORIGIN = 0x40000000, LENGTH = 0x64992 /*Free Ram*/
+	rom : ORIGIN = 0x0, LENGTH = 128K			/*Flash Rom*/
 }
-SECTIONS
-{
-    .debug_aranges 0    : { *(.debug_aranges) }
-    .debug_pubnames 0   : { *(.debug_pubnames) }
-    .debug_info 0       : { *(.debug_info) }
-    .debug_abbrev 0     : { *(.debug_abbrev) }
-    .debug_line 0       : { *(.debug_line) }
-    .debug_frame 0      : { *(.debug_frame) }
-    .debug_str 0        : { *(.debug_str) }
-    .debug_loc 0        : { *(.debug_loc) }
-    .debug_macinfo 0    : { *(.debug_macinfo) }
-    /DISCARD/ 0         : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
-    
-    .startup : {
-        *(.startup*)
-    } > rom
-    
-    .data : AT (__rodata_end__) {
-        __data_start__ = ABSOLUTE(.);
-        *(.data*);
-        . = ALIGN(4);
-        __data_end__ = ABSOLUTE(.) ;
-    } > ram
-    
-    __rom_data_start__ = __rodata_end__;
-    .bss ALIGN(4) : {
-        __bss_start__ = ABSOLUTE(.);
-        *(.bss*) *(COMMON);
-        . = ALIGN(4);
-        __bss_end__ = ABSOLUTE(.);
-    } > ram
-    .stack ALIGN(4) : {
-        __stack_start__ = ABSOLUTE(.);
-        *(.stack);
-        . = . + 0x1000;
-      __stack_end__ = ABSOLUTE(.);
-    } > ram
-    .text : {
-        __text_start__ = ABSOLUTE(.);
-        *(.text*) *(.gnu.warning) *(.gnu.linkonce*) *(.init) *(.glue_7)
-        *(.glue_7t);
-        __text_end__ = ABSOLUTE(.);
-    } > rom
-    .rodata ALIGN(4) : {
-        _rodata_start__ = ABSOLUTE(.);
-        *(.rodata*);
-        . = ALIGN(4);
-        __rodata_end__ = ABSOLUTE(.);
-    } > rom
-}
+
+SECTIONS {
+
+.startup : {
+	*(.startup*)
+} > rom
+
+.text : {
+	*(.text*)
+	*(.glue*)
+	*(.rodata) 
+    *(.rodata*)
+	*(.gnu.linkonce*)
+	*(.eh_frame*)
+} > rom
+
+. = ALIGN(4);					/*if text section isn't aligned*/
+__rom_data_start__ = .;			/*variable to copy data from rom to ram*/
+
+.data : AT (__rom_data_start__) {
+    __data_start__ = ABSOLUTE(.);
+	*(.data*)
+	. = ALIGN(4);
+    __data_end__ = ABSOLUTE(.);
+} > ram
+
+end = .;						/*some compilers need end label after data*/
+
+.bss ALIGN(4) : {
+    __bss_start__ = ABSOLUTE(.);
+    *(.bss*) *(COMMON);
+	. = ALIGN(4);
+    __bss_end__ = ABSOLUTE(.);
+} > ram
+
+.stack ALIGN(4) : {
+	*(.stack*)
+} > ram
+
+.rodata : {
+	*(.rodata*)
+} > ram
+
+
+  /* Stabs debugging sections.  */
+  .stab          0 : { *(.stab) }
+  .stabstr       0 : { *(.stabstr) }
+  .stab.excl     0 : { *(.stab.excl) }
+  .stab.exclstr  0 : { *(.stab.exclstr) }
+  .stab.index    0 : { *(.stab.index) }
+  .stab.indexstr 0 : { *(.stab.indexstr) }
+  .comment       0 : { *(.comment) }
+
+.debug_abbrev	0 : { *(.debug_abbrev) }
+.debug_info		0 : { *(.debug_info) }
+.debug_line		0 : { *(.debug_line) }
+.debug_pubnames	0 : { *(.debug_pubnames) }
+.debug_aranges	0 : { *(.debug_aranges) }
+
+
+} /* end of sections */
