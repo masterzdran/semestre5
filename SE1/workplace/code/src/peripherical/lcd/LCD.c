@@ -10,13 +10,13 @@
  * */
 #define DATA_BITS_SHIFT          ((U8)  4)
 #define CLEAN_MASK               ((U8)0xF)
-#define RS_MASK                  ((U16)0x010)  //Ultimo nibble para Data
-#define ENABLE_MASK              ((U16)0x020)  //Ultimo nibble para Data
-#define RW_MASK                  ((U16)0x040)  //Ultimo nibble para Data
+#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
+#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
+#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
 
-#define DATA_MASK                ((U16)0x0F0)
+#define DATA_MASK                ((U16)0x0F00)
 #define LCD_GPIO_MASK_SHIFT           ((U8)8)
-#define LCD_GPIO_MASK                 ((U16)0x7F0    )
+#define LCD_GPIO_MASK                 ((U16)0x3F00    )
 
 
 
@@ -32,23 +32,23 @@ inline U32 Wstrlen(const Pbyte str){
 }
 
 void LCD_write(U8  byte){
-  gpio_write(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
+  gpio_write(DATA_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&DATA_MASK);
   //timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
   //gpio_clear(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
 }
 
 static void processValue(U8 rs, U8 value){
-  LCD_write(ENABLE_MASK);
+  gpio_set(ENABLE_MASK);
   LCD_write((value >> DATA_BITS_SHIFT)&CLEAN_MASK);
   gpio_clear(ENABLE_MASK,ENABLE_MASK);
   
-  timer_sleep_miliseconds(ptimer,5);
+  timer_sleep_miliseconds(ptimer,20);
   
-  LCD_write(ENABLE_MASK);
-  LCD_write(((rs)?RS_MASK:0) | (value  & CLEAN_MASK));
+  gpio_set(ENABLE_MASK);
+  LCD_write((value  & CLEAN_MASK));
   gpio_clear(ENABLE_MASK,ENABLE_MASK);
   
-  timer_sleep_miliseconds(ptimer,5);
+  timer_sleep_miliseconds(ptimer,20);
   
 }  
 
@@ -58,12 +58,12 @@ void LCD_init(pLPC_TIMER timer){
 
     ptimer=timer;
 
-
+  gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
   gpio_clear(RS_MASK,RS_MASK);
   gpio_clear(ENABLE_MASK,ENABLE_MASK);
-  gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
   
-  timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
+  
+    timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
     processValue(0,0x30);    
     timer_sleep_miliseconds(timer,5);           //Wait for 4,1 ms or more
     processValue(0,0x30);    
@@ -71,8 +71,7 @@ void LCD_init(pLPC_TIMER timer){
     processValue(0,0x30);    
 
     
-    LCD_write(ENABLE_MASK);
-    
+    gpio_set(ENABLE_MASK);
     processValue(0,0x02);    //Functon set (interface data length : 4 bits)
     gpio_clear(ENABLE_MASK,ENABLE_MASK);
     timer_sleep_miliseconds(timer,5);
