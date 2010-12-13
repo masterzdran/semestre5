@@ -10,12 +10,12 @@
 
 /*The PINSEL0 register controls the functions of the pins 0-15*/
 static void gpio_PINSEL0(U32 mask){ 
- __PINSEL0__ &= ~mask; 
+ __PINSEL0__ = mask; 
 }
 
 /*The PINSEL1 register controls the functions of the pins 16-31*/
 static void gpio_PINSEL1(U32 mask){   
-  __PINSEL1__ &= ~mask;
+  __PINSEL1__ = mask;
 }
 
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){
@@ -24,7 +24,7 @@ void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){
 } 
 
 void gpio_write(U32 mask, U32 value){
-  pGPIO->IOCLR |= mask & value;
+  pGPIO->IOCLR |= mask ;
   pGPIO->IOSET |= mask & value;    
 }
 /*
@@ -39,9 +39,11 @@ void gpio_set_direction(U32 mask, U8 direction){
   else
     pGPIO->IODIR &= ~mask;
 }
-
+void gpio_set(U32 mask){
+  pGPIO->IOSET |= mask;
+}
 void gpio_clear(U32 mask, U32 value){
-  pGPIO->IOCLR |= mask & value;
+  pGPIO->IOCLR |= mask ;
 }
 
 U32 gpio_read(U32 mask){
