@@ -8,15 +8,15 @@
  * | R/!W| EN  | RS  | DB7 | DB6 | DB5 | DB4 |
  * 
  * */
-#define DATA_BITS_SHIFT          4
-#define CLEAN_MASK               0xF
-#define RS_MASK                  0x010  //Ultimo nibble para Data
-#define ENABLE_MASK              0x020  //Ultimo nibble para Data
-#define RW_MASK                  0x040  //Ultimo nibble para Data
+#define DATA_BITS_SHIFT          ((U8)  4)
+#define CLEAN_MASK               ((U8)0xF)
+#define RS_MASK                  ((U16)0x010)  //Ultimo nibble para Data
+#define ENABLE_MASK              ((U16)0x020)  //Ultimo nibble para Data
+#define RW_MASK                  ((U16)0x040)  //Ultimo nibble para Data
 
-#define DATA_MASK                0x0F0
-#define LCD_GPIO_MASK_SHIFT           8
-#define LCD_GPIO_MASK                 0x7F0    
+#define DATA_MASK                ((U16)0x0F0)
+#define LCD_GPIO_MASK_SHIFT           ((U8)8)
+#define LCD_GPIO_MASK                 ((U16)0x7F0    )
 
 
 
@@ -30,49 +30,68 @@ inline U32 Wstrlen(const Pbyte str){
 
 	return p - str;
 }
-static void processValue(U8 rs, U8 value){
-  gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
-  LCD_write(((rs)?RS_MASK:0) |((value >> DATA_BITS_SHIFT)&CLEAN_MASK));
-  LCD_write(((rs)?RS_MASK:0) | (value  & CLEAN_MASK));
-  LCD_write(ENABLE_MASK);
-  timer_sleep_miliseconds(ptimer,5);
-  LCD_write(~ENABLE_MASK);
-  timer_sleep_miliseconds(ptimer,5);
-  gpio_clear(LCD_GPIO_MASK,LCD_GPIO_MASK);
-  gpio_set_direction(LCD_GPIO_MASK,GPIO_IN);
-}
-void LCD_init(pLPC_TIMER timer){
-    //Pag51: Table 6. Interface Data Length : Four bits
-    /* Begin inicialization */
-    ptimer=timer;
-    processValue(0,(ENABLE_MASK|RS_MASK|DATA_MASK));
-    timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
-    processValue(0,0x03);    
-    timer_sleep_miliseconds(timer,5);           //Wait for 4,1 ms or more
-    processValue(0,0x03);    
-    timer_sleep_microseconds(timer,110);           //Wait for 100 μs or more
-    processValue(0,0x03);    
-
-    processValue(0,0x02);    //Functon set (interface data length : 4 bits)
-    processValue(0,0x28);    //Function Set (0x28) -> Set Duty
-    processValue(0,0x08);    //Display OFF (0x08)
-    processValue(0,0x01);    //Display Clear (0x01)
-    processValue(0,0x07);    //Entry Mode Set (0x07) -> Set Increment, Display shift
-    
-    /* Entry Mode Set */
-    processValue(0,ENTRY_SET_MASK);      //Entry Mode 
-    
-    /* Activate the Display */
-    processValue(0,DISPLAY_ON_MASK);    //Display  
-    processValue(0,CURSOR_ON_MASK);    //Cursor
-}
-
 
 void LCD_write(U8  byte){
   gpio_write(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
   //timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
   //gpio_clear(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
 }
+
+static void processValue(U8 rs, U8 value){
+  LCD_write(ENABLE_MASK);
+  LCD_write((value >> DATA_BITS_SHIFT)&CLEAN_MASK);
+  gpio_clear(ENABLE_MASK,ENABLE_MASK);
+  
+  timer_sleep_miliseconds(ptimer,5);
+  
+  LCD_write(ENABLE_MASK);
+  LCD_write(((rs)?RS_MASK:0) | (value  & CLEAN_MASK));
+  gpio_clear(ENABLE_MASK,ENABLE_MASK);
+  
+  timer_sleep_miliseconds(ptimer,5);
+  
+}  
+
+void LCD_init(pLPC_TIMER timer){
+    //Pag51: Table 6. Interface Data Length : Four bits
+    /* Begin inicialization */
+
+    ptimer=timer;
+
+
+  gpio_clear(RS_MASK,RS_MASK);
+  gpio_clear(ENABLE_MASK,ENABLE_MASK);
+  gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
+  
+  timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
+    processValue(0,0x30);    
+    timer_sleep_miliseconds(timer,5);           //Wait for 4,1 ms or more
+    processValue(0,0x30);    
+    timer_sleep_microseconds(timer,110);           //Wait for 100 μs or more
+    processValue(0,0x30);    
+
+    
+    LCD_write(ENABLE_MASK);
+    
+    processValue(0,0x02);    //Functon set (interface data length : 4 bits)
+    gpio_clear(ENABLE_MASK,ENABLE_MASK);
+    timer_sleep_miliseconds(timer,5);
+    
+    processValue(0,0x28);    //Function Set (0x28) -> Set Duty
+    processValue(0,0x0E);    //Display OFF (0x08)
+    processValue(0,0x01);    //Display Clear (0x01)
+    processValue(0,0x06);    //Entry Mode Set (0x07) -> Set Increment, Display shift
+    
+    /* Entry Mode Set */
+    //processValue(0,ENTRY_SET_MASK);      //Entry Mode 
+    
+    /* Activate the Display */
+    //processValue(0,DISPLAY_ON_MASK);    //Display  
+    //processValue(0,CURSOR_ON_MASK);    //Cursor
+}
+
+
+
 
 
 
