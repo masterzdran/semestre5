@@ -15,8 +15,9 @@
 #define RW_MASK                  0x040  //Ultimo nibble para Data
 
 #define DATA_MASK                0x0F0
-#define LCD_GPIO_SHIFT           8
-#define LCD_GPIO                 0x7F0    
+#define LCD_GPIO_MASK_SHIFT           8
+#define LCD_GPIO_MASK                 0x7F0    
+
 
 
 U8 value = 0;
@@ -30,8 +31,15 @@ inline U32 Wstrlen(const Pbyte str){
 	return p - str;
 }
 static void processValue(U8 rs, U8 value){
-  LCD_write(((rs)?RS_MASK:0) | ENABLE_MASK |((value >> DATA_BITS_SHIFT)&CLEAN_MASK));
-  LCD_write(((rs)?RS_MASK:0) | ENABLE_MASK | (value  & CLEAN_MASK));
+  gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
+  LCD_write(((rs)?RS_MASK:0) |((value >> DATA_BITS_SHIFT)&CLEAN_MASK));
+  LCD_write(((rs)?RS_MASK:0) | (value  & CLEAN_MASK));
+  LCD_write(ENABLE_MASK);
+  timer_sleep_miliseconds(ptimer,5);
+  LCD_write(~ENABLE_MASK);
+  timer_sleep_miliseconds(ptimer,5);
+  gpio_clear(LCD_GPIO_MASK,LCD_GPIO_MASK);
+  gpio_set_direction(LCD_GPIO_MASK,GPIO_IN);
 }
 void LCD_init(pLPC_TIMER timer){
     //Pag51: Table 6. Interface Data Length : Four bits
@@ -61,9 +69,9 @@ void LCD_init(pLPC_TIMER timer){
 
 
 void LCD_write(U8  byte){
-  gpio_write(LCD_GPIO,(byte<<LCD_GPIO_SHIFT)&&LCD_GPIO);
-  timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
-  gpio_clear(LCD_GPIO,(byte<<LCD_GPIO_SHIFT)&&LCD_GPIO);
+  gpio_write(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
+  //timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
+  //gpio_clear(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
 }
 
 
