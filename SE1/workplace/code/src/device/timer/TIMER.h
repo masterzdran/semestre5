@@ -5,8 +5,8 @@
 
 #define __TCR_DISABLE__                  0x0
 #define __TCR_ENABLE__                   0x1
-#define __TCR_RESET_DISABLE__            0x2
-#define __TCR_RESET_ENABLE__             0x0
+#define __TCR_RESET_DISABLE__            0x0
+#define __TCR_RESET_ENABLE__             0x2
 
 #define __CTCR_MODE_0__                  0x0
 #define __CTCR_MODE_1__                  0x1
