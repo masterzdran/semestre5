@@ -15,7 +15,7 @@ typedef struct _GPIO{
 }LPC_GPIO,*pLPC_GPIO;
 
 U32 gpio_read(U32 mask);
-void gpio_clear(U32 mask);
+void gpio_clear(U32 mask, U32 value);
 void gpio_write(U32 mask, U32 value );
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask);
 

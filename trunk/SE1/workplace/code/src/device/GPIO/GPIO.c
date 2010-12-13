@@ -1,4 +1,5 @@
 #include "GPIO.h"
+#include "TIMER.h"
 /*
  * Table 58. Pin function select register bits (Page 66)
  *   
@@ -22,23 +23,24 @@ void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){
   gpio_PINSEL0(pinsel0_mask);
   gpio_PINSEL1(pinsel1_mask);
 } 
+
+void gpio_write(U32 mask, U32 value){
+  pGPIO->IOSET = mask & value;  
+  
+  pGPIO->IOCLR = ~(mask & value);
+}
 /*
  *Table 62. (Page 72)
  * GPIO port 0 Direction register (IO0DIR - address 0xE002 8008) bit description
  * 0 Controlled pin is input.
  * 1 Controlled pin is output.
  * */
-void gpio_write(U32 mask, U32 value ){
-  pGPIO->IOSET = mask & value;  
-  pGPIO->IOCLR = ~(mask & value);
-}
-
 void gpio_set_direction(U32 mask, unsigned char direction){
   pGPIO->IODIR &= (direction)?mask:~mask;
 }
 
-void gpio_clear(U32 mask){
-  pGPIO->IOCLR = mask; 
+void gpio_clear(U32 mask, U32 value){
+  pGPIO->IOCLR = ~(mask & value);
 }
 
 U32 gpio_read(U32 mask){
