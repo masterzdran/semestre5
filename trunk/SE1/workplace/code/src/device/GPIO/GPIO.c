@@ -1,5 +1,4 @@
 #include "GPIO.h"
-#include "TIMER.h"
 /*
  * Table 58. Pin function select register bits (Page 66)
  *   
@@ -27,7 +26,7 @@ void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){
 void gpio_write(U32 mask, U32 value){
   pGPIO->IOSET = mask & value;  
   
-  pGPIO->IOCLR = ~(mask & value);
+  //pGPIO->IOCLR = ~(mask & value);
 }
 /*
  *Table 62. (Page 72)
