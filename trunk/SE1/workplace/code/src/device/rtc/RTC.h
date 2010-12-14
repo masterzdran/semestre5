@@ -152,15 +152,15 @@ void rtc_setDOY(U16 doy);
 DATE getDate();
 TIME getTime();
 
-#define __YEAR_MASK__   0xFFF
-#define __MONTH_MASK__  0xF
-#define __DAY_MASK__    0x1F
-#define __HOUR_MASK__   0x1F
-#define __MINUTE_MASK__ 0x3F
-#define __SECOND_MASK__ 0x3F
-#define __DOW_MASK__    0x7
-#define __DOY_MASK__    0x1FF
-#define __DEFAULT_YEAR__  2010
+#define __YEAR_MASK__       0xFFF
+#define __MONTH_MASK__      0xF
+#define __DAY_MASK__        0x1F
+#define __HOUR_MASK__       0x1F
+#define __MINUTE_MASK__     0x3F
+#define __SECOND_MASK__     0x3F
+#define __DOW_MASK__        0x7
+#define __DOY_MASK__        0x1FF
+#define __DEFAULT_YEAR__    2010
 #define __DEFAULT_MONTH__   01
 #define __DEFAULT_DAY__     01
 #define __DEFAULT_HOUR__    00

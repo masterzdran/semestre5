@@ -18,7 +18,7 @@ int main(){
   while (1){
     gpio_set(0x2000);
     timer_sleep_miliseconds(pTIMER0,500);
-    gpio_clear(0x2000,0x2000);
+    gpio_clear(0x2000);
     timer_sleep_miliseconds(pTIMER0,500);
   }
     

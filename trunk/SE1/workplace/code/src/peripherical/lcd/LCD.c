@@ -33,15 +33,13 @@ inline U32 Wstrlen(const Pbyte str){
 
 void LCD_write(U32  byte){
   gpio_write(DATA_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&DATA_MASK);
-  //timer_sleep_miliseconds(ptimer,5);       //stable the data for 5ms
-  //gpio_clear(LCD_GPIO_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&&LCD_GPIO_MASK);
 }
 
 static void processValue_nibble(U8 rs, U8 value){
   gpio_set(ENABLE_MASK);
   LCD_write( value );
   timer_sleep_miliseconds(ptimer,20);
-  gpio_clear(ENABLE_MASK,ENABLE_MASK);
+  gpio_clear(ENABLE_MASK);
   
   
   
@@ -60,8 +58,8 @@ void LCD_init(pLPC_TIMER timer){
     ptimer=timer;
 
   gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
-  gpio_clear(RS_MASK,RS_MASK);
-  gpio_clear(ENABLE_MASK,ENABLE_MASK);
+  gpio_clear(RS_MASK);
+  gpio_clear(ENABLE_MASK);
   
   
     timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
