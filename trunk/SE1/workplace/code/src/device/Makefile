@@ -63,6 +63,9 @@ SCB.h:
 START.o:
 	$(MAKE) -C $(DEVICE)/startup
 
+RTC.o: 
+	$(MAKE)	-C $(DEVICE)/rtc
+	
 TIMER.o: 
 	$(MAKE)	-C $(DEVICE)/timer
 	
@@ -76,6 +79,7 @@ clean:
 	$(MAKE) -C $(DEVICE)/startup  clean
 	$(MAKE) -C $(DEVICE)/GPIO clean
 	$(MAKE) -C $(DEVICE)/timer clean
+	$(MAKE) -C $(DEVICE)/rtc clean
 	
 clear:
 	clear
