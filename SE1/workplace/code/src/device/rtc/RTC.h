@@ -1,6 +1,6 @@
 #ifndef RTC_H
 #define RTC_H
-
+#include "TYPES.h"
 #define     pRTC      (((pLPC_RTC) 0xE0024000))
 
 typedef struct _RTC{
@@ -96,7 +96,17 @@ typedef struct _RTC{
     /*----------------------------------------------------------------*/
 }LPC_RTC,*pLPC_RTC;
 
+typedef struct _date{
+  U16    year; 
+  U8     month;
+  U8     day;  
+}DATE;
 
+typedef struct _time{
+  U8     HOUR;
+  U8     MIN;
+  U8     SEC;  
+}TIME;
 
 #define PCRTC     0x200
 #define __ILR_RTCCIF_DISABLE__     0x0
@@ -113,14 +123,16 @@ typedef struct _RTC{
 #define LPC_PREFRAC     (CCLK - (((CCLK / 32768) - 1) + 1) * 32768)
 
 
-#define __CIIR_IMSEC__          0x1
-#define __CIIR_IMMIN__          0x1<<1
-#define __CIIR_IMHOUR__         0x1<<2
-#define __CIIR_IMDOM__          0x1<<3
-#define __CIIR_IMDOW__          0x1<<4
-#define __CIIR_IMDOY__          0x1<<5
-#define __CIIR_IMMON__          0x1<<6
-#define __CIIR_IMYEAR__         0x1<<7 
+#define __CIIR_IMSEC__          ((U8) 0x1   )
+#define __CIIR_IMMIN__          ((U8) 0x1<<1)
+#define __CIIR_IMHOUR__         ((U8) 0x1<<2)
+#define __CIIR_IMDOM__          ((U8) 0x1<<3)
+#define __CIIR_IMDOW__          ((U8) 0x1<<4)
+#define __CIIR_IMDOY__          ((U8) 0x1<<5)
+#define __CIIR_IMMON__          ((U8) 0x1<<6)
+#define __CIIR_IMYEAR__         ((U8) 0x1<<7)
+
+#define __CIIR_MASK__           ((U8) 0xF)
 
 #define __AMRSEC__          0x1<<0
 #define __AMRMIN__          0x1<<1
@@ -137,5 +149,25 @@ void rtc_setDate(U16 year,U8 month, U8 day);
 void rtc_setTime(U8 hour,U8 minute, U8 seconds);
 void rtc_setDOW(U8 dow);
 void rtc_setDOY(U16 doy);
+DATE getDate();
+TIME getTime();
+
+#define __YEAR_MASK__   0xFFF
+#define __MONTH_MASK__  0xF
+#define __DAY_MASK__    0x1F
+#define __HOUR_MASK__   0x1F
+#define __MINUTE_MASK__ 0x3F
+#define __SECOND_MASK__ 0x3F
+#define __DOW_MASK__    0x7
+#define __DOY_MASK__    0x1FF
+#define __DEFAULT_YEAR__  2010
+#define __DEFAULT_MONTH__   01
+#define __DEFAULT_DAY__     01
+#define __DEFAULT_HOUR__    00
+#define __DEFAULT_MINUTE__  00
+#define __DEFAULT_SECOND__  00
+#define __DEFAULT_DOY__     01
+#define __DEFAULT_DOW__     05
+
 
 #endif

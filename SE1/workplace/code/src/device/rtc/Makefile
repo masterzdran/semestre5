@@ -18,7 +18,7 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../..
+SVN_PATH		= ./../../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
@@ -27,8 +27,8 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
-SEARCHLIB		= -I $(HEADER) 
+HEADER			=  
+SEARCHLIB		= -I $(INCLUDE) 
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -46,11 +46,11 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-#				RTC
+#															RTC
 #=======================================================================
 all: RTC.o
 
-RTC.o:RTC.c RTC.h 
+RTC.o: RTC.c RTC.h
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
 	cp $@ $(MYLIB)/$@
 	cp RTC.h $(INCLUDE)/
@@ -58,7 +58,6 @@ RTC.o:RTC.c RTC.h
 clean:
 	rm  RTC.o
 	rm  $(MYLIB)/RTC.o $(INCLUDE)/RTC.h
-	
 	
 clear:
 	clear
