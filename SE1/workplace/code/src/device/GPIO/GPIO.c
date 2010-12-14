@@ -42,7 +42,7 @@ void gpio_set_direction(U32 mask, U8 direction){
 void gpio_set(U32 mask){
   pGPIO->IOSET |= mask;
 }
-void gpio_clear(U32 mask, U32 value){
+void gpio_clear(U32 mask){
   pGPIO->IOCLR |= mask ;
 }
 

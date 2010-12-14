@@ -114,6 +114,10 @@ typedef struct _SCS{
 #define     __PLL_FEED_AA__                         ((U8 ) 0xAA )
 #define     __PLL_FEED_55__                         ((U8 ) 0x55 )
 
+#define     CCLK          (__PLL_EFFECTIVE_M_VALUE__ * __FOSC__)
+#define     FCCO          (__FOSC__ * __PLL_EFFECTIVE_M_VALUE__ * __PLL_EFFECTIVE_P_VALUE__ * 2)
+
+
 #define     __PLLCON_PLLE_ENABLE__                  ((U8 ) 0x1 )
 #define     __PLLCON_PLLC_CONNECT__                 ((U8 ) 0x2 )
 #define     __PLLCON_MASK__                         ((U8 ) 0x3 )
