@@ -21,15 +21,15 @@ SHELL			= /bin/sh
 SVN_PATH		= ./..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
-SOURCE				= $(PROJECT_PATH)/src
-DEVICE				= $(SOURCE)/device
+SOURCE			= $(PROJECT_PATH)/src
+DEVICE			= $(SOURCE)/device
 PERIPHERICAL	= $(SOURCE)/peripherical
-TODEPLOY			= $(SOURCE)/deploy
-TARGET				= $(PROJECT_PATH)/target
-TEST					= $(PROJECT_PATH)/test
+TODEPLOY		= $(SOURCE)/deploy
+TARGET			= $(PROJECT_PATH)/target
+TEST			= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
-INCLUDE		= $(SOURCE)/include
+INCLUDE			= $(SOURCE)/include
 HEADER			= 
 SEARCHLIB		= -L$(MYLIB) 
 #Executables
@@ -39,15 +39,15 @@ LD				= arm-eabi-ld
 #Debugger
 DEBUGGER		= arm-eabi-insight
 #Commom Options
-OUTPUT 					= -o
-LDSCRIPT				= -T 
+OUTPUT 				= -o
+LDSCRIPT			= -T 
 DEBUGSTABS			= --gstabs
 DEBUGSYMBOLS		= -g
-COPTIONS 				= -Wall -pedantic
+COPTIONS 			= -Wall -pedantic
 COMPILE_ONLY 		= -c 
 #Phony Target
-.PHONY 					= clean
-.PHONY					= clear
+.PHONY 				= clean
+.PHONY				= clear
 #=======================================================================
 LDS_PATH		=  	$(TODEPLOY)/ldscript
 OPENOCD_FILE	=	$(TODEPLOY)/openocd/openocd_lpc2106.cfg

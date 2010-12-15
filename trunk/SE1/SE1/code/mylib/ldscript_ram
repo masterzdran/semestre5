@@ -23,12 +23,15 @@ end = .;
 
 . = ALIGN(4);
 __rom_data_start__ = .;	
+
 .data ALIGN(4) : {
 	__data_start__ = ABSOLUTE(.);
 	*(.data*);
 	. = ALIGN(4);
 	__data_end__ = ABSOLUTE(.) ;
-	} >ram
+} > ram
+
+end = .;						/*some compilers need end label after data*/
 
 .bss ALIGN(4) : {
     __bss_start__ = ABSOLUTE(.);

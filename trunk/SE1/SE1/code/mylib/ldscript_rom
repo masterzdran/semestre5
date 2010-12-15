@@ -7,7 +7,6 @@ MEMORY
 }
 
 SECTIONS {
-
 .startup : {
 	*(.startup*)
 } > rom
@@ -20,13 +19,14 @@ SECTIONS {
 	*(.gnu.linkonce*)
 	*(.eh_frame*)
 } > rom
+end = .;
 
 . = ALIGN(4);					/*if text section isn't aligned*/
 __rom_data_start__ = .;			/*variable to copy data from rom to ram*/
 
 .data : AT (__rom_data_start__) {
     __data_start__ = ABSOLUTE(.);
-	*(.data*)
+	*(.data*);
 	. = ALIGN(4);
     __data_end__ = ABSOLUTE(.);
 } > ram
