@@ -54,10 +54,10 @@ typedef struct _TIMER{
 #define NANO    1000000000 //in this oscilator is not possible to go at nano level :(
 #define XCLOCK  58982400
 
-//#define     timer_sleep_seconds(A,B)          (timer_delay(A,(XCLOCK/SECOND/(A)->PR)*B))
-//#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(XCLOCK/MILI/(A)->PR)*B))
-#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(58982400/1000/58)*B))
-//#define     timer_sleep_microseconds(A,B)     (timer_delay(A,(XCLOCK/MICRO/(A)->PR)*B))
+#define     timer_sleep_seconds(A,B)          (timer_delay(A,(((XCLOCK/SECOND)/(A)->PR))*B))
+#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(((XCLOCK/MILI)/(A)->PR))*B))
+//#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(58982400/1000/58)*B))
+#define     timer_sleep_microseconds(A,B)     (timer_delay(A,(((XCLOCK/MICRO)/(A)->PR))*B))
 
 #define timer_start(A)                  ((A)->TCR |= __TCR_ENABLE__)
 #define timer_stop(A)                   ((A)->TCR &= ~(__TCR_DISABLE__))
