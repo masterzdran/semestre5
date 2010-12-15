@@ -27,6 +27,7 @@ TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
+PROGRAM		= $(SOURCE)/program
 INCLUDE		= $(SOURCE)/include
 HEADER			= $(SOURCE)/device/LPC2106 
 SEARCHLIB		= -I $(HEADER) -I $(INCLUDE)
@@ -55,11 +56,11 @@ all: lcd_test.o
 
 lcd_test.o: lcd_test.c
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
-	cp $@ $(MYLIB)/$@
+	cp $@ $(PROGRAM)/$@
 	
 clean:
 	rm  lcd_test.o
-	rm  $(MYLIB)/lcd_test.o
+	rm  $(PROGRAM)/lcd_test.o
 	
 	
 clear:
