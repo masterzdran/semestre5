@@ -9,6 +9,8 @@ static pLPC_TIMER ptimer;
  * Initialization of the keyboard
  * No GPIO port's are defined yet, since the keyboard read may not be done yet.
  * 
+ * @param[in]] timer: initialized timer structure
+ * 
  * */
 void keyboard_init(pLPC_TIMER timer){
     //gpio_set_direction(__KEYBOARD_LOW_PORT_MASK__, GPIO_OUT); // define output 0x00F0
@@ -17,6 +19,13 @@ void keyboard_init(pLPC_TIMER timer){
     ptimer = timer;
 }
 
+/**
+ * read from port.
+ * 
+ * @param[in]   inputMask:  mask of input port
+ * @param[in]   outputMask: mask of output port
+ * @param[out]  U8:         nibble read from the port
+ * */
 static U8 readNibble(U8 inputMask, U8 outputMask){
   U8 nibble;
  
