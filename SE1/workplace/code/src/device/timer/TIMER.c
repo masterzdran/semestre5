@@ -19,6 +19,6 @@ void timer_delay(pLPC_TIMER timer, U32 elapse){
     U32 time;
     timer->PC = 0;
     time = timer_elapsed(timer,0);
-    while(timer_elapsed(timer,time)<= elapse);  
+    while(timer_elapsed(timer,time)<= elapse);
 }
 

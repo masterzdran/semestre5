@@ -12,14 +12,14 @@ int main(){
  // gpio_set_direction(0x1F00,GPIO_OUT);
   //gpio_clear(0x1F00,0x1F00);
   //gpio_set(0x1F00);
-  timer_init(pTIMER0,58982400/MILI);
+  timer_init(pTIMER0,58982400/MICRO);
   
   
   while (1){
     gpio_set(0x2000);
-    timer_sleep_miliseconds(pTIMER0,500);
+    timer_sleep_miliseconds(pTIMER0,3000);
     gpio_clear(0x2000);
-    timer_sleep_miliseconds(pTIMER0,500);
+    timer_sleep_miliseconds(pTIMER0,3000);
   }
     
   //LCD_init(pTIMER0);
