@@ -49,10 +49,10 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 #															Base Make
 #=======================================================================
-all: LPC2106.h TYPES.h SCB.h START.o TIMER.o GPIO.o 
+all: TYPES.h SCB.h START.o TIMER.o GPIO.o 
 
-LPC2106.h: 
-	$(MAKE) -C $(DEVICE)/LPC2106
+#LPC2106.h: 
+#	$(MAKE) -C $(DEVICE)/LPC2106
 	
 TYPES.h: 
 	$(MAKE) -C $(DEVICE)/TYPES
