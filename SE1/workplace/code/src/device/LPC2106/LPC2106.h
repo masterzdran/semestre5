@@ -34,8 +34,9 @@ typedef U8  byte;
 typedef PU8 Pbyte;
 typedef PU16 PWord;
 typedef PU32 PDWord;
-*/
 
+#define     __FOSC__                        ((const unsigned int) 14745600)
+* */
 /*---------------------Mapeamento dos periféricos---------------------*/
 #define     __WatchdogTimer__                (*((Pbyte) 0xE0000000))
 #define     __Timer0__                       (*((PDWord) 0xE0004000))
@@ -52,7 +53,7 @@ typedef PU32 PDWord;
 #define     __VectoredInterruptController__  (*((PDWord) 0xFFFFF000))
 
 /*-----------------------Relógio do sistema P.35----------------------*/
-#define     __FOSC__                        ((const unsigned int) 14745600)
+
 #define     __VPB_CLOCK__                     (*((Pbyte) 0xE01FC100))
 
 /*-----------------------Relógio dos periféricos----------------------*/
