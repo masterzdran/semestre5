@@ -27,8 +27,7 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= $(SOURCE)/device/LPC2106 
-SEARCHLIB		= -I $(HEADER) -I $(INCLUDE)
+SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as

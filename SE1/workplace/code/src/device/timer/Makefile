@@ -27,7 +27,6 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= 
 SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
 #Executables
 CC 				= arm-eabi-gcc
