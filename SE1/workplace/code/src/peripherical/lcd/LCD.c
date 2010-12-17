@@ -40,9 +40,6 @@ static void processValue_nibble(U8 rs, U8 value){
   LCD_write( value );
   timer_sleep_miliseconds(ptimer,20);
   gpio_clear(ENABLE_MASK);
-  
-  
-  
 }
 static void processValue(U8 rs, U8 value){
   processValue_nibble(rs,(((value) >> DATA_BITS_SHIFT)&CLEAN_MASK));
