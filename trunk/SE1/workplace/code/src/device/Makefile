@@ -23,13 +23,10 @@ SVN_PATH		= ./../../..
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
 DEVICE				= $(SOURCE)/device
-TARGET				= $(PROJECT_PATH)/target
-TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= $(SOURCE)/device/LPC2106 
-SEARCHLIB		= -I $(HEADER) -I $(INCLUDE)
+SEARCHLIB		= -I $(MYLIB) -I $(INCLUDE)
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -51,9 +48,6 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 all: TYPES.h SCB.h START.o TIMER.o GPIO.o 
 
-#LPC2106.h: 
-#	$(MAKE) -C $(DEVICE)/LPC2106
-	
 TYPES.h: 
 	$(MAKE) -C $(DEVICE)/TYPES
 	
@@ -73,13 +67,13 @@ GPIO.o:
 	$(MAKE)	-C $(DEVICE)/GPIO
 
 clean:
-	$(MAKE) -C $(DEVICE)/TYPES  clean
-	$(MAKE) -C $(DEVICE)/SCB  clean
+	$(MAKE) -C $(DEVICE)/TYPES  	clean
+	$(MAKE) -C $(DEVICE)/SCB  		clean
 	$(MAKE) -C $(DEVICE)/startup  clean
-	$(MAKE) -C $(DEVICE)/GPIO clean
-	$(MAKE) -C $(DEVICE)/timer clean
-	$(MAKE) -C $(DEVICE)/rtc clean
-	$(MAKE) -C $(DEVICE)/LPC2106 clean
+	$(MAKE) -C $(DEVICE)/GPIO 		clean
+	$(MAKE) -C $(DEVICE)/timer 		clean
+	$(MAKE) -C $(DEVICE)/rtc 			clean
+	$(MAKE) -C $(DEVICE)/LPC2106 	clean
 	
 clear:
 	clear

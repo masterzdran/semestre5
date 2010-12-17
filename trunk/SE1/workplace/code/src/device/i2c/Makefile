@@ -27,8 +27,7 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-HEADER			= $(SOURCE)/device/LPC2106 $(INCLUDE)
-SEARCHLIB		= -I $(HEADER) 
+SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -48,3 +47,16 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 #															I2C
 #=======================================================================
+all: I2C.o
+
+I2C.o: I2C.c I2C.h
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	cp $@ $(MYLIB)/$@
+	cp I2C.h $(INCLUDE)/
+	
+clean:
+	rm  I2C.o
+	rm  $(MYLIB)/I2C.o $(INCLUDE)/I2C.h
+	
+clear:
+	clear
