@@ -73,13 +73,13 @@ GPIO.o:
 	$(MAKE)	-C $(DEVICE)/GPIO
 
 clean:
-	$(MAKE) -C $(DEVICE)/LPC2106 clean
 	$(MAKE) -C $(DEVICE)/TYPES  clean
 	$(MAKE) -C $(DEVICE)/SCB  clean
 	$(MAKE) -C $(DEVICE)/startup  clean
 	$(MAKE) -C $(DEVICE)/GPIO clean
 	$(MAKE) -C $(DEVICE)/timer clean
 	$(MAKE) -C $(DEVICE)/rtc clean
+	$(MAKE) -C $(DEVICE)/LPC2106 clean
 	
 clear:
 	clear

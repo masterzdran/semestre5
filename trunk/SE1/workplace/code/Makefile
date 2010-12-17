@@ -25,6 +25,7 @@ SOURCE			= $(PROJECT_PATH)/src
 DEVICE			= $(SOURCE)/device
 PERIPHERICAL	= $(SOURCE)/peripherical
 TODEPLOY		= $(SOURCE)/deploy
+PROGRAM			= $(SOURCE)/program
 TARGET			= $(PROJECT_PATH)/target
 TEST			= $(PROJECT_PATH)/test
 #=======================================================================
@@ -62,13 +63,14 @@ endif
 
 VPATH 			= $(MYLIB)
 #=======================================================================
-OBJECT =		start.o startosc.o TIMER.o GPIO.o  LCD.o  lcd_test.o  
+OBJECT =		start.o startosc.o TIMER.o GPIO.o  LCD.o  
 #=======================================================================
 all: $(END_EXEC) 
 
 #Generate the executable
 $(END_EXEC): $(OBJECT) 
-	$(LD)  $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ 
+	$(LD)  $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o
+
 	
 start.o:
 startosc.o:

@@ -107,6 +107,7 @@ typedef struct _SCS{
 #define __MEMORY_MAP_CONTROL_RESERVED__             ((U8 )0x03)
 #define __MEMORY_MAP_CONTROL_MASK__                 ((U8 )0x03)
 
+#define     __FOSC__                                ((U32) 14745600)
 #define     __PLL_M_VALUE__                         ((U8 ) 0x03 )
 #define     __PLL_P_VALUE__                         ((U8 ) 0x20 )
 #define     __PLL_EFFECTIVE_M_VALUE__               ((U8 ) 0x04 )
