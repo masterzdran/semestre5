@@ -1,6 +1,9 @@
 #include "I2C.h"
+#include "GPIO.h"
+#include "TIMER.h"
+#include "POWER.h"
 
-
+#define     micro_wait    5
 
 void I2C_init(){
     //Power: In the PCONP register (table 3-27) set bit PCI2C
@@ -22,4 +25,86 @@ void I2C_init(){
     //For master only functions, write 0x40 to I2CONSET
     pPower->POWER_CONTROL |= __PCI2C_ENABLE__;
     
+    gpio_init(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__,0);
+    
+    gpio_write(__I2C_SCL_PIN__|__I2C_SDA_PIN__);
+    
+    gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
+    
+    
 }
+
+static void write_bit(U8 d) {
+	/* Colocar em SDA o valor a escrever */
+  
+  if (d & 1)
+    gpio_set(__I2C_SDA_PIN__);
+  else
+    gpio_clear(__I2C_SDA_PIN__);
+
+	/* Clock Pulse Width Low */ /* Data In Setup Time - 100 ns */
+	timer_sleep_microseconds(micro_wait);
+		
+	/* Gerar um impulso em SCL */ 
+  gpio_set(__I2C_SCL_PIN__);
+    
+	timer_sleep_microseconds(micro_wait);	/* Clock Pulse Width High */
+  gpio_clear(__I2C_SCL_PIN__);
+	/* Data In Hold Time - 0 ns */
+}
+
+static U8 read_bit() {
+	/* Colocar em alta-impedancia para aceitar os dados impostos pelo dispositivo */
+  gpio_set(__I2C_SDA_PIN__);
+	
+	/* Clock Pulse Width Low */
+	timer_sleep_microseconds(micro_wait);
+
+	/* Gerar um impulso em SCL */ 
+	gpio_set(__I2C_SCL_PIN__);
+	
+	timer_sleep_microseconds(micro_wait);	/* Clock Pulse Width High */
+	U32 tmp = gpio_read(__I2C_SDA_PIN__);
+  gpio_clear(__I2C_SCL_PIN__);
+	
+	return (tmp & __I2C_SDA_PIN__)?1:0;
+}
+
+
+void I2C_start(){  
+  gpio_write(__I2C_SCL_PIN__|__I2C_SDA_PIN__);
+	timer_sleep_microseconds(micro_wait);						/* Start Setup Time */
+  /* Primeiro a data ... */
+	gpio_clear(__I2C_SDA_PIN__);
+	timer_sleep_microseconds(micro_wait);						/* Start Hold Time */
+	/* ... e depois o clock */
+	gpio_clear(__I2C_SCL_PIN__);
+}
+
+void I2C_stop(){
+	/* Colocar ambos a 0 */
+	gpio_clear(__I2C_SCL_PIN__|__I2C_SDA_PIN__);
+	timer_sleep_microseconds(micro_wait);
+	/* Primeiro o clock ... */
+	gpio_set(__I2C_SCL_PIN__);
+	timer_sleep_microseconds(micro_wait);					/* Stop Hold Time */
+	/* ... e depois a data	*/
+	gpio_set(__I2C_SDA_PIN__);
+}
+void I2C_write_byte(U8 value){
+	U8 i;
+	for (i = 0; i < 8; ++i)
+		write_bit(data >> (7 - i));  
+}
+U8 I2C_read_byte(){
+	U8 tmp = 0;
+	U8 i;
+	for (i = 0; i < 8; ++i) {
+		tmp = (tmp << 1) + read_bit();
+	}
+	return tmp;  
+}
+
+U32 I2c_slave_ack(){return read_bit();}
+void I2C_master_ack(){ write_bit(0); }
+void I2C_master_nack(){ write_bit(1); }

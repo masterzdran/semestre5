@@ -10,12 +10,12 @@
 
 /*The PINSEL0 register controls the functions of the pins 0-15*/
 static void gpio_PINSEL0(U32 mask){ 
- __PINSEL0__ = mask; 
+ __PINSEL0__ &= ~mask; 
 }
 
 /*The PINSEL1 register controls the functions of the pins 16-31*/
 static void gpio_PINSEL1(U32 mask){   
-  __PINSEL1__ = mask;
+  __PINSEL1__ &= ~mask;
 }
 
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){

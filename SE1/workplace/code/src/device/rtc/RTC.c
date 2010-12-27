@@ -1,6 +1,9 @@
 #include  "startosc.h"
 #include "RTC.h"
-/*Interrupts: See Section 16–5.1 for RTC interrupt handling. Interrupts are enabled in the VIC using the VICIntEnable register (Section 5–5.4).*/
+/*Interrupts: 
+ * See Section 16–5.1 for RTC interrupt handling. 
+ * Interrupts are enabled in the VIC using the VICIntEnable register (Section 5–5.4).
+ * */
 
 void rtc_init(){
     /*Power: In the PCONP register (Table 3–27), set bit PCRTC = 1.*/
