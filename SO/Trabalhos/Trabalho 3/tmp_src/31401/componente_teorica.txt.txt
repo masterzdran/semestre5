@@ -102,17 +102,13 @@ Pagina 28
 --------------------------------------------------------------------------------
 * 4 níveis
 * Dimensão das Páginas = 4KB (12 bits)
-* Cada tabela de suporte à paginação dos 4 níveis = 8 bytes (64bits)
+* cada tabela de suporte à paginação dos 4 níveis ocupa uma página
+* a dimensão das entradas das tabelas é de 8 Bytes  (6 bits)
 
-64 bits - 12 bits = 52 bits
-52 bits / 4 níveis = 13 bits
+* 4*1024 / 8 = 512 entradas / pagina
 
  ------------------
 |P1|P2|P3|P4|OFFSET|
  ------------------
-OFFSET: 12 bits
-Nivel 1: 13 bits
-Nivel 2: 13 bits
-Nivel 3: 13 bits 
-Nivel 4: 13 bits 
-                
+P1 = 1 Página = 4KB = 12 Bits
+
