@@ -1,0 +1,118 @@
+--------------------------------------------------------------------------------
+ /|
+/ |
+  |
+  |
+-----
+Na figura 2 apresenta-se o código de uma função (UmaFuncao()) 
+implementada com recurso às excepções SEH. Analise o seu 
+código e determine o resultado devolvido, após a sua execução, 
+descrevendo e justificando os passos da sua execução. 
+
+DWORD UmaFuncao() { 
+   DWORD dwTemp = 0; 
+ 
+   while (dwTemp < 10) { 
+ 
+      __try {  
+         if (dwTemp == 2) 
+            continue; 
+ 
+         if (dwTemp == 3) 
+            break; 
+      } 
+      __finally { 
+         dwTemp++; 
+      } 
+ 
+      dwTemp++; 
+   } 
+ 
+   dwTemp += 10; 
+   return(dwTemp); 
+}
+--------------------------------------------------------------------------------
+É iniciada uma variável com o valor Zero.
+No ciclo while existem três secções em execução:
+1- Bloco __try:
+Neste bloco testa-se o valor da variável com o valor 2. Case se confirme o valor 
+é executada a instrução 'continue' que salta para a próxima interacção do ciclo while. 
+No entanto antes de proceder a este salto, o bloco __finally é executado(procedendo a um incremento da variável)
+Neste bloco testa-se também o valor da variável com o valor 3. Caso se confirme o valor
+é executada a instrução 'break', que procede sai fora do ciclo while.
+No entanto antes de proceder a este salto, o bloco __finally é executado(procedendo a um incremento da variável) 
+2- Bloco __finally:
+Este bloco é executado sempre (no contexto desta excepções SEH), procedendo a um incremento da  variável
+
+3- incremento da variável:
+incrementa sempre a variável, excepto quando é executada a instrução 'continue' e 'break'
+
+Analizando a execução:
+Interação 1:
+dwTemp = 0
+      __finally { 
+         dwTemp++; 
+      }
+      dwTemp++; 
+dwTemp = 2
+Interação 2:
+dwTemp = 2
+      __try {  
+         if (dwTemp == 2) 
+            continue; 
+      }
+      __finally { 
+         dwTemp++; 
+      }
+dwTemp = 3    
+Interação 3:
+dwTemp = 3
+      __try {  
+          if (dwTemp == 3) 
+            break;
+      }
+      __finally { 
+         dwTemp++; 
+      }
+dwTemp = 4
+
+fora do while
+   dwTemp += 10; 
+   dwTemp = 14
+   return(dwTemp);
+   devolve 14
+--------------------------------------------------------------------------------
+  -----
+      |
+  ----
+  |
+  -----
+Considere uma arquitectura com suporte à gestão de memória virtual através de 
+paginação com uma estrutura de quatro níveis. 
+Sabendo que a dimensão das páginas é de 4KB, cada tabela de suporte à paginação 
+dos 4 níveis ocupa uma página e que a dimensão das entradas das tabelas é de 
+8 Bytes indique:  
+
+• O esboço da organização deste sistema de gestão de memória; 
+• A dimensão do espaço de endereçamento virtual; 
+• O número de páginas existentes no espaço de endereçamento virtual;
+• A dimensão, mínima e máxima, ocupada pelas estruturas de gestão de memória virtuais associadas a cada processo. 
+
+Pagina 28
+--------------------------------------------------------------------------------
+* 4 níveis
+* Dimensão das Páginas = 4KB (12 bits)
+* Cada tabela de suporte à paginação dos 4 níveis = 8 bytes (64bits)
+
+64 bits - 12 bits = 52 bits
+52 bits / 4 níveis = 13 bits
+
+ ------------------
+|P1|P2|P3|P4|OFFSET|
+ ------------------
+OFFSET: 12 bits
+Nivel 1: 13 bits
+Nivel 2: 13 bits
+Nivel 3: 13 bits 
+Nivel 4: 13 bits 
+                
