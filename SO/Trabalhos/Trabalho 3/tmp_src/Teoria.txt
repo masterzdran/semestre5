@@ -4,3 +4,5 @@ Na primeira iteração, nenhum dos IF's é executado, contudo a variável dwTemp é i
 Na segunda iteração, entra no 1º IF que tem a instrução 'continue' (que provoca com que o ciclo passe para a próxima iteração), no entanto o valor de dwTemp é incrementado em 1, ficando com o valor de 3, devido ao bloco Finally.
 Na terceira iteração, é executado o 2º IF que possuí a instrução 'break' que leva ao terminuo do ciclo, novamente, antes de ser terminar, é executada a instrução do bloco Finally, por tanto dwTemp fica com o valor de 4.
 Fora do ciclo o valor de dwTemp é incrementado em 10 o que perfaz 14. Assim sendo, o resultado devolvido é 14.
+
+2 - 
