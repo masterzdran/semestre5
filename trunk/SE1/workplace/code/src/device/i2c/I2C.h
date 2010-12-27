@@ -1,6 +1,6 @@
 #ifndef I2C_H
 #define I2C_h
-#include "POWER.h"
+
 
 
 #define     pI2C      (((pLPC_I2C) 0xE001C000))
@@ -53,9 +53,17 @@ typedef struct _I2C{
 #define __I2ADR_CALL__          0x01
 #define __I2ADR_CALL_ADR_MASK__ 0xFE   
 
+#define __I2C_SCL_PIN__         ((U8)   1 << 0x2)
+#define __I2C_SDA_PIN__         ((U8)   1 << 0x3)
 
-
-
+void I2C_init();
+void I2C_start();
+void I2C_stop();
+void I2C_write_byte(U8 value);
+U32 I2c_slave_ack();
+U8 I2C_read_byte();
+void I2C_master_ack();
+void I2C_master_nack();
 
 
 #endif
