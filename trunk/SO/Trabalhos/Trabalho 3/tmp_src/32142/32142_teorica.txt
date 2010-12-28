@@ -1,0 +1,86 @@
+Exercício 1:
+
+Na figura 2 apresenta-se o código de uma função (UmaFuncao()) implementada com recurso às excepções SEH. Analise o seu código e determine o resultado devolvido, após a sua execução, descrevendo e justificando os passos da sua execução.
+
+DWORD UmaFuncao() { 
+   DWORD dwTemp = 0; 
+ 
+   while (dwTemp < 10) { 
+ 
+      __try {  
+         if (dwTemp == 2) 
+            continue; 
+ 
+         if (dwTemp == 3) 
+            break; 
+      } 
+      __finally { 
+         dwTemp++; 
+      } 
+ 
+      dwTemp++; 
+   } 
+ 
+   dwTemp += 10; 
+   return(dwTemp); 
+}
+
+	O resultado obtido após a execução do programa é 14. Este resultado é encontrado porque DWORD dwTemp é inicializada a zero, na primeira iteração nenhuma instrição de fluxo, if, é verdadeira por isso esta variável é incrementada na instrução __finally e também na última instrução do ciclo while.
+	Assim, a variável dwTemp tem o valor 2 que após ser novamente submetido a outro ciclo while, pois dwTemp é superior a 10, a primeira condição de fluxo é verdadeira pelo que será forçado um novo ciclo, onde a variável dwTemp será novamente avaliada. Acontece que a instrução de fluxo, if, está dentro duma estrutura de tratamento de excepções (Structures Exception Handling), por isso, a instrução __finally será executada e a variável dwTemp ficará com o valor 3.
+	Na terceira iteração do ciclo while existem duas instruções de avaliação da variável dwTemp que são verdadeiras, a instrução do while e a segunda instrução de fluxo if. Esta segunda instrução de fluxo força ao termino do ciclo, mas como aconteceu anteriormente a instrução __finally será executada sendo nesta forma a variável dwTemp actualizada para 4. Por fim, à variável dwTemp é adicionado ao seu valor 10, retornando a função UmaFuncao o valor 14.
+
+Exercício 2:
+
+Considere uma arquitectura com suporte à gestão de memória virtual através de paginação com uma estrutura de quatro níveis. Sabendo que a dimensão das páginas é de 4KB, cada tabela de suporte à paginação dos 4 níveis ocupa uma página e que a dimensão das entradas das tabelas é de 8 Bytes indique:
+
+-> O esboço da organização deste sistema de gestão de memória
+	//feito pelo cancelo!
+	|P1|P2|P3|P4|OffSet|
+	OffSet = 12 bits, porque quando estamos a ler a memoria estamos a saltar de 8 em 8 bytes
+		4KB * 8 = 4096 Bytes <=> 2^x = 4096 <=> x = log(4096)/log(2) <=> x = 12 bits
+	Nº de bits por página:
+		4KB * 1024 = 4096 Bytes / 8 = 512 entradas/pagina
+		2^x = 512 <=> x = log(512)/log(2) = 9 bits para mapear as 512 entradas
+	
+-> A dimensão do espaço de endereçamento virtual
+	|P1|P2|P3|P4|OffSet|
+	  9  9  9  9   12   = 48 bits
+	2^48-1 = 281474976710655 entradas
+	
+-> O número de páginas existentes no espaço de endereçamento virtual
+	2^36 = 68719476736 entradas / 512 = 134217728 páginas
+	
+-> A dimensão, mínima e máxima, ocupada pelas estruturas de gestão de memória virtuais associadas a cada processo
+	1º Nivel: Uma tabela com 512 entradas.
+	2º Nivel: 512 tabelas com 512 entradas cada.
+	3º Nivel: 512 tabelas com 512 entradas cada.
+	4º Nivel: 512 tabelas com 512 entradas - parte do endereço fisico.
+	-dimensão mínima: 4 páginas
+	-dimensão máxima: 1*512*512*512 páginas
+	
+Exercício 3:
+
+Indique, justificando convenientemente as suas afirmações, as implicações na adopção de páginas de maior dimensão, por exemplo 8KB, na gestão de memória virtual baseada em paginação.
+	
+	A dimensão das páginas na gestão de memória virtual pode ser efectuada, mas tem implicações porque não é garantido que todos os processos irão usar toda a memória reservada para cada processo. Ou seja, quanto maior for a dimensão das páginas, maior será a memória disponivel para cada processo e este aumento de memória apenas é viável quando os processos fazem uso desta (memória), mas como a gestão memória virtual está disponivel para todos os processos, este aumento só irá trazer disperdício de memória que poderia estar a ser usada para outros processos ou para recursos dos que já existem.
+	
+Exercício 4:
+
+Na gestão de memória virtual com paginação que tipos de fragmentação ocorrem na espaço de endereçamento virtual e no espaço de endereçamento físico? Considere as situações em que um programa requisita várias zonas de memória (páginas) com a função VirtualAlloc e que em algumas situações não utiliza, completamente, uma página.
+	
+	
+Exercício 5:	
+	
+Compare a utilização das funções VirtualAlloc e HeapAlloc disponibilizados na Win32 API.
+	
+	VirtualAlloc
+	Gestao de memoria virtual
+	http://msdn.microsoft.com/en-us/library/aa366887(VS.85).aspx
+	Reserves or commits a region of pages in the virtual address space of the calling process. Memory allocated by this function is automatically initialized to zero, unless MEM_RESET is specified.
+	
+	HeapAlloc
+	Gestao de memoria nao virtual
+	http://msdn.microsoft.com/en-us/library/aa366597(v=vs.85).aspx
+	Allocates a block of memory from a heap. The allocated memory is not movable.
+	
+	
