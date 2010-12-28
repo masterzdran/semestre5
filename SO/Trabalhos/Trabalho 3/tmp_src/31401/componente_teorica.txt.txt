@@ -100,15 +100,40 @@ dos 4 níveis ocupa uma página e que a dimensão das entradas das tabelas é de
 
 Pagina 28
 --------------------------------------------------------------------------------
-* 4 níveis
-* Dimensão das Páginas = 4KB (12 bits)
-* cada tabela de suporte à paginação dos 4 níveis ocupa uma página
-* a dimensão das entradas das tabelas é de 8 Bytes  (6 bits)
+* estrutura a 4 níveis
+* Tamanho de cada página 4KB (4*1024 bytes)
+* Cada tabela de suporte ocupa uma página( 4 tabelas = 4 páginas = 4 * 4 * 1024)
+* Dimensão das entradas das entradas 8 bytes.
 
-* 4*1024 / 8 = 512 entradas / pagina
+-> o offset são 12 bits (4*1024 bytes).
+-> 4*1024/8 = 512 entradas
+-> 512 = 9 bits
+-> 4 tabelas * 9 bits = 36 bits
+-> endereço Virtual 4 * 9 bits + 12 bits = 48 bits
+-> espaço de endereçamento 2^48 = 281.474.976.710.656 bytes (281.474 TB)
 
- ------------------
-|P1|P2|P3|P4|OFFSET|
- ------------------
-P1 = 1 Página = 4KB = 12 Bits
+
+• "O esboço da organização deste sistema de gestão de memória"
+• "A dimensão do espaço de endereçamento virtual" 
+-> 4 tabelas * 9 bits = 36 bits
+-> endereço Virtual 4 * 9 bits + 12 bits = 48 bits
+-> espaço de endereçamento 2^48 = 281.474.976.710.656 endereços (281.474 TB)
+
+• "O número de páginas existentes no espaço de endereçamento virtual"
+2^36 = 68.719.476.736 (+ 68 Tera entradas) = 134.217.728 páginas
+
+
+• "A dimensão, mínima e máxima, ocupada pelas estruturas de gestão de memória virtuais associadas a cada processo."
+-> Cada tabela ocupa uma página
+Nivel 1:  Uma Tabela  (página) 	com 512 entradas/cada
+Nivel 2: 512 Tabelas (páginas)  com 512 entradas/cada
+Nivel 3: 512 Tabelas (páginas)  com 512 entradas/cada
+Nivel 4: 512 Tabelas (Páginas)  com 512 entradas/cada
+Máximo: 1 * 512 * 512 * 512 = 134.217.728 páginas 
+Minimo: 4 páginas
+
+
+
+
+
 
