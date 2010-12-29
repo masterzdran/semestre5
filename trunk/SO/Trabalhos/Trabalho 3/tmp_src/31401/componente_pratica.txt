@@ -1,0 +1,27 @@
+ Utilizando as primitivas de gestão de memória virtual da WIN32, o tratamento de excepções estruturadas (SEH) e o mecanismo 
+Thread Local Storage (TLS) para associar dados a uma tarefa específica, desenvolva uma biblioteca 
+dinâmica (DLL) que ofereça a funcionalidade acima descrita.  
+
+As funcionalidades a disponibilizar pelo módulo são: 
+•  Uma função para a iniciação do suporte do registo de histórico de informação, da tarefa que invoca a função, onde deve ser recebido a dimensão máxima admitida (CreateThreadLog(…)) ; 
+
+•  Uma função para adicionar informação ao registo de histórico (AppendThreadLog(…)); 
+
+•  Uma função para que permita libertar um bloco de informação mais antigo (segundo a lógica de um buffer circular), e.g.  FreeThreadLog(…, nBytes) o que significa que o espaço dos  nBytes mais antigos é libertado;
+
+• Uma função para libertar todos os recursos ocupados pelo registo de histórico (ResetThreadLog(…)); 
+
+•  Uma função para libertar o suporte do registo de histórico (DestroyThreadLog(…)).
+
+
+Propõe-se como metodologia de realização deste trabalho a sua divisão pelas seguintes etapas: 
+1.  Implemente as funções  CreateThreadLog,  AppendThreadLog,  FreeThreadLog, ResetThreadLog,  DestroyThreadLog considerando que apenas existe um vector de histórico (vector global) de forma a testar a implementação das funções no que diz respeito à reserva de memória e utilização das SEH para atribuição de memória à medida das necessidades.  
+
+2.  Realize um pequeno programa de teste que permita avaliar o correcto funcionamento das funções anteriores. Faça testes que levem ao armazenamento de volumes avultados de informação. Utilize o programa VMMap, apresentado nas aulas, para verificar a atribuição de memória. 
+
+3.  [Opcional – 4 valores] Altere as funções desenvolvidas no ponto anterior para que o vector seja associado à tarefa que utiliza as funções. Assim cada tarefa pode possuir um vector de histórico. Neste ponto vai introduzir na implementação a utilização do mecanismo de TLS. 
+
+4.  Realize um pequeno programa de teste que permita avaliar o correcto funcionamento do ponto anterior. 
+
+5.  [Opcional – 3 valores] Organize as funções de suporte ao registo de histórico numa biblioteca dinâmica (DLL). Utilize os programas utilitários  dumpbin ou  depends, apresentados nas aulas, para verificar os símbolos exportados pela DLL e os símbolos importados pelo módulo executável. 
+6.  [Opcional – 3 valores] Considere a possibilidade das funções  CreateThreadLog,  AppendThreadLog, FreeThreadLog, ResetThreadLog, DestroyThreadLog poderem reportar  os erros através das excepções SEH.
