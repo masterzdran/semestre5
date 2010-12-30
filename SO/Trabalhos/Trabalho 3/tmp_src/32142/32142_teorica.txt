@@ -73,10 +73,26 @@ Exercício 5:
 	
 Compare a utilização das funções VirtualAlloc e HeapAlloc disponibilizados na Win32 API.
 	
-	VirtualAlloc
-	Gestao de memoria virtual
-	http://msdn.microsoft.com/en-us/library/aa366887(VS.85).aspx
-	Reserves or commits a region of pages in the virtual address space of the calling process. Memory allocated by this function is automatically initialized to zero, unless MEM_RESET is specified.
+	LPVOID WINAPI VirtualAlloc(
+		__in_opt  LPVOID lpAddress,
+		__in      SIZE_T dwSize,
+		__in      DWORD flAllocationType,
+		__in      DWORD flProtect
+	);
+	
+	Each page has an associated page state. The VirtualAlloc function can perform the following
+operations:
+-Commit a region of reserved pages
+-Reserve a region of free pages
+-Simultaneously reserve and commit a region of free pages
+VirtualAlloc cannot reserve a reserved page. It can commit a page that is already committed.
+This means you can commit a range of pages, regardless of whether they have already been
+committed, and the function will not fail.
+You can use VirtualAlloc to reserve a block of pages and then make additional calls to
+VirtualAlloc to commit individual pages from the reserved block. This enables a process to
+reserve a range of its virtual address space without consuming physical storage until it is
+needed.
+	
 	
 	HeapAlloc
 	Gestao de memoria nao virtual
