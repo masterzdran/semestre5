@@ -84,7 +84,7 @@
     <ClInclude Include="Include\Semaforo.h" />
     <ClInclude Include="Include\SesError.h" />
     <ClInclude Include="Include\SlideBar.h" />
-    <ClInclude Include="LoggeDLL.h" />
+    <ClInclude Include="LoggerDLL.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Lib\SesError.cpp" />
