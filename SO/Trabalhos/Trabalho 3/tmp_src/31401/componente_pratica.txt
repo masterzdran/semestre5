@@ -25,3 +25,9 @@ Propõe-se como metodologia de realização deste trabalho a sua divisão pelas segu
 
 5.  [Opcional – 3 valores] Organize as funções de suporte ao registo de histórico numa biblioteca dinâmica (DLL). Utilize os programas utilitários  dumpbin ou  depends, apresentados nas aulas, para verificar os símbolos exportados pela DLL e os símbolos importados pelo módulo executável. 
 6.  [Opcional – 3 valores] Considere a possibilidade das funções  CreateThreadLog,  AppendThreadLog, FreeThreadLog, ResetThreadLog, DestroyThreadLog poderem reportar  os erros através das excepções SEH.
+
+
+
+http://en.wikipedia.org/wiki/Circular_buffer
+
+

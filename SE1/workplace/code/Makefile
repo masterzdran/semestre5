@@ -29,8 +29,10 @@ PROGRAM			= $(SOURCE)/program
 TARGET			= $(PROJECT_PATH)/target
 TEST			= $(PROJECT_PATH)/test
 #=======================================================================
-MYLIB			= $(SOURCE)/lib
+MYLIB				= $(SOURCE)/lib
 INCLUDE			= $(SOURCE)/include
+CLIB				= $(SOURCE)/clib/lib
+CINCLUDE		= $(SOURCE)/clib/inc
 HEADER			= 
 SEARCHLIB		= -L$(MYLIB) 
 #Executables
@@ -61,7 +63,7 @@ LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_ram
 END_EXEC		= $(TARGET)/ram.elf
 endif
 
-VPATH 			= $(MYLIB)
+VPATH 			= $(MYLIB):$(CLIB)
 #=======================================================================
 OBJECT =		start.o startosc.o TIMER.o GPIO.o  LCD.o  
 #=======================================================================
