@@ -91,13 +91,14 @@ typedef struct _VIC{
       U32 IntEnClr;         //0xFFFF F014
       U32 SoftInt;          //0xFFFF F018
       U32 SoftIntClear;     //0xFFFF F01C
-      U8 Protection;       //0xFFFF F020
+      U8 Protection;        //0xFFFF F020
       U8  DUMMY01;
       U16 DUMMY02;  
 }LPC_VIC,*pLPC_VIC;
 
 #define __VIC_VECTCNTL_MASK__       0x1F
 #define __VIC_PROTECTION_MASK__     0x01
+#define __VIC_ENABLE__              0x20
 
 
 //Interrupts Sources
@@ -119,8 +120,25 @@ typedef struct _VIC{
 #define     __INTERRUPT_EINT0_MASK__            0x00004000
 #define     __INTERRUPT_EINT1_MASK__            0x00008000
 #define     __INTERRUPT_EINT2_MASK__            0x00010000
+#define     __INTERRUPT_ALL__                   0x0001FFFF
 
-
+#define     __INTERRUPT_WDT_VALUE__              0x0
+#define     __INTERRUPT_SOFTWARE_VALUE__         0x1
+#define     __INTERRUPT_DbgCommRx_VALUE__        0x2
+#define     __INTERRUPT_DbgCommTX_VALUE__        0x3
+#define     __INTERRUPT_TIMER0_VALUE__           0x4
+#define     __INTERRUPT_TIMER1_VALUE__           0x5
+#define     __INTERRUPT_UART0_VALUE__            0x6
+#define     __INTERRUPT_UART1_VALUE__            0x7
+#define     __INTERRUPT_PWM_VALUE__              0x8
+#define     __INTERRUPT_I2C_VALUE__              0x9
+#define     __INTERRUPT_SPI_SSP_VALUE__          0xA
+#define     __INTERRUPT_RESERVED_VALUE__         0xB     
+#define     __INTERRUPT_PLL_VALUE__              0xC
+#define     __INTERRUPT_RTC_VALUE__              0xD
+#define     __INTERRUPT_EINT0_VALUE__            0xE
+#define     __INTERRUPT_EINT1_VALUE__            0xF
+#define     __INTERRUPT_EINT2_VALUE__            0x10
 
 
 #endif
