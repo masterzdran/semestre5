@@ -7,10 +7,21 @@
 /*****************************************************************
 	Module includes the interrupt vectors and start-up code.
 ******************************************************************/
+.equ __USER_MODE__ ,           0x10  /* System Running Priviledged Operating USER Tasks  Mode */
+.equ __FIQ_MODE__  ,           0x11  /* System Running Priviledged Operating FIQ Tasks  Mode */
+.equ __IRQ_MODE__   ,          0x12  /* System Running Priviledged Operating IRQ Tasks  Mode */
+.equ __SUPERVISOR_MODE__ ,     0x13  /* System Running Priviledged Operating SUPERVISOR Tasks  Mode */
+.equ __ABORT_MODE__ ,          0x17  /* System Running Priviledged Operating ABORT Tasks  Mode */
+.equ __UNDEF_MODE__  ,         0x1B  /* System Running Priviledged Operating UNDEF Tasks  Mode */
+.equ __SYSTEM_MODE__  ,        0x1F  /* System Running Priviledged Operating SYSTEM Tasks  Mode */
+.equ __FIQ_STACK_SIZE__        ,    3*4
+.equ __IRQ_STACK_SIZE__        ,    16*8*4
+.equ __ABORT_STACK_SIZE__      ,    1*4
+.equ __UNDEF_STACK_SIZE__      ,    1*4
+.equ __SUPERVISOR_STACK_SIZE__ ,    1*4
 
-.set  	MODE_SYS,   0x1F  		/* System Running Priviledged Operating System Tasks  Mode */
-.set  	I_BIT,      0x80   		/* when I bit is set, IRQ is disabled (program status registers) */
-.set  	F_BIT,      0x40   		/* when F bit is set, FIQ is disabled (program status registers) */
+.equ  	I_BIT,      0x80   		/* when I bit is set, IRQ is disabled (program status registers) */
+.equ  	F_BIT,      0x40   		/* when F bit is set, FIQ is disabled (program status registers) */
 
 /******************************************************************
 	Module includes the interrupt vectors and startup code.
@@ -25,8 +36,8 @@ _vectors:
     	ldr     pc, SWIAddr
     	ldr     pc, PAbtAddr
     	ldr     pc, DAbtAddr
-      .word	  0xB8A06F58
-    	ldr     pc, IRQAddr
+      .word	  0xB9205F80                             /*0xB8A06F58*/
+      ldr     pc,[pc,#-0xFF0]                        /*pc, IRQAddr*/
     	ldr     pc, FIQAddr
 
 ResetAddr:	    .word   ResetHandler
@@ -34,21 +45,51 @@ UndefAddr:     	.word   UndefHandler
 SWIAddr:       	.word   SWIHandler
 PAbtAddr:      	.word   PAbortHandler
 DAbtAddr:      	.word   DAbortHandler
-                .word	  0
-IRQAddr:	      .word	  IRQHandler
+                .word	  0x0
+                .word	  0x0
 FIQAddr:       	.word   FIQHandler
 
 ResetHandler:
 _start:
-  /*save top of stack address to sp*/
-	ldr   	r0, =__stack_top__
-	msr   	cpsr_c, #MODE_SYS|I_BIT|F_BIT 	/* System Mode */
+  
+  ldr   	r0, =__stack_top__
+  /*Stack FIQ*/
+	msr   	cpsr_c, #__FIQ_MODE__|I_BIT|F_BIT
+	mov   	sp, r0
+  sub     r0,#__FIQ_STACK_SIZE__
+  
+  /*Stack IRQ*/
+	msr   	cpsr_c, #__IRQ_MODE__|I_BIT|F_BIT
+	mov   	sp, r0
+  sub     r0,#__IRQ_STACK_SIZE__
+  
+  /*Stack SUPERVISOR*/
+	msr   	cpsr_c, #__SUPERVISOR_MODE__|I_BIT|F_BIT
+	mov   	sp, r0
+  sub     r0,#__SUPERVISOR_STACK_SIZE__
+  
+  /*Stack ABORT*/
+	msr   	cpsr_c, #__ABORT_MODE__|I_BIT|F_BIT 	
+	mov   	sp, r0
+  sub     r0,#__ABORT_STACK_SIZE__
+  
+  /*Stack of UNDEFINED*/
+	msr   	cpsr_c, #__UNDEF_MODE__|I_BIT|F_BIT 	
+	mov   	sp, r0
+  sub     r0,#__UNDEF_STACK_SIZE__
+  
+  /*Stack of SYSTEM_MODE*/
+	msr   	cpsr_c, #__SYSTEM_MODE__|I_BIT|F_BIT 	
 	mov   	sp, r0
 
-	/* Clear .bss section */
+
+	
+  /* Clear .bss section */
 	ldr   	r1, =__bss_start__
 	ldr   	r2, =__bss_end__
 	ldr   	r3, =0
+
+
 bss_clear_loop:
 	cmp   	r1, r2
 	strne 	r3, [r1], #+4
@@ -67,13 +108,13 @@ set_loop:
 	bne	set_loop
 end_set_loop:
 
-       	ldr   	r10, =StartOsc
-        mov   	lr, pc
-        bx    	r10
+  ldr   	r10, =StartOsc
+  mov   	lr, pc
+  bx    	r10
 
-       	ldr   	r10, =main
-        mov   	lr, pc
-        bx    	r10                       /* enter main() */
+  ldr   	r10, =main
+  mov   	lr, pc
+  bx    	r10                       /* enter main() */
 
 
 .section .stack
