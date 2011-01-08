@@ -11,10 +11,43 @@ Um programa é um ficheiro executável que desempenha um determinado tipo de funçõ
 Processo é uma instância de um programa que se encontra a ser executado.
 
 		------------------------------------
-2 - A comutação de contexto consiste na troca de um fio de execução (thread ou tarefa) por outra. Para tal é necessário guardar o contexto de execução da tarefa que é constituido pelos valores que se encontrem nos registos, o stack e o Program Count ou Instruction Pointer. No caso dos registos são guardados em memória secundária enquanto que para alterar o stack basta modificar endereço existente nos registos do processador.
+		
+2 - A comutação de contexto consiste na troca de um fio de execução (thread ou tarefa) por outra. Para tal é necessário guardar o contexto de execução da tarefa que é constituido pelos valores que se encontrem nos registos, o stack e o Program Count ou Instruction Pointer. No caso dos registos são guardados em memória secundária enquanto que para alterar o stack basta modificar endereço existente nos registos do processador. FALTOU REFERIR A ALTERAÇÃO DE ESTADO E DIZER AS DISTINÇÕES NO CASO DE SER UM PROCESSO. TAMBÉM NÃO DISSESTE QUANDO É QUE É REALIZADO.
 
-(o que se encontra nos slides.)
+(o que se encontra nos slides:)
+
+A comuntação de contexto consiste em trocar o PBC de um processo pelo PBC de outro processo. Alterar o estado de Run para Ready, do processo que vai deixar de se encontrar em execução, e o processo trocar o estado do processo que se vai executar de Ready para Run.
+
+Há um context switch cada vez que o tempo de execução termina ou quando um processo passa para o estado de Wait.
 
 -------------------------------------------------------------
 
 PARTE 2
+
+NÃO FOI LECCIONADO
+
+-------------------------------------------------------------
+
+PARTE 3
+
+1 - O papel do TLB é verificar se a pagina que se está a tentar aceder encontra-se mapeada em memória. Se existir, indica qual é o frame a que pertence para se aceder aoo seu conteúdo, caso contrário é necessário aceder à tabela de paginas para verificar qual é o frame a que a página pertence.
+
+2 - 2 níveis | dimensão de página = 16K = 2^14 | entrada da directoria de páginas e tabelas = 4 bytes.
+
+- Qual o espaço de endereçamento virtual?
+	16K/8*4 => 16K/32 = 512 entradas.
+	
+	2 níveis => 512 * 512 = (2^9)*(2^9) = 2^18 páginas * 2^14 = 2^32
+	
+- Quantas páginas existem no espaço de endereçamento?
+	2^18
+	
+-->	ERRADO PORQUE A DIMENSÃO DE PÁGINA É EM KBYTE E NÃO EM KBIT. <---
+	
+- Qual o espaço de endereçamento virtual?
+	16K/4 = 4K entradas. (2^12)
+	
+	2 níveis => 4K * 4K = (2^12)*(2^12) = 2^24 páginas * 2^14 = 2^38
+	
+- Quantas páginas existem no espaço de endereçamento?
+	2^24
