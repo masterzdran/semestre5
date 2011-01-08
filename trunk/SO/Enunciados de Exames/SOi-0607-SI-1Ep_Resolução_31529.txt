@@ -1,0 +1,20 @@
+Sugestão de resolução realizada por:
+João Diogo da Silva Sousa aluno número 31529
+xDDD
+
+PARTE 1
+
+1 - Pode-se considerar que um ficheiro é qualquer tipo de dados existentes em um computador, exceptuando directorias e partições.
+
+Um programa é um ficheiro executável que desempenha um determinado tipo de funções.
+
+Processo é uma instância de um programa que se encontra a ser executado.
+
+		------------------------------------
+2 - A comutação de contexto consiste na troca de um fio de execução (thread ou tarefa) por outra. Para tal é necessário guardar o contexto de execução da tarefa que é constituido pelos valores que se encontrem nos registos, o stack e o Program Count ou Instruction Pointer. No caso dos registos são guardados em memória secundária enquanto que para alterar o stack basta modificar endereço existente nos registos do processador.
+
+(o que se encontra nos slides.)
+
+-------------------------------------------------------------
+
+PARTE 2
