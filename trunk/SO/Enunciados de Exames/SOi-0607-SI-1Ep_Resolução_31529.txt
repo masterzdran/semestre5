@@ -20,13 +20,13 @@ A comuntação de contexto consiste em trocar o PBC de um processo pelo PBC de out
 
 Há um context switch cada vez que o tempo de execução termina ou quando um processo passa para o estado de Wait.
 
--------------------------------------------------------------
+-----------------------------------------------------
 
 PARTE 2
 
 NÃO FOI LECCIONADO
 
--------------------------------------------------------------
+-----------------------------------------------------
 
 PARTE 3
 
@@ -47,7 +47,76 @@ PARTE 3
 - Qual o espaço de endereçamento virtual?
 	16K/4 = 4K entradas. (2^12)
 	
-	2 níveis => 4K * 4K = (2^12)*(2^12) = 2^24 páginas * 2^14 = 2^38
+	2 níveis => 4K * 4K = (2^12)*(2^12) = 2^24 páginas * 2^14 = 2^38 bytes de endereçamento
 	
 - Quantas páginas existem no espaço de endereçamento?
-	2^24
+	2^24 páginas
+	
+3 - 
+
+O troço de código não é robusto pelo facto de a função 'func()' poder lançar uma excepção ou o semaforo não ser adquirido e no entanto está ser libertado independentemente do que aconteça. Um resultado inedesejavel é que o semaforo fique com mais unidades do que as que deveria ter podendo comprometer a execução do resto do troço de código.
+
+DWORD result = 0;
+__try
+{
+	func();
+	result = WaitForSingleObject(hsem,INFINITE);
+	usarRecurso();
+}
+__finally
+{
+	if(result==WAIT_OBJECT_0)
+		ReleaseSemaphore(hsem,1,NULL);
+}
+
+-----------------------------------------------------
+
+PARTE 4
+
+1 - NÃO FOI LECCIONADO
+
+2 - Tc-b1 => Td-b1=> Ta-a1 => Ta-a2 => Ta-a3 => Ta-a4 => Tb-a1 => Tc-b2(terminou) => Td-b2 (terminou) => Ta-a5(terminou) => Tb-a2 => Tb-a3 => Tb-a4 => Tb-a5 (teriminou)
+
+3 - 
+class MesaTabuaRedonda : IMesaTabuaRedonda
+{
+	BOOL reiComer;
+	HANDLE comer;
+	DWORD aComer;
+	DWORD nCavaleiros;
+public:
+	public MesaTabuaRedonda(DWORD nCavaleiros=10)
+	{
+		this->nCavaleiros=nCavaleiros;
+		aComer=0;
+		comer = CreateSemaphore(NULL,nCavaleiros-1,nCavaleiros-1,NULL);
+		reiComer = FALSE;
+	}
+	virtual void rei_comer()
+	{
+		WaitForSingleObject(comer,INFINITE);
+		reiComer=TRUE;
+	}
+	virtual void rei_conviver()
+	{
+		reiComer=FALSE;
+			ReleaseSemaphore(comer,NULL);
+	}
+
+	virtual void cavaleiro_comer()
+	{
+		if(reiComer && InterlockedRead(&aComer)<nCavaleiros-2)
+		{
+			InterlockedIncrement(&aComer);
+			WaitForSingleObject(comer,INFINITE);
+		}
+	}
+	
+	virtual void cavaleiro_conviver()
+	{
+		ReleaseSemaphore(comer,NULL);
+		InterlockedDecrement(&aComer);
+	}
+}
+
+4 - NÃO FOI RESOLVIDO.
