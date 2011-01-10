@@ -1,0 +1,81 @@
+Sugestão de resolução realizada por:
+João Diogo da Silva Sousa aluno número 31529
+
+1 - 
+a) Se o escalonamento for não preemptivo e monoprocessador, no caso da primeira função a ser executada for o troço de código 'tarefa1', este ficará em execucção até que o programa termine abruptamente pois possuí um ciclo infinito sem qualquer instrução que faça com que a tarefa que executa o código passe para o estado de wait.
+	No caso de ser o troço de código 'tarefa2' o primeiro a ser executado, apenas irá escrever uma única vez o valor da variável 'j' e o processador será cedido à tarefa que irá executar o código 'tarefa1'
+	
+b) - Se o escalonamento for preemptivo torna-se um pouco imprevisivel qual o resultado da função 'tarefa1', no entanto, sabe-se que irá executar-se durante a totalidade de um Time Slice até que o processador lhe seja retirado. A tarefa associada à função 'tarefa2' invocar a função de escrita, cede o processador, quando a escrita for efectuada, coloca-se em espera durante 1 segundo.
+	
+2 - http://msdn.microsoft.com/en-us/library/ms686724%28v=vs.85%29.aspx
+
+Para terminar a execução de uma tarefa deverá ser utilizado um Evento que é sinalizado quando se pretender que as threads terminem. As tarefas devem verificar qual o estado do Handle associado ao evento através da função WaitForSingleObject com um tempo de espera de 0 e caso seja devolvida a constante WAIT_OBJECT_0, significa que o evento está sinalizado e por tanto deve executar o código necessário para terminar.
+
+É incorrecto porque não sabemos o que é que a thread esta a fazer, podendo terminar na posse de qualquer mecanismo de exclusão mutua, danificando assim o funcionamento normal do programa.
+
+3 - NÃO FOI LECCIONADO.
+
+4 - NÃO FOI LECCIONADO.
+
+5 - As tabelas TLB não devem fazer parte do contexto de execução, pois indicam quais as páginas que se encontram mapeadas no endereçamento virtual. Se fizesse parte, não iria corresponder ao estado actual da memória física, pois existe a possibilidade de terem havido existido trocas no contexto de execução anterior.
+
+6 - Endereçamento virtual 40bits | 2 níveis | 1º nivel 13bits, 2º nivel 12 bits.
+
+Existem (2^13) * (2^12) = 2^25 páginas.
+
+Dimensão das páginas? 
+2^15 = 16KByte. (assumindo que a dimensão de uma página corresponder ao offset.)
+
+7 - Ao aumentar a dimensão da página as tabelas de endereçamento e de página terão que possuir uma lógica de descodificação maior bla bla bla bla
+
+8 - 
+i)
+Ta - a1,a3
+Tb - a1,a3
+Tc - b1,b4
+Ta - a4,a6
+Tb - a4,a6
+
+9 - 
+a)
+
+class PistaBobsleigh
+{
+	HANDLE hFormarEquipa;
+	HANDLE hAberta;
+public:
+	PistaBobsleigh()
+	{
+		hFormarEquipa = CreateSemaphore(NULL,5,5,NULL);
+		hAberta = CreateEvent(NULL,TRUE,TRUE,NULL);
+	}
+	~PistaBobsleight()
+	{
+		CloseHandle(hFormarEquipa);
+		CloseHandle(hAberta);
+	}
+
+	virtual void fechar_pista()
+	{
+		ResetEvent(hAberta);
+	}
+	
+	virtual void abrir_pista()
+	{
+		SetEvent(hAberta);
+	}
+	
+	virtual void formarEquipaEAcederAPista()
+	{
+		WaitForSingleObject(hFormarEquipa,INFINITE);
+		WaitForSingleObject(hAberta,INFINITE);
+		//Porque é que não é um WaitForMultipleObject?
+		//Penso que também poderia ser, deste modo evita-se a necessidade de criar um array de handles para poder invocar essa função, sendo o resultado final igual.		
+	}
+	virtual void sairDaPista()
+	{
+		ReleaseSemaphote(hFormarEquipa,NULL);
+	}
+}
+
+10 - Nao percebi a aprte das variáveis de condição.
