@@ -1,0 +1,182 @@
+PARTE 4
+
+2)
+
+Solução da aula
+
+//int senha=0;
+//int visor=0;
+int alugarGaivotas()
+{
+	int minhaS;
+	sMutex->Wait();
+	//minhaS= ++senha;
+	while(nGaivotasDisp==0 || nprioEspera>0)//||minhaS!=visor)
+	{
+		++ThEsperaGaiv;
+		sMutex->Signal();
+		sBloqAlug->Wait();
+		sMutex->Wait();
+	}
+	--GaivotasDisp;
+	int g = procurarGaivotas();
+	//++visor;
+	sMutex->Signal();
+	return g;
+}
+
+void EntrarEmManutenção(int idGaivota)
+{
+	sMutex->Wait();
+	if(estado[idGaivota]==Disp)
+	{
+		--nGaivotas;
+	}
+	estado[idGaivotas] = manutencao;
+	sMutex->Signal();
+}
+
+void devolverGaivota(int idGaivota)
+{
+	sMutex->Wait();
+	if(estado[idGaivota]!=manutencao)
+	{
+		estado[idGaivota]=disp;
+		++nGaivotasDisp;
+		if(ThEsperaGaivPrio>0)
+		{
+			--ThEsperaGaivPrio;
+			sBloqAlugPrio->Signal();
+		}
+		else if(ThEsperaGaiv>0)
+		//while(ThEsperaGaiv>0)
+		{
+			--ThEsperaGaiv;
+			sBloqAlug->Signal();
+		}
+	}
+	sMutex->Signal();
+}
+
+int alugarGaivotaPrioritaria()
+{
+	sMutex->Wait();
+	++nPrioEspera;
+	while(nGaivotasDisp==0)
+	{
+		++ThEsperaGaivPrio;
+		sMutex->Signal();
+		sBloqAlugPrio->Wait();
+		sMutex->Wait();
+	}
+	--nPrioEspera;
+	--nGaivotasDisp;
+	int g = procurarGaivota();
+	sMutex->Signal();
+	return g;
+}
+
+-------------------------------------------------------
+
+A minha solução com garantia de ordem. xD (tinha lido que era com ordem em vez de ser somente com prioridades)
+
+class GestorGaivotas
+{
+	int[] gaivotas;
+	CONDITION_VARIABLE cvGaivotas;
+	CRITICAL_SECTION csGaivotas;
+	volatile int maiorPrio=0;
+	volatile int menorPrio=0;
+	volatile int prioTo=1;
+	volatile int topPrio=-1;
+	int obterGaivota()
+	{
+		for(int i = 0;i<gaivotas.length;++i)
+		{
+			if(gaivotas[i]==0)
+				return i;
+		}
+		return -1;
+	}
+	public:
+	GestorGaivotas(int nGaivotas)
+	{
+		gaivotas = new int[nGaivotas];
+		InitializeCriticalSection(&csGaivotas);
+		InicializeConditionVariable(&cvGaivotas);
+	}
+	~GestorGaivotas()
+	{
+		DeleteCriticalSection(&csGaivotas);
+	}
+	
+	virtual int alugarGaivota()
+	{
+		EnterCriticalSection(&csGaivotas);
+		int prio = ++maiorPrio;
+		int idGaivota;
+		do{
+			if(topPrio==menorPrio && maiorPrio==prioTo)
+			{
+				idGaivota=obterGaivota();
+				if(idGaivota!=-1)
+				{
+					Gaivotas[idGaivota]=1;
+					++prioTo;
+					WakeAllConditionVariable(&cvGaivotas);
+					LeaveCriticalSection(&csGaivotas);
+					return idGaivota;
+				}
+			}
+			SleepConditionVariableCS(&cvGaivotas,&csGaivotas,INFINITE);
+		}while(true);
+	}
+	virtual int alugarGaivotaPrioritaria()
+	{
+		EnterCriticalSection(&csGaivotas);
+		int prio = --menorPrio;
+		int idGaivota;
+		do{
+			if(prio==topPrio)
+			{
+				idGaivota=obterGaivota();
+				if(idGaivota!=-1)
+				{
+					Gaivotas[idGaivota]=1;
+					--topPrio;
+					WakeAllConditionVariable(&csGaivotas);
+					LeaveCriticalSection(csGaivotas);
+					return idGaivota;
+				}
+			}
+			SleepConditionVariableCS(&cvGaivotas,&csGaivotas,INFINITE);
+		}while(true);
+		
+	}
+	virutal void devolverGaivota(int idGaivota)
+	{
+		EnterCriticalSection(&csGaivotas);
+		if(Gaivotas[idGaivota]==1)
+		{
+			Gaivotas[idGaivota]=0;
+			WakeAllConditionVariable(&cvGaivotas);
+		}
+		LeaveCriticalSecion(&csGaivotas);
+	}
+	virtual void entrarEmManutencao(int idGaivota)
+	{
+		EnterCriticalSection(&csGaivotas);
+		Gaivotas[idGaivota]=2;
+		LeaveCriticalSection(&csGaivotas);
+	}
+	virtual void sairDeManutencao(int idGaivota)
+	{
+		EnterCriticalSection(&csGaivotas);
+		if(Gaivotas[idGaivota]==2)
+		{
+			Gaivotas[idGaivota]=0;
+			WakeAllConditionVariables(&csGaivotas);
+		}
+		LeaveCriticalSection(&csGaivotas);
+	}
+};
