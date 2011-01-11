@@ -100,7 +100,7 @@ public:
 	virtual void rei_conviver()
 	{
 		reiComer=FALSE;
-			ReleaseSemaphore(comer,NULL);
+		ReleaseSemaphore(comer,NULL);
 	}
 
 	virtual void cavaleiro_comer()

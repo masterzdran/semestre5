@@ -1,0 +1,23 @@
+objectivo: traduzir um endereço virtual num endereço fisico.
+
+o endereço vitual é dividido em dois blocos |#Page|OFFSET|
+
+O offset está relacionado directamente com a dimensão de página e tem uma correspondência directa com o endereço físico.
+Se a dimensão for de 4kByte, o offset é de 12bit. (2^12 = 4096)
+
+A dimensão do endereçamento virtual NÃO ESTÁ relacionado com o endereçamento físico.
+
+A tabela de páginas contém uma entrada por cada número de página existente, isto é, se o endereço virtual tiver 20bits de páginação, a tabela terá que ter 2^20 entradas.
+
+A dimensão da tabela de página é o número de entradas a multiplicar pelo tamanho de cada entrada.
+
+Ao aceder a uma entrada da tabela de primeiro nível, é carregada a página em que essa entrada se encontre, se o tamanho da tabela de primeiro nível for igual ao tamanho de uma página, será carregada na totalidade.
+
+Em relação à tabela de segundo nível, é a mesma coisa se esta ocupar uma página na totalidade, se ocupar duas páginas por exemplo, só irá carregar uma delas.
+
+Para calcular a dimensão da estrutura que suporta a tabela de páginas faz-se o seguinte calculo.
+
+nº de entradas de nível 1 x tamanho da tabela de nível 2 + tamanho da tabela de 1º nível.
+
+Se a dimensão das tabelas for toda igual fica:
+dimensão das tabelas x número de entradas x número de tabelas.
