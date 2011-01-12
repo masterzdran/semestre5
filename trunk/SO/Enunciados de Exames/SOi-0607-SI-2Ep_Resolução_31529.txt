@@ -55,26 +55,26 @@ public:
 		CloseHandle(hAberta);
 	}
 
-	virtual void fechar_pista()
+	void fechar_pista()
 	{
 		ResetEvent(hAberta);
 	}
 	
-	virtual void abrir_pista()
+	void abrir_pista()
 	{
 		SetEvent(hAberta);
 	}
 	
-	virtual void formarEquipaEAcederAPista()
+	void formarEquipaEAcederAPista()
 	{
 		WaitForSingleObject(hFormarEquipa,INFINITE);
 		WaitForSingleObject(hAberta,INFINITE);
 		//Porque é que não é um WaitForMultipleObject?
 		//Penso que também poderia ser, deste modo evita-se a necessidade de criar um array de handles para poder invocar essa função, sendo o resultado final igual.		
 	}
-	virtual void sairDaPista()
+	void sairDaPista()
 	{
-		ReleaseSemaphote(hFormarEquipa,NULL);
+		ReleaseSemaphote(hFormarEquipa,1,NULL);
 	}
 }
 
