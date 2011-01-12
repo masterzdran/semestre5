@@ -85,25 +85,25 @@ class MesaTabuaRedonda : IMesaTabuaRedonda
 	DWORD aComer;
 	DWORD nCavaleiros;
 public:
-	public MesaTabuaRedonda(DWORD nCavaleiros=10)
+	MesaTabuaRedonda(DWORD nCavaleiros=10)
 	{
 		this->nCavaleiros=nCavaleiros;
 		aComer=0;
 		comer = CreateSemaphore(NULL,nCavaleiros-1,nCavaleiros-1,NULL);
 		reiComer = FALSE;
 	}
-	virtual void rei_comer()
+	void rei_comer()
 	{
 		WaitForSingleObject(comer,INFINITE);
 		reiComer=TRUE;
 	}
-	virtual void rei_conviver()
+	void rei_conviver()
 	{
 		reiComer=FALSE;
-		ReleaseSemaphore(comer,NULL);
+		ReleaseSemaphore(comer,1,NULL);
 	}
 
-	virtual void cavaleiro_comer()
+	void cavaleiro_comer()
 	{
 		if(reiComer && InterlockedRead(&aComer)<nCavaleiros-2)
 		{
@@ -112,9 +112,9 @@ public:
 		}
 	}
 	
-	virtual void cavaleiro_conviver()
+	void cavaleiro_conviver()
 	{
-		ReleaseSemaphore(comer,NULL);
+		ReleaseSemaphore(comer,1,NULL);
 		InterlockedDecrement(&aComer);
 	}
 }

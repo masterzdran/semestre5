@@ -1,0 +1,14 @@
+Sugestão de resolução realizada por:
+João Diogo da Silva Sousa aluno número 31529
+
+1)
+
+As instruções priviligiadas são necessárias para impedir que qualquer utilizador as possa invocar, podendo haver efeitos colaterais indesejaveis.
+	---------------------
+2)
+
+As variações de time quantum fazem com que o tempo de espera de espera médio aumente ou diminua. Quanto menor o valor do time quantum mais context switchs irão haver e quanto maior for, a politica do scheduler começará a assemelhar-se FCFS (First To Come, First To Serve)
+
+	----------------------
+	
+3)

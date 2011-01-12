@@ -1,2 +1,107 @@
 Sugestão de resolução realizada por:
 João Diogo da Silva Sousa aluno número 31529
+
+PARTE 1
+
+1 - Um quantum (Time Slice) mal dimensionado, por norma demasiado pequeno, fará com que haja mais context switchs cuja computação é considerada elevada.
+
+----
+	Um quantum mal dimensionado poderá fazer com que haja mais context switchs, se for demasiado pequeno,
+
+NÃO SEI SE DEVEMOS REFERIR ESTA PARTE.
+	e se for excessivamente grade, apesar de diminuir o número de context switchs, perde-se um pouco a noção de preempº
+ap	visto que em caso extremo nenhuma perderá o processador até que termine a sua execução.
+	
+2 - 
+
+Initialize - Procede à inicialização e de seguida passa para o estado de Ready
+Ready - A tarefa encontra-se pronta para execução, quando obtiver o processador passa para o estado de Run
+Run - A tarefa encontra-se em execução até que lhe seja retirado o processador e nesse caso vai para o estado de Ready, ou execute uma operação de I/O ou uma chamada ao sistema que seja demorada e nesse caso vai para o estado de Wait
+Wait - A tarefa está à espera que uma operação termine e dê essa indicação para passar para o estado de Ready
+Terminate - Processamento de terminou da tarefa, no caso de ser a última thread do processo, também termina o processo.
+
+--------------------------------------------------
+
+PARTE 2
+
+1 - A recepção assincrona de mensagens é tratada no método WndProc que recebe as messagens uma a uma e executa a acção associada a esse evento. Os cuidados a ter é que deve ser utilizada uma unica thread para fazer o tratamento das mensagens e de que a mesma não execute código passivel de ficar bloqueada, devendo criar uma outra thread para fazer essas operações isto para que não deixe de processar mensagens enquanto está bloqueada à espera do resultado.
+
+2 - o programa irá escrever na consola:
+Try 2: val=40
+that's all folks
+
+------------------------------------------------
+PARTE 3
+
+NÃO FOI LECCIONADA.
+
+------------------------------------------------
+
+PARTE 4
+
+1 - 2 níveis | 32 bits de endereçamento virtual | páginas de 512bytes | cada entrada das tabelas ocupa 4byte
+2^9/2^2 = 2^7
+
+- O esboço da organização deste sistema de gestão de memória
+|p1		2bit  |p2	21bit	|offset	9bit|
+31			30|22		   9|8		   0| <--- NÃO É NECESSÁRIO
+(falta o desenho das tabelas, mas não me parece que o vá fazer aqui.)
+
+- Indique quantas páginas existem no espaço de endereçamento virtual
+Por cada entrada do primeiro nível existe uma tabela do segundo nível, por tanto ao multiplicar o número de entradas do primeiro nível pelo número de entradas do segundo nível obtemos o número de páginas existentes.
+2^2 x 2^21 = 2^23 páginas
+
+Qual a dimensão do espaço de endereçamento virtual.
+2^32 byte
+
+a dimensão mínima e máxima ocupada pelas estruturas de gestão de memória virtual associado a cada processo.
+Considerando que a dimensão mínima é o espaço ocupado pela estrutura para tentar aceder a um endereço físico a partir do endereço virtual, o primeiro nível ocupa uma página, ao aceder a um dos índices é necessário carregar uma tabela de segundo nível e cada tabela ocupa 3 páginas, por tanto a dimensão minima é 4 páginas, ou seja, 4x2^2byte
+
+a dimensão máxima é a estrutura estar carregada na totalidade, ou seja, 1 página pela tabela de primeiro nível e por cada entrada uma tabela de segundo nível, ou seja,
+4(número de tabelas de segundo nível) x 2^27(dimensão que ocupa cada página) = 2^2 x 2^27 = 2^29 byte
+
+2 - NÃO SEI.
+
+-------------------------------------------------
+
+PARTE 5
+
+1 -
+a)
+Tc b1
+Td b1
+Ta a1-a4
+Tb a1,a4
+Tc b2-b3
+Td
+Ta a4-a6
+Tb a4-a6
+Tc b3-b4
+Td b1-b4
+
+b) Sim, existe porque o acesso à variável i não é exclusivo, podendo existir a possibilidade da thread A e B entrarem ambas no if.
+
+2-
+
+a)
+class Barraquinha
+{
+	void pedirSardinhas_e_Pao()
+	{
+		WaitForSingleObject(sPao,INFINITE);
+		WaitForSingleObject(sSardinha,INFINITE);
+	}
+	
+	void abastetecerSardinhas(int n)
+	{
+		ReleaseSemaphore(sSardinha,n,NULL);
+	}
+	
+	void abastecertPao(int n)
+	{
+		ReleaseSemaphore(sPao,n,NULL);
+	}
+}
+
+b) Existe a possibilidade de starvation porque o semaforo não garante a ordenação, logo poderá haver uma thread que fique 'eternamente presa'
+
