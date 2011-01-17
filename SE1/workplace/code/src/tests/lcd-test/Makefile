@@ -54,7 +54,7 @@ OBJECT				=  start.o startosc.o  TIMER.o   GPIO.o LCD.o
 all: lcd_test.o
 
 lcd_test.o: lcd_test.c
-	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	$(CC) -nostdlib $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
 	cp $@ $(PROGRAM)/$@
 	
 clean:

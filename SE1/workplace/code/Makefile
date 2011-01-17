@@ -45,7 +45,7 @@ LD				= arm-eabi-ld
 DEBUGGER		= arm-eabi-insight
 #Commom Options
 OUTPUT 				= -o
-LDSCRIPT			= -T 
+LDSCRIPT			= -T  
 DEBUGSTABS			= --gstabs
 DEBUGSYMBOLS		= -g
 COPTIONS 			= -Wall -pedantic
@@ -65,15 +65,16 @@ LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_ram
 END_EXEC		= $(TARGET)/ram.elf
 endif
 
-VPATH 			= $(MYLIB):$(CLIB)
+#VPATH 			= $(MYLIB):$(CLIB)
+VPATH 			= $(MYLIB)
 #=======================================================================
-OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o
+OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o 
 #=======================================================================
 all: $(END_EXEC) 
 
 #Generate the executable
-$(END_EXEC): $(OBJECT) 
-	$(LD)  $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o
+$(END_EXEC): $(OBJECT)
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc 
 	
 start.o:
 startosc.o:

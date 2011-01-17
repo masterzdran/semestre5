@@ -24,10 +24,10 @@ void keyboard_init(pLPC_TIMER timer){
  * 
  * @param[in]   inputMask:  mask of input port
  * @param[in]   outputMask: mask of output port
- * @param[out]  U8:         nibble read from the port
+ * @param[out]  U32:         nibble read from the port
  * */
-static U16 readNibble(U16 inputMask, U16 outputMask){
-  U16 nibble;
+static U32 readNibble(U32 inputMask, U32 outputMask){
+  U32 nibble;
  
   //Resistencias de Pull-Up
   gpio_set_direction(outputMask, GPIO_OUT);   // define output 0x00F0
@@ -37,7 +37,7 @@ static U16 readNibble(U16 inputMask, U16 outputMask){
   nibble = gpio_read(inputMask);
   timer_sleep_miliseconds(ptimer,10);         //Bounce
   
-  return (nibble = gpio_read(inputMask));     //Há Tecla Pressionada!?  
+  return ((nibble == gpio_read(inputMask))? nibble:inputMask);     //Há Tecla Pressionada!?  
 }
 
 /**
@@ -51,22 +51,23 @@ void readKey(){
   U8 recentKey;
 
   //Read Lines
-  lowByteKey = readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ );
+  lowByteKey = readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ )>>__KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__;
   if (lowByteKey  == __DEFAULT_VALUE__){       //There is an key pressed!?
     key = __NO_KEY__;  
     return;
   }
 
   //Read Columns
-  highByteKey = readNibble(__KEYBOARD_LOW_PORT_MASK__,__KEYBOARD_HIGH_PORT_MASK__);
+  highByteKey = readNibble(__KEYBOARD_LOW_PORT_MASK__,__KEYBOARD_HIGH_PORT_MASK__)>>__KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__;
   if (highByteKey == __DEFAULT_VALUE__){       //Something went wrong, value discarted
     key = __NO_KEY__;
     return; 
   }
 
-  recentKey = (highByteKey<<__KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__) | lowByteKey;
+  recentKey = (highByteKey<<4) | lowByteKey;
   
-  if (recentKey != key)  key  = recentKey;    //Save the bitmap
+  //if (recentKey != key)  key  = recentKey;    //Save the bitmap
+  key  = recentKey;    //Save the bitmap
   /*
   do{
     timer_sleep_miliseconds(ptimer,50);      //wait until the key is released
@@ -82,15 +83,14 @@ static U8 decodeKey(U8 keyBitmap){
     register U8 nibble;
     
     nibble = keyBitmap & __KEYBOARD_MASK__;
-    for (;nibble;colCount++)
+    for (;nibble & 1;colCount++)
       nibble = nibble >> 1 ;
     
     nibble = (keyBitmap >> __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__) & __KEYBOARD_MASK__;
-    for (;nibble;lineCount++)
+    for (;nibble & 1;lineCount++)
       nibble = nibble >> 1 ; 
       
-    colCount--;lineCount--;
-    return (U8)((lineCount << 2) | colCount);
+    return (U8)(((colCount << 2) | lineCount));
 }
 
 /**
