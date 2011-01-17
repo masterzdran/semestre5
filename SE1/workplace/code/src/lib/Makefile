@@ -37,8 +37,9 @@ DEBUGSTABS		= --gstabs
 .PHONY 			= clean
 .PHONY			= clear
 #=======================================================================
-all: *.o
+library.a: *.o
 	$(AR) $@ $^
+	clean
 	
 clean:
 	rm  $(MYLIB)/main.o
