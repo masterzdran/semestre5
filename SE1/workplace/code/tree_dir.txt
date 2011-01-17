@@ -1,0 +1,47 @@
+.
+|-- src
+|   |-- clib
+|   |   |-- inc
+|   |   |-- lib
+|   |   `-- src
+|   |       |-- assert
+|   |       |-- ctype
+|   |       |-- errno
+|   |       |-- init
+|   |       |-- setjmp
+|   |       |   `-- arm
+|   |       |-- stdio
+|   |       |-- stdlib
+|   |       |-- string
+|   |       |   `-- c
+|   |       `-- time
+|   |-- deploy
+|   |   |-- ldscript
+|   |   `-- openocd
+|   |-- device
+|   |   |-- GPIO
+|   |   |-- i2c
+|   |   |-- LPC2106
+|   |   |-- power
+|   |   |-- rtc
+|   |   |-- SCB
+|   |   |-- spi
+|   |   |-- startup
+|   |   |-- timer
+|   |   |-- TYPES
+|   |   |-- uarts
+|   |   |-- vic
+|   |   `-- watchdog
+|   |-- include
+|   |-- lib
+|   |-- peripherical
+|   |   |-- keyboard
+|   |   `-- lcd
+|   |       `-- Java
+|   |-- program
+|   `-- tests
+|       `-- lcd-test
+|-- target
+`-- test
+
+44 directories
