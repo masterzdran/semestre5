@@ -27,6 +27,8 @@ void gpio_set_direction(U32 mask, unsigned char direction);
 #define GPIO_IN             ((U8)   0x0)
 #define GPIO_OUT            ((U8)   0x1)
 
+
+
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_0__       (FUNCTION_0 << (PORT * 0))
 #define     __PINSEL0_UART_0_TXD__          (FUNCTION_1 << (PORT * 0))

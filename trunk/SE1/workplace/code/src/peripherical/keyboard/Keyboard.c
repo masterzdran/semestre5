@@ -26,13 +26,13 @@ void keyboard_init(pLPC_TIMER timer){
  * @param[in]   outputMask: mask of output port
  * @param[out]  U8:         nibble read from the port
  * */
-static U8 readNibble(U8 inputMask, U8 outputMask){
-  U8 nibble;
+static U16 readNibble(U16 inputMask, U16 outputMask){
+  U16 nibble;
  
   //Resistencias de Pull-Up
   gpio_set_direction(outputMask, GPIO_OUT);   // define output 0x00F0
   gpio_set_direction(inputMask, GPIO_IN);     // define output 0x0F00
-  gpio_clear(outputMask);                      // 'Injecta' Zeros
+  gpio_clear(outputMask);                     // 'Injecta' Zeros
   
   nibble = gpio_read(inputMask);
   timer_sleep_miliseconds(ptimer,10);         //Bounce
@@ -52,7 +52,7 @@ void readKey(){
 
   //Read Lines
   lowByteKey = readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ );
-  if (lowByteKey  == __DEFAULT_VALUE__ ){       //There is an key pressed!?
+  if (lowByteKey  == __DEFAULT_VALUE__){       //There is an key pressed!?
     key = __NO_KEY__;  
     return;
   }
@@ -67,16 +67,36 @@ void readKey(){
   recentKey = (highByteKey<<__KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__) | lowByteKey;
   
   if (recentKey != key)  key  = recentKey;    //Save the bitmap
-  
+  /*
   do{
     timer_sleep_miliseconds(ptimer,50);      //wait until the key is released
   }while((readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ )) != __DEFAULT_VALUE__ );
-  
+  */
 }
+/**
+ * Decode the bitmap to an valid key.
+ * If simultaneos keys were pressed, returns the last valid combination
+ * */
+static U8 decodeKey(U8 keyBitmap){
+    register U8 colCount=0,lineCount=0;
+    register U8 nibble;
+    
+    nibble = keyBitmap & __KEYBOARD_MASK__;
+    for (;nibble;colCount++)
+      nibble = nibble >> 1 ;
+    
+    nibble = (keyBitmap >> __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__) & __KEYBOARD_MASK__;
+    for (;nibble;lineCount++)
+      nibble = nibble >> 1 ; 
+      
+    colCount--;lineCount--;
+    return (U8)((lineCount << 2) | colCount);
+}
+
 /**
  * Check if it is an valid key stored from an previous call to read.
  * returns 0 if there is no Key, otherwise if there is.
- * */
+ **/
 U8 hasKey(){ return (key == __NO_KEY__); }
 
 /**
@@ -101,25 +121,6 @@ U8 getPreviousKey(){
 }
 
 
-/**
- * Decode the bitmap to an valid key.
- * If simultaneos keys were pressed, returns the last valid combination
- * */
-static U8 decodeKey(U8 keyBitmap){
-    register U8 colCount=0,lineCount=0;
-    register U8 nibble;
-    
-    nibble = keyBitmap & __KEYBOARD_MASK__;
-    for (;nibble;colCount++)
-      nibble = nibble >> 1 ;
-    
-    nibble = (keyBitmap >> __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__) & __KEYBOARD_MASK__;
-    for (;nibble;lineCount++)
-      nibble = nibble >> 1 ; 
-      
-    colCount--;lineCount--;
-    return (lineCount << 2) | colCount;
-}
 /**
  * Clears the values of both stored keys
  * */

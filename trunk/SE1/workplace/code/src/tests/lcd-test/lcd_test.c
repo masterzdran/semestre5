@@ -1,6 +1,7 @@
 #include "LCD.h"
 #include "GPIO.h"
 #include "TIMER.h"
+#include "Keyboard.h"
 #include "TYPES.h"
 #include "startosc.h"
 
@@ -13,6 +14,8 @@ int main(){
   //gpio_clear(0x1F00,0x1F00);
   //gpio_set(0x1F00);
   timer_init(pTIMER0,58982400/MICRO);
+  LCD_init(pTIMER0);
+  keyboard_init(pTIMER0);
   
   //U32 system_clock_pr= pTIMER0->PR;
   /*
@@ -28,10 +31,15 @@ int main(){
     timer_sleep_miliseconds(pTIMER0,500);
   }
    */
-  LCD_init(pTIMER0);
 
-  writeString("TESTE");
-  
+  while(1){
+	int key=NO_KEY;
+	while((key=getKey())==NO_KEY){
+		readKey();
+		timer_sleep_miliseconds(pTIMER0, 50);
+	}
+	writeString(key);
+  }
   
   
  return 0;  

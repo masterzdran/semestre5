@@ -65,7 +65,7 @@ endif
 
 VPATH 			= $(MYLIB):$(CLIB)
 #=======================================================================
-OBJECT =		start.o startosc.o TIMER.o GPIO.o  LCD.o  
+OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o
 #=======================================================================
 all: $(END_EXEC) 
 
