@@ -12,10 +12,10 @@
 #define   __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__     ((U8) 0x4)
 #define   __KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__    ((U8) 0x8)
 
-//#define   __KEYBOARD_LOW_PORT_MASK__            (__KEYBOARD_MASK__ << __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__ )
-#define   __KEYBOARD_LOW_PORT_MASK__            ((U16)0xF0)
-//#define   __KEYBOARD_HIGH_PORT_MASK__           (__KEYBOARD_MASK__ << __KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__ )
-#define   __KEYBOARD_HIGH_PORT_MASK__           ((U16)0xF00)
+#define   __KEYBOARD_LOW_PORT_MASK__            (__KEYBOARD_MASK__ << __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__ )
+//#define   __KEYBOARD_LOW_PORT_MASK__            ((U16)0xF0)
+#define   __KEYBOARD_HIGH_PORT_MASK__           (__KEYBOARD_MASK__ << __KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__ )
+//#define   __KEYBOARD_HIGH_PORT_MASK__           ((U16)0xF00)
 #define   __NO_KEY__                            ((U8) 0xFF)
 #define   NO_KEY                                ((U8) 0xFF)
 void clearKey();

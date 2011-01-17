@@ -4,6 +4,7 @@
 #include "Keyboard.h"
 #include "TYPES.h"
 #include "startosc.h"
+#include "stdio.h"
 
 #define  LCD_MASK   ((U32) 0x7F00)
 
@@ -33,12 +34,14 @@ int main(){
    */
 
   while(1){
-	int key=NO_KEY;
+	U8 key=NO_KEY;
 	while((key=getKey())==NO_KEY){
 		readKey();
 		timer_sleep_miliseconds(pTIMER0, 50);
 	}
-	writeString(key);
+	char teste[20];
+	sprintf(teste,"%d",key);
+	writeString(teste);
   }
   
   
