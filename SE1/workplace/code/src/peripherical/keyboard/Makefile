@@ -47,11 +47,14 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 #															Keyboard
 #=======================================================================
-keyboard.o: keyboard.S
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $(MYLIB)/$@  $^
+keyboard.o: Keyboard.c Keyboard.h
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	cp $@ $(MYLIB)/$@
+	cp Keyboard.h $(INCLUDE)/
 	
 clean:
-	rm  $(MYLIB)/keyboard.o
+	rm  keyboard.o
+	rm  $(MYLIB)/keyboard.o $(INCLUDE)/Keyboard.h
 
 clear:
 	clear
