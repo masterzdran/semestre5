@@ -15,26 +15,28 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#											Base Dir MakeFile
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
 SVN_PATH		= ./..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
-SOURCE			= $(PROJECT_PATH)/src
-DEVICE			= $(SOURCE)/device
+SOURCE				= $(PROJECT_PATH)/src
+DEVICE				= $(SOURCE)/device
 PERIPHERICAL	= $(SOURCE)/peripherical
-TODEPLOY		= $(SOURCE)/deploy
-PROGRAM			= $(SOURCE)/program
-TARGET			= $(PROJECT_PATH)/target
-TEST			= $(PROJECT_PATH)/test
+TODEPLOY			= $(SOURCE)/deploy
+PROGRAM				= $(SOURCE)/program
+TARGET				= $(PROJECT_PATH)/target
+TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB				= $(SOURCE)/lib
 INCLUDE			= $(SOURCE)/include
 CLIB				= $(SOURCE)/clib/lib
 CINCLUDE		= $(SOURCE)/clib/inc
 HEADER			= 
-SEARCHLIB		= -L$(MYLIB) 
+SEARCHLIB		= -I$(MYLIB)
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -72,7 +74,6 @@ all: $(END_EXEC)
 #Generate the executable
 $(END_EXEC): $(OBJECT) 
 	$(LD)  $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o
-
 	
 start.o:
 startosc.o:
