@@ -18,6 +18,8 @@ include objects.mak
 
 lib: $(OBJS)
 	arm-eabi-ar rcs $(ROOT)/lib/libc.a $?
+	cp $(ROOT)/lib/libc.a  $(ROOT)/../lib/
+	cp $(ROOT)/inc/*.h $(ROOT)/../include
 
 clean:
 	-rm -f *.o *.lst *.bak *.map *.ii *.i *.s
