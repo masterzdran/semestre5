@@ -103,9 +103,9 @@ typedef struct _date{
 }DATE;
 
 typedef struct _time{
-  U8     HOUR;
-  U8     MIN;
-  U8     SEC;  
+  U8     hour;
+  U8     minute;
+  U8     second;  
 }TIME;
 
 #define PCRTC     0x200
