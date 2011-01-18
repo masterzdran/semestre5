@@ -65,16 +65,16 @@ LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_ram
 END_EXEC		= $(TARGET)/ram.elf
 endif
 
-#VPATH 			= $(MYLIB):$(CLIB)
-VPATH 			= $(MYLIB)
+VPATH 			= $(MYLIB):$(CLIB):$(libdir)
+#VPATH 			= $(MYLIB)
 #=======================================================================
-OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o 
+OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o libc.a libgcc.a
 #=======================================================================
 all: $(END_EXEC) 
 
 #Generate the executable
 $(END_EXEC): $(OBJECT)
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc 
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc
 	
 start.o:
 startosc.o:
