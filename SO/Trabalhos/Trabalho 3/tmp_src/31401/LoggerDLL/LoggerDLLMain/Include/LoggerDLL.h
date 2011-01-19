@@ -7,8 +7,6 @@ extern "C" {
 
 #include <windows.h>
 
-
-
 #define EXPORT __declspec (dllexport)
 #define IMPORT __declspec (dllimport)
 

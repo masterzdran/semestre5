@@ -120,17 +120,18 @@ Pagina 28
 -> espaço de endereçamento 2^48 = 281.474.976.710.656 endereços (281.474 TB)
 
 • "O número de páginas existentes no espaço de endereçamento virtual"
-2^36 = 68.719.476.736 (+ 68 Tera entradas) = 134.217.728 páginas
+2^36 = 68.719.476.736 páginas(+ 68 Tera entradas) = 134.217.728 tabelas
 
 
 • "A dimensão, mínima e máxima, ocupada pelas estruturas de gestão de memória virtuais associadas a cada processo."
 -> Cada tabela ocupa uma página
 Nivel 1:  Uma Tabela  (página) 	com 512 entradas/cada
 Nivel 2: 512 Tabelas (páginas)  com 512 entradas/cada
-Nivel 3: 512 Tabelas (páginas)  com 512 entradas/cada
-Nivel 4: 512 Tabelas (Páginas)  com 512 entradas/cada
-Máximo: 1 * 512 * 512 * 512 = 134.217.728 páginas 
-Minimo: 4 páginas
+Nivel 3: 512 Tabelas (páginas)  com 512 * 512 entradas/cada
+Nivel 4: 512 Tabelas (Páginas)  com 512 * 512 * 512 entradas/cada
+--------------------------------------------------------------------------
+Máximo: 1 + 512  + 512 * 512 + 512 * 512 * 512 = 134.480.385 páginas * 4KB
+Minimo: 4 páginas * 4KB
 
 
 
