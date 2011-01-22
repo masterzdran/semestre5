@@ -30,11 +30,6 @@ typedef struct{
 //TLS Entry
 DWORD tlsIDX		= -1;
 
-void exitReport(LPTSTR message){
-	_tprintf(TEXT("Error!\nMessage: %s\nError Code: %ld\n"),message,GetLastError());
-	exit(0);
-}
-
 //Routine to Treat The exption and 
 INT PageFaultExceptionFilter(DWORD dwCode, LPEXCEPTION_POINTERS info){
 	// If the exception is not a page fault, exit.
@@ -70,24 +65,23 @@ INT PageFaultExceptionFilter(DWORD dwCode, LPEXCEPTION_POINTERS info){
 	return EXCEPTION_CONTINUE_EXECUTION;
 }
 
-BOOL resetValues()
+VOID resetValues()
 {
 	LogDef* logger = (LogDef*)TlsGetValue(tlsIDX);
 	logger->_endPtr = logger->_startPtr = 0;
-	return true;
 }
 
 static void _DLL_TlsInit()
 {
     if ((tlsIDX = TlsAlloc()) == -1)  
-      FatalErrorSystem(_T("TlsAlloc failed!"));
+		RaiseException(UNABLE_TLS_ALLOC,0,0,NULL);
 }
 
 static void _DLL_TlsEnd()
 {
 	if( tlsIDX != -1)
 		if( !TlsFree(tlsIDX) ) 
-            FatalErrorSystem(_T("TlsFree failed!"));
+			RaiseException(UNABLE_TLS_FREE,0,0,NULL);
 }
 
 static LogDef* _TlsInit()
@@ -98,7 +92,7 @@ static LogDef* _TlsInit()
 	p->_loggerBase = 0;
 
 	if (! TlsSetValue(tlsIDX, p)) 
-        FatalErrorSystem(_T("TlsSetValue failed!")); 
+        RaiseException(UNABLE_TLS_SET_VALUE,0,0,NULL);
 	return p;
 }
 
@@ -109,7 +103,7 @@ static void _TlsClose()
 		delete p; 
 		p=NULL;
 		if ( !TlsSetValue(tlsIDX, p) ) 
-            FatalErrorSystem(_T("TlsSetValue failed!")); 
+            RaiseException(UNABLE_TLS_SET_VALUE,0,0,NULL);
 	}
 }
 
@@ -129,7 +123,7 @@ static BOOL isFull(){
  * */
 void WINAPI CreateThreadLog(DWORD bytes){
 	if (bytes == 0) 
-		exitReport((LPTSTR)"Invalid size to allocate.");
+		RaiseException(INVALID_SIZE_TO_BUFFER,0,0,NULL);
 	
 	LogDef* logger = (LogDef*)TlsGetValue(tlsIDX);
 	SYSTEM_INFO	systemInfo ; GetSystemInfo(&systemInfo);
@@ -139,7 +133,7 @@ void WINAPI CreateThreadLog(DWORD bytes){
 	logger->_loggerBase = VirtualAlloc(NULL , logger->_pageLimit * logger->_pageSize , MEM_RESERVE , PAGE_NOACCESS); 
 
 	if (logger->_loggerBase == NULL)
-		exitReport((LPTSTR)"Error while use VirtualAlloc.");
+		RaiseException(UNABLE_VIRTUAL_ALLOC,0,0,NULL);
 	
 	//Reseting	the buffer pointers, acknowledging the buffer is empty at start. 
 	logger->_endPtr = logger->_startPtr = logger->_pageNbr = 0;
@@ -150,6 +144,9 @@ void WINAPI CreateThreadLog(DWORD bytes){
  * Uma função para adicionar informação ao registo de histórico (AppendThreadLog(…)); 
  * */
 void WINAPI AppendThreadLog(LPTSTR message){
+	
+	if (message == NULL) RaiseException(NULL_POINTER_EXPECTION,0,0,NULL);
+	
 	LogDef* logger = (LogDef*)TlsGetValue(tlsIDX);
 	if (logger->_loggerBase == NULL)
 		CreateThreadLog(__DEFAULT_SIZE__);
@@ -160,7 +157,7 @@ void WINAPI AppendThreadLog(LPTSTR message){
 	//Se falhar a excepção chamar a função que vai fazer commit da proxima pagina 
 	//ou paginas suficientes para agregar as páginas
 	//Actualizar o valor de _loggerBaseFree para o proximo byte apos ter sido colocada a mensagem
-	if (isFull()) return;
+	if (isFull()) RaiseException(BUFFER_FULL,0,0,NULL);
 	
 	__try
 	{
@@ -183,17 +180,19 @@ void WINAPI AppendThreadLog(LPTSTR message){
  * que estejam totalmente “vazias”.
  * */
 void WINAPI FreeThreadLog(DWORD bytes){
-	if (bytes == 0 ) return;
+	if (bytes == 0 ) RaiseException(BUFFER_SIZE_EMPTY,0,0,NULL);
+
 	//VirtualFree: para libertar os bytes indicados
 	//se a pagina estiver toda disponivel fazer release
 	//controlar o espaço com buffer circular
 	//Admitindo que bytes é sempre inferior ao total do buffer
 
-	if (isEmpty()) return;
+	if (isEmpty()) RaiseException(BUFFER_EMPTY,0,0,NULL);
 
 	LogDef* logger = (LogDef*)TlsGetValue(tlsIDX);
 
-	if (bytes > (logger->_pageLimit * logger->_pageSize)) return;
+	if (bytes > (logger->_pageLimit * logger->_pageSize)) 
+		RaiseException(BUFFER_SIZE_OVERFLOW,0,0,NULL);
 	
 	//Relallocating the pointers
 	DWORD releasedPtr =  (bytes +  logger->_startPtr) % (logger->_pageLimit * logger->_pageSize); 
@@ -222,8 +221,10 @@ void WINAPI FreeThreadLog(DWORD bytes){
 		for (;startPageIdx < endPageIdx; ((startPageIdx++)%(logger->_pageLimit))){
 			freeAddr =(LPVOID)( (int)logger->_loggerBase + startPageIdx * logger->_pageSize);
 			freeLog = VirtualFree(freeAddr, 2 ,MEM_DECOMMIT);
+			
 			if (!freeLog){
 				_tprintf(TEXT("Error while decommiting: %d"),GetLastError());
+				RaiseException(RESET_THREAD_LOG_INSUCCESS,0,0,NULL);
 			}else{
 				logger->_pageNbr--;
 			}
@@ -237,7 +238,10 @@ void WINAPI FreeThreadLog(DWORD bytes){
  * */
 BOOL WINAPI ResetThreadLog(){
 	LogDef* logger = (LogDef*)TlsGetValue(tlsIDX);
-	return (VirtualFree(logger->_loggerBase,0, MEM_DECOMMIT))?resetValues():false;
+	if (!VirtualFree(logger->_loggerBase,0, MEM_DECOMMIT))
+		RaiseException(RESET_THREAD_LOG_INSUCCESS,0,0,NULL);
+	resetValues();
+	return TRUE;
 }
 
 /**
@@ -245,7 +249,9 @@ BOOL WINAPI ResetThreadLog(){
  * */
 BOOL WINAPI DestroyThreadLog(){
 	LogDef* logger = (LogDef*)TlsGetValue(tlsIDX);
-	return  VirtualFree((logger->_loggerBase), 0 ,MEM_RELEASE);
+	if (!VirtualFree((logger->_loggerBase), 0 ,MEM_RELEASE))
+		RaiseException(DESTROY_THREAD_LOG_INSUCCESS,0,0,NULL);
+	return  TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
