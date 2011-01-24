@@ -1,9 +1,9 @@
 #ifndef VIC_H
 #define VIC_H
 
-#define         pVIC              ((pLPC_VIC)  0xFFFFF000)
+#define         pVIC              ((pLPC_VIC)           0xFFFFF000)
 #define         pVIC_VECTADDR     ((pLPC_VIC_VECTADDR)  0xFFFFF030)
-#define         pVIC_VECTADDRX    ((pLPC_VIC_VECTADDRX)  0xFFFFF100)
+#define         pVIC_VECTADDRX    ((pLPC_VIC_VECTADDRX) 0xFFFFF100)
 #define         pVIC_VECTCNTX     ((pLPC_VIC_VECTCNTX)  0xFFFFF200)
 
 
@@ -96,49 +96,49 @@ typedef struct _VIC{
       U16 DUMMY02;  
 }LPC_VIC,*pLPC_VIC;
 
-#define __VIC_VECTCNTL_MASK__       0x1F
-#define __VIC_PROTECTION_MASK__     0x01
-#define __VIC_ENABLE__              0x20
+#define __VIC_VECTCNTL_MASK__       (U8) 0x1F
+#define __VIC_PROTECTION_MASK__     (U8) 0x01
+#define __VIC_ENABLE__              (U8) 0x20
 
 
 //Interrupts Sources
 
-#define     __INTERRUPT_WDT_MASK__              0x00000001
-#define     __INTERRUPT_SOFTWARE_MASK__         0x00000002
-#define     __INTERRUPT_DbgCommRx_MASK__        0x00000004
-#define     __INTERRUPT_DbgCommTX_MASK__        0x00000008
-#define     __INTERRUPT_TIMER0_MASK__           0x00000010
-#define     __INTERRUPT_TIMER1_MASK__           0x00000020
-#define     __INTERRUPT_UART0_MASK__            0x00000040
-#define     __INTERRUPT_UART1_MASK__            0x00000080
-#define     __INTERRUPT_PWM_MASK__              0x00000100
-#define     __INTERRUPT_I2C_MASK__              0x00000200
-#define     __INTERRUPT_SPI_SSP_MASK__          0x00000400
-#define     __INTERRUPT_RESERVED_MASK__         0x00000800     
-#define     __INTERRUPT_PLL_MASK__              0x00001000
-#define     __INTERRUPT_RTC_MASK__              0x00002000
-#define     __INTERRUPT_EINT0_MASK__            0x00004000
-#define     __INTERRUPT_EINT1_MASK__            0x00008000
-#define     __INTERRUPT_EINT2_MASK__            0x00010000
-#define     __INTERRUPT_ALL__                   0x0001FFFF
+#define     __INTERRUPT_WDT_MASK__           (U32)   0x00000001
+#define     __INTERRUPT_SOFTWARE_MASK__      (U32)   0x00000002
+#define     __INTERRUPT_DbgCommRx_MASK__     (U32)   0x00000004
+#define     __INTERRUPT_DbgCommTX_MASK__     (U32)   0x00000008
+#define     __INTERRUPT_TIMER0_MASK__        (U32)   0x00000010
+#define     __INTERRUPT_TIMER1_MASK__        (U32)   0x00000020
+#define     __INTERRUPT_UART0_MASK__         (U32)   0x00000040
+#define     __INTERRUPT_UART1_MASK__         (U32)   0x00000080
+#define     __INTERRUPT_PWM_MASK__           (U32)   0x00000100
+#define     __INTERRUPT_I2C_MASK__           (U32)   0x00000200
+#define     __INTERRUPT_SPI_SSP_MASK__       (U32)   0x00000400
+#define     __INTERRUPT_RESERVED_MASK__      (U32)   0x00000800     
+#define     __INTERRUPT_PLL_MASK__           (U32)   0x00001000
+#define     __INTERRUPT_RTC_MASK__           (U32)   0x00002000
+#define     __INTERRUPT_EINT0_MASK__         (U32)   0x00004000
+#define     __INTERRUPT_EINT1_MASK__         (U32)   0x00008000
+#define     __INTERRUPT_EINT2_MASK__         (U32)   0x00010000
+#define     __INTERRUPT_ALL__                (U32)   0x0001FFFF
 
-#define     __INTERRUPT_WDT_VALUE__              0x0
-#define     __INTERRUPT_SOFTWARE_VALUE__         0x1
-#define     __INTERRUPT_DbgCommRx_VALUE__        0x2
-#define     __INTERRUPT_DbgCommTX_VALUE__        0x3
-#define     __INTERRUPT_TIMER0_VALUE__           0x4
-#define     __INTERRUPT_TIMER1_VALUE__           0x5
-#define     __INTERRUPT_UART0_VALUE__            0x6
-#define     __INTERRUPT_UART1_VALUE__            0x7
-#define     __INTERRUPT_PWM_VALUE__              0x8
-#define     __INTERRUPT_I2C_VALUE__              0x9
-#define     __INTERRUPT_SPI_SSP_VALUE__          0xA
-#define     __INTERRUPT_RESERVED_VALUE__         0xB     
-#define     __INTERRUPT_PLL_VALUE__              0xC
-#define     __INTERRUPT_RTC_VALUE__              0xD
-#define     __INTERRUPT_EINT0_VALUE__            0xE
-#define     __INTERRUPT_EINT1_VALUE__            0xF
-#define     __INTERRUPT_EINT2_VALUE__            0x10
+#define     __INTERRUPT_WDT_VALUE__          (U8)    0x0
+#define     __INTERRUPT_SOFTWARE_VALUE__     (U8)    0x1
+#define     __INTERRUPT_DbgCommRx_VALUE__    (U8)    0x2
+#define     __INTERRUPT_DbgCommTX_VALUE__    (U8)    0x3
+#define     __INTERRUPT_TIMER0_VALUE__       (U8)    0x4
+#define     __INTERRUPT_TIMER1_VALUE__       (U8)    0x5
+#define     __INTERRUPT_UART0_VALUE__        (U8)    0x6
+#define     __INTERRUPT_UART1_VALUE__        (U8)    0x7
+#define     __INTERRUPT_PWM_VALUE__          (U8)    0x8
+#define     __INTERRUPT_I2C_VALUE__          (U8)    0x9
+#define     __INTERRUPT_SPI_SSP_VALUE__      (U8)    0xA
+#define     __INTERRUPT_RESERVED_VALUE__     (U8)    0xB     
+#define     __INTERRUPT_PLL_VALUE__          (U8)    0xC
+#define     __INTERRUPT_RTC_VALUE__          (U8)    0xD
+#define     __INTERRUPT_EINT0_VALUE__        (U8)    0xE
+#define     __INTERRUPT_EINT1_VALUE__        (U8)    0xF
+#define     __INTERRUPT_EINT2_VALUE__        (U8)    0x10
 
 
 #endif

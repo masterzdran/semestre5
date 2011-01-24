@@ -96,17 +96,7 @@ typedef struct _RTC{
     /*----------------------------------------------------------------*/
 }LPC_RTC,*pLPC_RTC;
 
-typedef struct _date{
-  U16    year; 
-  U8     month;
-  U8     day;  
-}DATE;
 
-typedef struct _time{
-  U8     hour;
-  U8     minute;
-  U8     second;  
-}TIME;
 
 #define PCRTC     0x200
 #define __ILR_RTCCIF_DISABLE__     0x0
