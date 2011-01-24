@@ -1,0 +1,105 @@
+No estado normal de funcionamento, o tacógrafo exibe no mostrador a velocidade instantânea e regista os dados do
+percurso na memória não volátil (EEPROM).
+
+A tecla MENU dá acesso a operações como sejam o acerto do relógio ou a iniciação dos totalizadores.
+
+Premindo sucessivamente a tecla OK entra-se numa sequência de visualização dos dados registados - data/hora do
+início do percurso, distância percorrida, tempo despendido, velocidade máxima, velocidade média e totalizadores.
+
+A tecla RESET dá inicio a um novo percurso. Nessa altura, os dados do percurso anterior são acumulados nos
+totalizadores.
+
+Em qualquer operação, se decorrer mais que um certo tempo sem interacção do utilizador, o dispositivo deve voltar ao
+modo normal de funcionamento.
+
+Os dados devem ser registados em memória não volátil com perda de informação, em caso de falha, inferior a um
+minuto e a um quilómetro.
+
+O velocímetro do tacógrafo deve medir a velocidade em quilómetros por hora, com alcance de 0 a 200 e com erro
+absoluto não superior a 1.
+
+
+WHILE(TRUE)
+  STATE = GETSTATE
+
+  SWITCH (STATE)
+    CASE IDDLE:
+      SHOW(DATE_TIME)
+    BREAK;  
+
+    CASE RUN:
+      SHOW(SPEED)
+      SAVE(DATA)
+    BREAK;
+  
+  END_SWITCH
+  SLEEP()
+END_WHILE
+
+/*----------------------------------------------------------------------------*/
+HANDLE_MENU_OPTIONS:
+  WHILE(TRUE)
+    KEY = GETKEY
+    SWITCH(KEY)
+      CASE UP:
+        CHANGE_OPTION(UP)
+      BREAK;
+      
+      CASE DOWN:
+        CHANGE_OPTION(DOWN)
+      BREAK;
+      
+      CASE NEXT:
+        CHANGE_VIEW(NEXT)
+      BREAK;
+      
+      CASE PREVIOUS:
+        CHANGE_VIEW(PREVIOUS)
+      BREAK;
+      
+      CASE OK:
+        OPTION(CONFIRM)
+      BREAK;
+      
+      CASE CANCEL:
+        OPTION(CANCEL)
+      BREAK;
+
+      CASE MENU:
+        HANDLE_MENU_OPTIONS
+      BREAK;
+      
+      CASE RESET:
+          RESET_STATS
+       BREAK;   
+    END_SWITCH
+    SLEEP
+    WAKE_DOG
+  END_WHILE
+/*----------------------------------------------------------------------------*/
+FUNCTIONS
+/*----------------------------------------------------------------------------*/
+//
+//  YYYY-MM-DD
+//  0123456789
+//
+//   HH:MM:SS
+//   01234567
+SETUP_CLOCK:
+
+VIEW_STATS:
+/*----------------------------------------------------------------------------*/
+VIEWS
+/*----------------------------------------------------------------------------*/
+TOTAL:
+  TOTAL DISTANCE    //• totalização de distância percorrida pelo veículo, em quilómetros;
+  TOTAL USAGE TIME  //• totalização de tempo de utilização, em horas.
+CURRENT:
+  START             //• data/hora de início do percurso;
+  DISTANCE          //• distância percorrida;
+  TIME              //• tempo despendido no percurso;
+  STOPTIME          //• tempo parado - soma dos períodos de tempo em que o veículo esteve parado.
+  MAX SPEED         //• velocidade máxima – a velocidade máxima instantânea atingida pelo veículo;
+
+
+

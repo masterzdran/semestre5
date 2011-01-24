@@ -108,3 +108,5 @@ U8 I2C_read_byte(){
 U32 I2c_slave_ack(){return read_bit();}
 void I2C_master_ack(){ write_bit(0); }
 void I2C_master_nack(){ write_bit(1); }
+
+

@@ -56,14 +56,14 @@ typedef struct _I2C{
 #define __I2C_SCL_PIN__         ((U8)   1 << 0x2)
 #define __I2C_SDA_PIN__         ((U8)   1 << 0x3)
 
-void I2C_init();
-void I2C_start();
-void I2C_stop();
-void I2C_write_byte(U8 value);
-U32 I2c_slave_ack();
-U8 I2C_read_byte();
-void I2C_master_ack();
-void I2C_master_nack();
+void i2c_init();
+void i2c_start();
+void i2c_stop();
+void i2c_write_byte(U8 value);
+int i2c_slave_ack();
+U8 i2c_read_byte();
+void i2c_master_ack();
+void i2c_master_nack();
 
 
 #endif

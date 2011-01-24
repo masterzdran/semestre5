@@ -33,4 +33,17 @@ typedef   U8    byte;
 typedef   PU8   Pbyte;
 typedef   PU16  PWord;
 typedef   PU32  PDWord;
+
+
+typedef struct _date{
+  U16    year; 
+  U8     month;
+  U8     day;  
+}DATE;
+
+typedef struct _time{
+  U8     hour;
+  U8     minute;
+  U8     second;  
+}TIME;
 #endif
