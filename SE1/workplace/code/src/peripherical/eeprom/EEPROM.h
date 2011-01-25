@@ -1,5 +1,6 @@
 #ifndef __EEPROM_H__
 #define __EEPROM_H__
+#include "TYPES.h"
 
 U8 eeprom_read_8(U32 address);
 U16 eeprom_read_16(U32 address);

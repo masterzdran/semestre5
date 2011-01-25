@@ -56,6 +56,9 @@ typedef struct _I2C{
 #define __I2C_SCL_PIN__         ((U8)   1 << 0x2)
 #define __I2C_SDA_PIN__         ((U8)   1 << 0x3)
 
+#define __I2C_READ__            ((U8) 0x0)
+#define __I2C_WRITE__           ((U8) 0x1)
+
 void i2c_init();
 void i2c_start();
 void i2c_stop();
