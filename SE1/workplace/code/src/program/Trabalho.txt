@@ -103,3 +103,32 @@ CURRENT:
 
 
 
+/*----------------------------------------------------------------------------*/
+Counter
+/*----------------------------------------------------------------------------*/
+SET_TIMER1_AS_EXTERNAL COUNTER
+
+SPEED = DISTANCE / TIME
+
+
+200 000 metros/1*60*60 segundos
+200 000/3600 = 55.56 metros/segundo
+-----------------------------------
+200 000 000 milimetros/1*60*60*1000 milisegundos
+200 000 000/3 600 000 = 55.56 milimetros/milisegundo
+
+VALUE: 55, Velocidade Máxima = 198 km/h
+VALUE: 56, Velocidade Máxima = 201.6 km/h
+
+- por cada 56 unidades incrementa 1 unidade de tempo
+XS = starttime
+YS = startcounter
+
+XE = endtime
+YS = endcounter
+
+TX = Time Elapsed  (XE -XS)
+TY = Counter Elapse (TE - TS)
+
+(TY/TX) = SPEED
+--------------------------------------------------------------------------------
