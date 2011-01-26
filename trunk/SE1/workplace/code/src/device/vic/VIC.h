@@ -1,6 +1,6 @@
 #ifndef VIC_H
 #define VIC_H
-
+#include "TYPES.h"
 #define         pVIC              ((pLPC_VIC)           0xFFFFF000)
 #define         pVIC_VECTADDR     ((pLPC_VIC_VECTADDR)  0xFFFFF030)
 #define         pVIC_VECTADDRX    ((pLPC_VIC_VECTADDRX) 0xFFFFF100)
@@ -99,7 +99,7 @@ typedef struct _VIC{
 #define __VIC_VECTCNTL_MASK__       (U8) 0x1F
 #define __VIC_PROTECTION_MASK__     (U8) 0x01
 #define __VIC_ENABLE__              (U8) 0x20
-
+#define __MAX_INTERRUPT__           (U8) 0x0F
 
 //Interrupts Sources
 
@@ -140,5 +140,9 @@ typedef struct _VIC{
 #define     __INTERRUPT_EINT1_VALUE__        (U8)    0xF
 #define     __INTERRUPT_EINT2_VALUE__        (U8)    0x10
 
+void VIC_init();
+void disableIRQ(U8 peripherical);
+void enableIRQ(U8 peripherical);
+BOOL VIC_ConfigIRQ(void(*fx)(),U8 peripherical, U8 priority);
 
 #endif
