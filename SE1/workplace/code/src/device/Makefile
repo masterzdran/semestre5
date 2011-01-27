@@ -56,7 +56,7 @@ all:
 
 clean:
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)
-	
+	rm -rf $(MYLIB)/libLPC2106.a
 	
 clear:
 	clear

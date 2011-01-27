@@ -15,17 +15,22 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#															LCD TEST
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../../..
+SVN_PATH		= ./../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
+DEVICE				= $(SOURCE)/device
 TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test
+PCOMPILE			= $(SOURCE)/tests/
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
+PROGRAM		= $(SOURCE)/program
 INCLUDE		= $(SOURCE)/include
 SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
 #Executables
@@ -45,23 +50,13 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-#															Start
-#=======================================================================
-all: startosc.o start.o
 
-startosc.o: startosc.c startosc.h 
-	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
-	cp $@ $(MYLIB)/$@
-	cp startosc.h $(INCLUDE)/
+all: 
+	$(MAKE) -C lcd-test/
 
-start.o: start.S
-	$(AS) $(DEBUGSTABS) $(OUTPUT) $@  $^
-	cp $@ $(MYLIB)/$@
-
-clean:
-	rm  startosc.o start.o 
-	rm  $(INCLUDE)/startosc.h
 	
+clean:
+	$(MAKE) -C lcd-test/ clean	
 	
 clear:
 	clear

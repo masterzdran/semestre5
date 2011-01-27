@@ -28,6 +28,7 @@ DEVICE				= $(SOURCE)/device
 PERIPHERICAL	= $(SOURCE)/peripherical
 TODEPLOY			= $(SOURCE)/deploy
 PROGRAM				= $(SOURCE)/program
+PCOMPILE			= $(SOURCE)/tests
 TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test
 #=======================================================================
@@ -69,36 +70,23 @@ VPATH 			= $(MYLIB):$(CLIB):$(libdir)
 #VPATH 			= $(MYLIB)
 #=======================================================================
 #OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o libc.a libgcc.a libLPC2106.a
-OBJECT =		libc.a libgcc.a libLPC2106.a libPeripherical.a
+OBJECT =		 libc.a libgcc.a  libLPC2106.a libPeripherical.a
 #=======================================================================
 all: $(END_EXEC) 
 
 #Generate the executable
-$(END_EXEC): $(OBJECT)
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc
+#$(OBJECT)
+$(END_EXEC): 
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc -lLPC2106 -lPeripherical
 
-libPeripherical.a:
+peripherical:
 	$(MAKE) -C $(PERIPHERICAL)
-	
-libLPC2106.a:
+
+device:
 	$(MAKE) -C $(DEVICE)
-
 	
-#start.o:\
-startosc.o:\
-TIMER.o:\
-GPIO.o:\
-	$(MAKE) -C $(DEVICE)\
-\
-LCD.o:\
-	$(MAKE) -C $(PERIPHERICAL)/lcd\
-\
-lcd_test.o:\
-	$(MAKE) -C $(SOURCE)/tests/lcd-test\
-
-
-
-
+program:
+	$(MAKE) -C $(PCOMPILE)
 
 #Start the Debugger	
 debug: $(END_EXEC)
@@ -106,6 +94,10 @@ debug: $(END_EXEC)
 
 #clean files
 clean:
+	echo $(PERIPHERICAL)
+	$(MAKE) -C $(PERIPHERICAL) clean
 	$(MAKE) -C $(DEVICE) clean	
+	$(MAKE) -C $(PCOMPILE) clean
+
 clear:
 	clear

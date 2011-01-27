@@ -54,7 +54,7 @@ keyboard.o: Keyboard.c Keyboard.h
 	
 clean:
 	rm  keyboard.o
-	rm  $(MYLIB)/keyboard.o $(INCLUDE)/Keyboard.h
+	rm  $(INCLUDE)/Keyboard.h
 
 clear:
 	clear

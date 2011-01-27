@@ -56,7 +56,7 @@ GPIO.o: GPIO.c GPIO.h
 	
 clean:
 	rm  GPIO.o
-	rm  $(MYLIB)/GPIO.o $(INCLUDE)/GPIO.h
+	rm  $(INCLUDE)/GPIO.h
 	
 clear:
 	clear

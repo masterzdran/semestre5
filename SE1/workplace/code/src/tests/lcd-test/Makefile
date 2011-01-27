@@ -15,6 +15,8 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#															LCD TEST
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
@@ -47,14 +49,13 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-#															LCD TEST
-#=======================================================================
-OBJECT				=  start.o startosc.o  TIMER.o   GPIO.o LCD.o 
+
+#OBJECT				=  start.o startosc.o  TIMER.o   GPIO.o LCD.o 
 
 all: lcd_test.o
 
 lcd_test.o: lcd_test.c
-	$(CC) -nostdlib $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
 	cp $@ $(PROGRAM)/$@
 	
 clean:
