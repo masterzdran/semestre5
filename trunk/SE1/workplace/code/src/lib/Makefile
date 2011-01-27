@@ -36,13 +36,11 @@ DEBUGSTABS		= --gstabs
 #Phony Target
 .PHONY 			= clean
 .PHONY			= clear
+MAKEPATHS				= STARTUP   GPIO TIMER RTC I2C  VIC WD
 #=======================================================================
-library.a: *.o
+libLPC2106.a: *.o
 	$(AR) $@ $^
-	clean
-	
+	rm  *.o
 clean:
-	rm  $(MYLIB)/main.o
+	rm  libLPC2106.a
 
-clear:
-	clear
