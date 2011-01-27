@@ -15,21 +15,19 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
-#															Base Make Source
-#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../..
+SVN_PATH		= ./../../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
-DEVICE				= $(SOURCE)/peripherical
-
+TARGET				= $(PROJECT_PATH)/target
+TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-SEARCHLIB		= -I $(MYLIB) -I $(INCLUDE)
+SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -46,16 +44,17 @@ COMPILE_ONLY 		= -c
 #Phony Target
 .PHONY 					= clean
 .PHONY					= clear
-.PHONY					= all
-MAKEPATHS				= device  peripherical
 #=======================================================================
-
-all: 
-	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(SOURCE)/$(MPATH);)
-
-clean:
-	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(SOURCE)/$(MPATH) clean;)
+#															EEPROM
+#=======================================================================
+EEPROM.o: EEPROM.c EEPROM.h
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	cp $@ $(MYLIB)/$@
+	cp EEPROM.h $(INCLUDE)/
 	
+clean:
+	rm  EEPROM.o
+	rm  $(MYLIB)/EEPROM.o $(INCLUDE)/EEPROM.h
+
 clear:
 	clear
-
