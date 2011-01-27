@@ -68,25 +68,37 @@ endif
 VPATH 			= $(MYLIB):$(CLIB):$(libdir)
 #VPATH 			= $(MYLIB)
 #=======================================================================
-OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o libc.a libgcc.a
+#OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o libc.a libgcc.a libLPC2106.a
+OBJECT =		libc.a libgcc.a libLPC2106.a libPeripherical.a
 #=======================================================================
 all: $(END_EXEC) 
 
 #Generate the executable
 $(END_EXEC): $(OBJECT)
 	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc
+
+libPeripherical.a:
+	$(MAKE) -C $(PERIPHERICAL)
 	
-start.o:
-startosc.o:
-TIMER.o:
-GPIO.o:
+libLPC2106.a:
 	$(MAKE) -C $(DEVICE)
 
-LCD.o:
-	$(MAKE) -C $(PERIPHERICAL)/lcd
+	
+#start.o:\
+startosc.o:\
+TIMER.o:\
+GPIO.o:\
+	$(MAKE) -C $(DEVICE)\
+\
+LCD.o:\
+	$(MAKE) -C $(PERIPHERICAL)/lcd\
+\
+lcd_test.o:\
+	$(MAKE) -C $(SOURCE)/tests/lcd-test\
 
-lcd_test.o:
-	$(MAKE) -C $(SOURCE)/tests/lcd-test
+
+
+
 
 #Start the Debugger	
 debug: $(END_EXEC)

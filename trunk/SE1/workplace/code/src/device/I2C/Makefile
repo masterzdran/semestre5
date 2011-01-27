@@ -15,10 +15,12 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
+#															I2C
+#=======================================================================
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../..
+SVN_PATH		= ./../../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
@@ -45,8 +47,7 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-#															I2C
-#=======================================================================
+
 all: I2C.o
 
 I2C.o: I2C.c I2C.h

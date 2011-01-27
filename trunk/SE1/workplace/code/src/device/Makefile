@@ -31,6 +31,7 @@ SEARCHLIB		= -I $(MYLIB) -I $(INCLUDE)
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
 LD				= arm-eabi-ld
+AR				= arm-eabi-ar rcs
 #Debugger
 DEBUGGER		= arm-eabi-insight
 #Commom Options
@@ -44,17 +45,18 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 .PHONY					= all
-MAKEPATHS				= TYPES SCB STARTUP   GPIO TIMER RTC I2C  VIC WD
+MAKEPATHS				= TYPES SCB STARTUP GPIO TIMER RTC I2C  VIC WD
 #=======================================================================
 #															Base Make
 #=======================================================================
 all: 
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH);)
-	$(MAKE) -C $(MYLIB)
+	$(AR) $(MYLIB)/libLPC2106.a $(MYLIB)/*.o
+	rm -rf $(MYLIB)/*.o	
 
 clean:
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)
-	$(MAKE) -C $(MYLIB) clean
+	
 	
 clear:
 	clear

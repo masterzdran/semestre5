@@ -32,6 +32,7 @@ SEARCHLIB		= -I $(MYLIB) -I $(INCLUDE)
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
 LD				= arm-eabi-ld
+AR				= arm-eabi-ar rcs
 #Debugger
 DEBUGGER		= arm-eabi-insight
 #Commom Options
@@ -51,6 +52,8 @@ MAKEPATHS				= LCD  KEYBOARD EEPROM
 #=======================================================================
 all: 
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH);)
+	$(AR) $(MYLIB)/libPeripherical.a $(MYLIB)/*.o
+	rm -rf $(MYLIB)/*.o
 
 clean:
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)

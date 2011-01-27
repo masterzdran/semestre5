@@ -18,7 +18,7 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../../../
+SVN_PATH		= ./../../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src

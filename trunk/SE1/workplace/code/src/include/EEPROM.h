@@ -16,11 +16,12 @@
 U8 eeprom_read_8(U32 address);
 U16 eeprom_read_16(U32 address);
 U32 eeprom_read_32(U32 address);
-void eeprom_read_block(U32 address, U8 * block, U32 size);
+void eeprom_read_block(U32 address, U8 * block, U8 size);
 void eeprom_write_8(U32 address, U8 value);
 void eeprom_write_16(U32 address, U16 value);
 void eeprom_write_32(U32 address, U32 value);
-U32 eeprom_write_block(U32 address, U8 * block, U32 size);
-U8 eeprom_checksum(U32 address, U32 size);
+U8 eeprom_write_block(U32 address, U8 * block, U8 size);
+U8 eeprom_checksum(U32 address, U8 size);
 
 #endif
+

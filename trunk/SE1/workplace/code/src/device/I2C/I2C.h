@@ -1,9 +1,9 @@
 #ifndef I2C_H
-#define I2C_h
+#define I2C_H
+
+#include "TYPES.h"
 
 
-
-#define     pI2C      (((pLPC_I2C) 0xE001C000))
 
 typedef struct _I2C{
   U8 CONTROL_SET_REGISTER;
@@ -33,6 +33,7 @@ typedef struct _I2C{
   U16 DUMMY12;
 }LPC_I2C,*pLPC_I2C;
 
+#define     pI2C      (((pLPC_I2C) 0xE001C000))
 #define __I2CONSET_MASK__       0xFC    //bits 0,1 and 7 are reserved
 #define __I2EN_ENABLE__         0x80
 #define __I2C_STA_ENABLE__      0x10
@@ -58,15 +59,15 @@ typedef struct _I2C{
 
 #define __I2C_READ__            ((U8) 0x0)
 #define __I2C_WRITE__           ((U8) 0x1)
-
-void i2c_init();
-void i2c_start();
-void i2c_stop();
-void i2c_write_byte(U8 value);
-int i2c_slave_ack();
-U8 i2c_read_byte();
-void i2c_master_ack();
-void i2c_master_nack();
+#define     micro_wait    5
+void I2C_init();
+void I2C_start();
+void I2C_stop();
+void I2C_write_byte(U8 value);
+U32 I2C_slave_ack();
+U8 I2C_read_byte();
+void I2C_master_ack();
+void I2C_master_nack();
 
 
 #endif
