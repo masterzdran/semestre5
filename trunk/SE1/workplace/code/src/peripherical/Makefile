@@ -18,16 +18,16 @@
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../../..
+SVN_PATH		= ./../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
-TARGET				= $(PROJECT_PATH)/target
-TEST					= $(PROJECT_PATH)/test
+DEVICE				= $(SOURCE)/peripherical
+
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
-SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
+SEARCHLIB		= -I $(MYLIB) -I $(INCLUDE)
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -44,19 +44,17 @@ COMPILE_ONLY 		= -c
 #Phony Target
 .PHONY 					= clean
 .PHONY					= clear
+.PHONY					= all
+MAKEPATHS				= LCD  KEYBOARD EEPROM
 #=======================================================================
-#															RTC
+#															Base Make PERIPHERICAL
 #=======================================================================
-all: RTC.o
+all: 
+	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH);)
 
-RTC.o: RTC.c RTC.h
-	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
-	cp $@ $(MYLIB)/$@
-	cp RTC.h $(INCLUDE)/
-	
 clean:
-	rm  RTC.o
-	rm  $(MYLIB)/RTC.o $(INCLUDE)/RTC.h
+	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)
 	
 clear:
 	clear
+
