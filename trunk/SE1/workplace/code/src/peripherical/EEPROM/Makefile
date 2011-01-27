@@ -54,7 +54,7 @@ EEPROM.o: EEPROM.c EEPROM.h
 	
 clean:
 	rm  EEPROM.o
-	rm  $(MYLIB)/EEPROM.o $(INCLUDE)/EEPROM.h
+	rm  $(INCLUDE)/EEPROM.h
 
 clear:
 	clear

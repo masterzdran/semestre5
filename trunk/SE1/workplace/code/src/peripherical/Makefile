@@ -57,6 +57,7 @@ all:
 
 clean:
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)
+	rm -rf $(MYLIB)/libPeripherical.a
 	
 clear:
 	clear

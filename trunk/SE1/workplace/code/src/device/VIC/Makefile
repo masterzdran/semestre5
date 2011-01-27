@@ -56,7 +56,7 @@ VIC.o: VIC.c VIC.h
 	
 clean:
 	rm  VIC.o
-	rm  $(MYLIB)/VIC.o $(INCLUDE)/VIC.h
+	rm  $(INCLUDE)/VIC.h
 	
 clear:
 	clear

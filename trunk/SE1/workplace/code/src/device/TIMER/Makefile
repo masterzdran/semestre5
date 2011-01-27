@@ -57,7 +57,7 @@ TIMER.o:TIMER.c TIMER.h
 	
 clean:
 	rm  TIMER.o
-	rm  $(MYLIB)/TIMER.o $(INCLUDE)/TIMER.h
+	rm  $(INCLUDE)/TIMER.h
 	
 	
 clear:

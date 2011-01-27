@@ -56,7 +56,7 @@ RTC.o: RTC.c RTC.h
 	
 clean:
 	rm  RTC.o
-	rm  $(MYLIB)/RTC.o $(INCLUDE)/RTC.h
+	rm  $(INCLUDE)/RTC.h
 	
 clear:
 	clear

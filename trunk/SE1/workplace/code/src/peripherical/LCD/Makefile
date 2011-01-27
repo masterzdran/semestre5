@@ -57,7 +57,7 @@ LCD.o:LCD.c LCD.h
 	
 clean:
 	rm  LCD.o
-	rm  $(MYLIB)/LCD.o $(INCLUDE)/LCD.h
+	rm  $(INCLUDE)/LCD.h
 	
 	
 clear:

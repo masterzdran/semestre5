@@ -57,7 +57,7 @@ I2C.o: I2C.c I2C.h
 	
 clean:
 	rm  I2C.o
-	rm  $(MYLIB)/I2C.o $(INCLUDE)/I2C.h
+	rm  $(INCLUDE)/I2C.h
 	
 clear:
 	clear

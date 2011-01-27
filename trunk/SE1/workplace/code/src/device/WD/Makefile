@@ -56,7 +56,7 @@ WATCHDOG.o: WATCHDOG.c WATCHDOG.h
 	
 clean:
 	rm  WATCHDOG.o
-	rm  $(MYLIB)/WATCHDOG.o $(INCLUDE)/WATCHDOG.h
+	rm  $(INCLUDE)/WATCHDOG.h
 	
 clear:
 	clear
