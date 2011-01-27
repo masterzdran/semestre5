@@ -46,5 +46,7 @@ typedef struct _time{
   U8     minute;
   U8     second;  
 }TIME;
-enum BOOL {FALSE,TRUE};
+
+enum boolean {false,true};
+typedef enum boolean Bool ;
 #endif

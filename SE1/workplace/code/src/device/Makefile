@@ -43,37 +43,18 @@ COMPILE_ONLY 		= -c
 #Phony Target
 .PHONY 					= clean
 .PHONY					= clear
+.PHONY					= all
+MAKEPATHS				= TYPES SCB STARTUP   GPIO TIMER RTC I2C  VIC WD
 #=======================================================================
 #															Base Make
 #=======================================================================
-all: TYPES.h SCB.h START.o TIMER.o GPIO.o 
-
-TYPES.h: 
-	$(MAKE) -C $(DEVICE)/TYPES
-	
-SCB.h: 
-	$(MAKE)	-C $(DEVICE)/SCB
-
-START.o:
-	$(MAKE) -C $(DEVICE)/startup
-
-RTC.o: 
-	$(MAKE)	-C $(DEVICE)/rtc
-	
-TIMER.o: 
-	$(MAKE)	-C $(DEVICE)/timer
-	
-GPIO.o: 
-	$(MAKE)	-C $(DEVICE)/GPIO
+all: 
+	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH);)
+	$(MAKE) -C $(MYLIB)
 
 clean:
-	$(MAKE) -C $(DEVICE)/TYPES  	clean
-	$(MAKE) -C $(DEVICE)/SCB  		clean
-	$(MAKE) -C $(DEVICE)/startup  clean
-	$(MAKE) -C $(DEVICE)/GPIO 		clean
-	$(MAKE) -C $(DEVICE)/timer 		clean
-	$(MAKE) -C $(DEVICE)/rtc 			clean
-	$(MAKE) -C $(DEVICE)/LPC2106 	clean
+	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)
+	$(MAKE) -C $(MYLIB) clean
 	
 clear:
 	clear
