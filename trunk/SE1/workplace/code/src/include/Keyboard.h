@@ -22,6 +22,10 @@ void clearKey();
 U8 getPreviousKey();
 U8 getKey();
 U8 hasKey();
+U8 getPreviousBitMap();
+U8 getBitMap();
+U8 decodeKey(U8 keyBitmap);
+
 void readKey();
 void keyboard_init(pLPC_TIMER timer);
 #endif
