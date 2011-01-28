@@ -1,17 +1,17 @@
 #ifndef __EEPROM_H__
 #define __EEPROM_H__
 #include "TYPES.h"
-#include "I2C.h"
 
-#define __EEPROM_SLAVE_ADDRESS__                 (U32) 0x10100000
-#define __EEPROM_CAT24C08_ADDRESS_MASK__         (U32)    0x03FF
-#define __EEPROM_READ__                          (U8)     0x1
-#define __EEPROM_WRITE__                         (U8)     0x0
-#define __EEPROM_BLOCK_SHIFT__                   (U8)     6
-#define __EEPROM_BLOCK_MASK__                    (U8)     0x0E
-#define __EEPROM_ADDRESS_LSHIFT__                (U8)     1
-#define __EEPROM_ADDRESS_MASK__                  (U8)     0xFE
 
+#define __EEPROM_SLAVE_ADDRESS__                 (U32) 0xA0
+#define __EEPROM_CAT24C08_ADDRESS_MASK__         (U32) 0x03FF
+#define __EEPROM_READ__                          (U8)  0x1
+#define __EEPROM_WRITE__                         (U8)  0x0
+#define __EEPROM_BLOCK_SHIFT__                   (U8)  6
+#define __EEPROM_BLOCK_MASK__                    (U8)  0x0E
+#define __EEPROM_ADDRESS_LSHIFT__                (U8)  1
+#define __EEPROM_ADDRESS_MASK__                  (U8)  0xFE
+#define __EEPROM_MAX_BYTE_WRITE__                (U8)  0x10
 
 U8 eeprom_read_8(U32 address);
 U16 eeprom_read_16(U32 address);
