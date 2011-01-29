@@ -9,6 +9,7 @@
 #define  LCD_MASK   ((U32) 0x7F00)
 
 int main(){
+  char buffer[64];
   gpio_init(0,0);
   
   //gpio_set_direction(0x1F00,GPIO_OUT);
@@ -17,6 +18,7 @@ int main(){
   timer_init(pTIMER0,58982400/MICRO);
   LCD_init(pTIMER0);
   keyboard_init(pTIMER0);
+  rtc_init();
   
   //U32 system_clock_pr= pTIMER0->PR;
   /*
@@ -32,18 +34,29 @@ int main(){
     timer_sleep_miliseconds(pTIMER0,500);
   }
    */
-
+/*
   while(1){
 	U8 key=NO_KEY;
 	while((key=getKey())==NO_KEY){
 		readKey();
 		timer_sleep_miliseconds(pTIMER0, 50);
 	}
-	char teste[20];
-	sprintf(teste,"%d",key);
-	writeString(teste);
+	sprintf(buffer,"%d",key);
+	writeString(buffer);
   }
-  
-  
+*/
+	
+	DATE date0 = {0,0,0};
+	date0=getData();
+	getDate();
+	TIME time0 = getTime();
+	
+	rtc_setDate(2011,01,29);
+	rtc_setDOY(31);
+	rtc_setDOW(1);
+	rtc_setTime(15,30,0);
+	
+	
+  */
  return 0;  
 }
