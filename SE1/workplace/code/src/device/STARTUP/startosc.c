@@ -19,7 +19,7 @@ void StartOsc(void) {
     
     pAPBDIV->APBDIV = __APBDIV_CLOCK_EQUAL_CLOCK__;
 }
-/*
+
 SysClockInfo getSystemClockInfo(){
   SysClockInfo systemClock;
   U8 div  = (pAPBDIV->APBDIV) & 0x3;
@@ -37,4 +37,4 @@ U32 getSystemClock(){
   U8 div  = (pAPBDIV->APBDIV) & 0x3;
   U8 val  = pPLL->CONFIGURATION;
   return (__FOSC__ * (val & 0x1F))/ ((div)?div:4);
-}*/
+}
