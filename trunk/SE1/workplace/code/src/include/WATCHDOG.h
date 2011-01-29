@@ -35,4 +35,11 @@ typedef struct _WATCHDOG{
 
 #define   WD_FEED()              {pWatchDog->FEED_SEQUENCE = __WD_FEED_AA__; pWatchDog->FEED_SEQUENCE = __WD_FEED_55__;}
 
+#define WD_ISRUNNING()           ( pWatchDog->MODE_REGISTER & __WDEN_MASK__ )
+#define WD_ENABLE()              ( pWatchDog->MODE_REGISTER |= __WDEN_MASK__ )
+#define WD_DISABLE()             ( pWatchDog->MODE_REGISTER &= ~(__WDEN_MASK__) )
+#define WD_RESETENABLE()         ( pWatchDog->MODE_REGISTER |= _WDRESET_ENABLE__ )
+#define WD_RESETDISABLE()        ( pWatchDog->MODE_REGISTER &= ~(_WDRESET_ENABLE__) )
+#define WD_COMEFROMRESET()       ( pWatchDog->MODE_REGISTER & __WDTOF_MASK__ )
+
 #endif

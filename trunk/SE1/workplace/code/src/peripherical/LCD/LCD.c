@@ -66,8 +66,6 @@ void LCD_init(pLPC_TIMER timer){
     timer_sleep_microseconds(timer,110);           //Wait for 100 μs or more
     processValue_nibble(0,0x3);    
 
-    
-
     processValue_nibble(0,0x2);    //Functon set (interface data length : 4 bits)
 
     timer_sleep_miliseconds(timer,5);
@@ -84,11 +82,6 @@ void LCD_init(pLPC_TIMER timer){
     processValue(0,DISPLAY_ON_MASK);    //Display  
     //processValue(0,CURSOR_ON_MASK);    //Cursor
 }
-
-
-
-
-
 
 /**
  * Activa o modo de entrada de dados
