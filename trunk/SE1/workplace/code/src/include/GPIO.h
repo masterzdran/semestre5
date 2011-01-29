@@ -84,7 +84,7 @@ void gpio_set_direction(U32 mask, unsigned char direction);
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_13__      (FUNCTION_0 << (PORT *13))
 #define     __PINSEL0_UART_1_DTR__          (FUNCTION_1 << (PORT *13))
-#define     __PINSEL0_TIMER_1_MATCH1_1__    (FUNCTION_2 << (PORT *13))
+#define     __PINSEL0_TIMER_1_MATCH_1_1__   (FUNCTION_2 << (PORT *13))
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_14__      (FUNCTION_0 << (PORT *14))
 #define     __PINSEL0_UART_1_DCD__          (FUNCTION_1 << (PORT *14))
@@ -93,6 +93,52 @@ void gpio_set_direction(U32 mask, unsigned char direction);
 #define     __PINSEL0_GPIO_PORT_0_15__      (FUNCTION_0 << (PORT *15))
 #define     __PINSEL0_UART_1_RI__           (FUNCTION_1 << (PORT *15))
 #define     __PINSEL0_EINT_2__              (FUNCTION_2 << (PORT *15))
+//----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_16__      (FUNCTION_0 << (PORT * 0))
+#define     __PINSEL1_EXT_INTERRUPT_1__     (FUNCTION_1 << (PORT * 0))
+#define     __PINSEL1_TIMER_0_MATCH_0_2__   (FUNCTION_2 << (PORT * 0))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_17__      (FUNCTION_0 << (PORT * 1))
+#define     __PINSEL1_TIMER_1_CAPTURE_1_2__ (FUNCTION_1 << (PORT * 1))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_18__       (FUNCTION_0 << (PORT * 2))
+#define     __PINSEL1_TIMER_1_CAPTURE_1_3__  (FUNCTION_1 << (PORT * 2))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT0_19__        (FUNCTION_0 << (PORT * 3))
+#define     __PINSEL1_TIMER_1_MATCH_1_2__    (FUNCTION_1 << (PORT * 3))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_20__       (FUNCTION_0 << (PORT * 4))
+#define     __PINSEL1_TIMER_1_MATCH_1_3__    (FUNCTION_1 << (PORT * 4))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_21__       (FUNCTION_0 << (PORT * 5))
+#define     __PINSEL1_PWM_5__                (FUNCTION_1 << (PORT * 5))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_22__       (FUNCTION_0 << (PORT * 6))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_23__       (FUNCTION_0 << (PORT * 7))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_24__       (FUNCTION_0 << (PORT * 8))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_25__       (FUNCTION_0 << (PORT * 9))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_26__      (FUNCTION_0 << (PORT *10))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_27__      (FUNCTION_0 << (PORT *11))
+#define     __PINSEL1_TRST__                (FUNCTION_1 << (PORT *11))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_28__      (FUNCTION_0 << (PORT *12))
+#define     __PINSEL1_TMS__                 (FUNCTION_1 << (PORT *12))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_29__      (FUNCTION_0 << (PORT *13))
+#define     __PINSEL1_TCK__                 (FUNCTION_1 << (PORT *13))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_30__      (FUNCTION_0 << (PORT *14))
+#define     __PINSEL1_TDI__                 (FUNCTION_1 << (PORT *14))
+//----------------------------------------------------------------------
+#define     __PINSEL1_GPIO_PORT_0_31__      (FUNCTION_0 << (PORT *15))
+#define     __PINSEL1_TDO__                 (FUNCTION_1 << (PORT *15))
 //----------------------------------------------------------------------
 
 
