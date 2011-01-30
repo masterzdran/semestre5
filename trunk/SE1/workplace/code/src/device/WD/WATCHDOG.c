@@ -9,7 +9,7 @@ void WATCHDOG_init(U32 value){
    * Start the watchdog by writing 0xAA followed by 0x55 to the WDFEED register.
    * Watchdog should be fed again before the watchdog counter underflows to prevent reset/interrupt.
    */
-  if (WD_COMEFROMRESET()) {
+  if (WD_COME_FROM_RESET()) {
       //WatchDog Reset
   }else{
       //WatchDog Start
