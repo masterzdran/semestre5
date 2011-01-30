@@ -47,6 +47,41 @@ typedef struct _time{
   U8     second;  
 }TIME;
 
+typedef struct _datetime{
+  DATE date;
+  TIME time;
+}DATE_TIME;
+
 enum boolean {false,true};
 typedef enum boolean Bool ;
+
+typedef struct _percurso{
+  DATE beginDate;
+  TIME beginTime;
+  U16  spentTime;//in minutes
+  U16  distance; //in meters
+  U8   maxSpeed; //in KM/s
+  U8   averageSpeed; // in KM/s
+  U32  totalDistance;
+  U32  totalTime;
+}Percurso,*pPercurso;
+
+enum KEYBOARD_KEYS{
+  MENU    = 0x7E,
+  OK      = 0x7D,
+  CANCEL  = 0x7B,
+  RESET   = 0x77,
+  UP      = 0xDB,
+  DOWN    = 0xD7,
+  LEFT    = 0xE7,
+  RIGHT   = 0xB7  
+};
+typedef enum KEYBOARD_KEYS KB_Key;
+
+typedef struct _option{
+  char* text;
+  void (*function) (pPercurso percurso);
+}Option,pOption;
+
+typedef enum _status {MAIN=0,OK_PRESS,MENU_PRESS,RESET_PRESS,FULLRESET,READ,WRITE,WAIT} Status;
 #endif
