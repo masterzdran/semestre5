@@ -20,14 +20,14 @@ void rtc_init(){
 }
 
 void getDate(DATE* date){
-    date->year   = (pRTC->CTIME1>> 16)/* &&   __YEAR_MASK__*/;
-    date->month  = (pRTC->CTIME1 >> 8)/* &&   __MONTH_MASK__*/;
-    date->day    = (pRTC->CTIME1     )/* &&   __DAY_MASK__*/;
+    date->year   = rtc_getYear();
+    date->month  = rtc_getMonth();
+    date->day    = rtc_getDom();
 }
 void getTime(TIME* time){
-    time->hour   = (pRTC->CTIME0 >> 16)/* &&   __HOUR_MASK__*/;
-    time->minute = (pRTC->CTIME0 >> 8) /* &&   __MINUTE_MASK__*/;
-    time->second =  pRTC->CTIME0       /* &&   __SECOND_MASK__*/;
+    time->hour   = rtc_getHour();
+    time->minute = rtc_getMin();
+    time->second =  rtc_getSec();
 }
 
 void rtc_initCalendar(){
@@ -57,4 +57,13 @@ void rtc_setDOW(U8 dow){
 
 void rtc_setDOY(U16 doy){
     pRTC->DOY   = doy & __DOY_MASK__;
+}
+
+void rtc_setDateTime(DATE_TIME* datetime){
+  rtc_setDate(datetime->date.year,datetime->date.month,datetime->date.day);
+  rtc_setTime(datetime->time.hour,datetime->time.minute,datetime->time.second);
+}
+void rtc_getDateTime(DATE_TIME* datetime){
+  rtc_getDate(&(datetime->date));
+  rtc_getTime(&(datetime->time));
 }
