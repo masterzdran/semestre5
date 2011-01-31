@@ -48,19 +48,19 @@ int main(){
 */
 	
 	DATE date0,date1;
-	getDate(&date0);
+	rtc_getDate(&date0);
 	TIME time0,time1;
-	getTime(&time0);
+	rtc_getTime(&time0);
 	
 	rtc_setDate(2011,01,29);
 	rtc_setTime(15,30,0);
 	
-	getDate(&date1);
-	getTime(&time1);
+	rtc_getDate(&date1);
+	rtc_getTime(&time1);
 	
 	rtc_setHour(17);
 	
-	getTime(&time1);
+	rtc_getTime(&time1);
 	
  return 0;  
 }
