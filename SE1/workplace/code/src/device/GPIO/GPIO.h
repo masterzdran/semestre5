@@ -84,7 +84,7 @@ void gpio_set_direction(U32 mask, unsigned char direction);
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_13__      (FUNCTION_0 << (PORT *13))
 #define     __PINSEL0_UART_1_DTR__          (FUNCTION_1 << (PORT *13))
-#define     __PINSEL0_TIMER_1_MATCH1_1__    (FUNCTION_2 << (PORT *13))
+#define     __PINSEL0_TIMER_1_MATCH_1_1__    (FUNCTION_2 << (PORT *13))
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_14__      (FUNCTION_0 << (PORT *14))
 #define     __PINSEL0_UART_1_DCD__          (FUNCTION_1 << (PORT *14))

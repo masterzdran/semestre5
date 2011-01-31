@@ -53,9 +53,9 @@ enum TIMER_CAPTURE {
   CAP01 = __PINSEL0_TIMER_0_CAPTURE_0_1__,
   CAP02 = __PINSEL0_TIMER_0_CAPTURE_0_2__,
   CAP10 = __PINSEL0_TIMER_1_CAPTURE_1_0__,
-  CAP11 = __PINSEL0_TIMER_1_CAPTURE_1_1__,
+  CAP11 = __PINSEL0_TIMER_1_CAPTURE_1_1__/*,
   CAP12 = __PINSEL1_TIMER_1_CAPTURE_1_2__,
-  CAP13 = __PINSEL1_TIMER_1_CAPTURE_1_3__
+  CAP13 = __PINSEL1_TIMER_1_CAPTURE_1_3__*/
   };
 typedef enum TIMER_CAPTURE TCapture ;
 
@@ -100,12 +100,12 @@ typedef struct _TIMER{
 #define MICRO   1000000
 #define NANO    1000000000 //in this oscilator is not possible to go at nano level :(
 
-#define     timer_sleep_seconds(A,B)          (timer_delay(A,(((getSystemClock()/SECOND)/((A)->PR))*B)))
-//#define		timer_sleep_seconds(A,B) 		      (timer_delay(A,(58982400/SECOND/58)*B))
-#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(((getSystemClock()/MILI)/((A)->PR))*B)))
-//#define     timer_sleep_miliseconds(A,B)    (timer_delay(A,(58982400/MILI/58)*B))
-#define     timer_sleep_microseconds(A,B)     (timer_delay(A,(((getSystemClock()/MICRO)/((A)->PR))*B)))
-//#define     timer_sleep_microseconds(A,B)   (timer_delay(A,(58982400/MICRO/58)*B))
+//#define     timer_sleep_seconds(A,B)          (timer_delay(A,(((getSystemClock()/SECOND)/((A)->PR))*B)))
+#define		timer_sleep_seconds(A,B) 		    (timer_delay(A,(58982400/SECOND/58)*B))
+//#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(((getSystemClock()/MILI)/((A)->PR))*B)))
+#define     timer_sleep_miliseconds(A,B)    	(timer_delay(A,(58982400/MILI/58)*B))
+//#define     timer_sleep_microseconds(A,B)     	(timer_delay(A,(((getSystemClock()/MICRO)/((A)->PR))*B)))
+#define     timer_sleep_microseconds(A,B)   	(timer_delay(A,(58982400/MICRO/58)*B))
 
 
 #define timer_start(A)                  ((A)->TCR |= __TCR_ENABLE__)

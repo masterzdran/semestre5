@@ -109,8 +109,8 @@ typedef struct _RTC{
 #define __CCR_CTCRST_DISABLE__     0x0
 #define __CCR_CTTEST__             0x3
 
-#define LPC_PREINT      ((CCLK / 32768) - 1)
-#define LPC_PREFRAC     (CCLK - (((CCLK / 32768) - 1) + 1) * 32768)
+#define LPC_PREINT      ((58982400 / 32768) - 1)
+#define LPC_PREFRAC     (58982400 - (((58982400 / 32768) - 1) + 1) * 32768)
 
 
 #define __CIIR_IMSEC__          ((U8) 0x1   )
@@ -136,11 +136,21 @@ typedef struct _RTC{
 void rtc_init();
 void rtc_initCalendar();
 void rtc_setDate(U16 year,U8 month, U8 day);
+
+#define rtc_setDom(A)	((pRTC->DOM) = A & __DAY_MASK__)
+#define rtc_setMonth(A)	((pRTC->MONTH) = A & __MONTH_MASK__)
+#define rtc_setYear(A)	((pRTC->YEAR) = A & __YEAR_MASK__)
+
 void rtc_setTime(U8 hour,U8 minute, U8 seconds);
+
+#define rtc_setHour(A)	((pRTC->HOUR) = A & __HOUR_MASK__)
+#define rtc_setMin(A)	((pRTC->MIN) = A & __MINUTE_MASK__)
+#define rtc_setSec(A)	((pRTC->SEC) = A & __SECOND_MASK__)
+
 void rtc_setDOW(U8 dow);
 void rtc_setDOY(U16 doy);
-DATE getDate();
-TIME getTime();
+void getDate(DATE* date);
+void getTime(TIME* time);
 
 #define __YEAR_MASK__       0xFFF
 #define __MONTH_MASK__      0xF
