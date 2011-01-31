@@ -19,19 +19,15 @@ void rtc_init(){
     pRTC->CCR       = __CCR_CLKEN_ENABLE__|__CCR_CTCRST_DISABLE__;
 }
 
-DATE getDate(){
-    DATE date;
-    date.year   = (pRTC->CTIME1 >> 16) &&   __YEAR_MASK__;
-    date.month  = (pRTC->CTIME1 >> 8)  &&   __MONTH_MASK__;
-    date.day    =  pRTC->CTIME1        &&   __DAY_MASK__;
-    return date;  
+void getDate(DATE* date){
+    date->year   = (pRTC->CTIME1>> 16)/* &&   __YEAR_MASK__*/;
+    date->month  = (pRTC->CTIME1 >> 8)/* &&   __MONTH_MASK__*/;
+    date->day    = (pRTC->CTIME1     )/* &&   __DAY_MASK__*/;
 }
-TIME getTime(){
-    TIME time;
-    time.hour   = (pRTC->CTIME0 >> 16) &&   __HOUR_MASK__;
-    time.minute = (pRTC->CTIME0 >> 8)  &&   __MINUTE_MASK__;
-    time.second =  pRTC->CTIME0        &&   __SECOND_MASK__;
-    return time;
+void getTime(TIME* time){
+    time->hour   = (pRTC->CTIME0 >> 16)/* &&   __HOUR_MASK__*/;
+    time->minute = (pRTC->CTIME0 >> 8) /* &&   __MINUTE_MASK__*/;
+    time->second =  pRTC->CTIME0       /* &&   __SECOND_MASK__*/;
 }
 
 void rtc_initCalendar(){
@@ -42,16 +38,17 @@ void rtc_initCalendar(){
 }
 
 void rtc_setDate(U16 year,U8 month, U8 day){
-    pRTC->YEAR      = year  & __YEAR_MASK__;
-    pRTC->MONTH     = month & __MONTH_MASK__;
-    pRTC->DOM       = day   & __DAY_MASK__;
+	rtc_setDom(day);
+	rtc_setMonth(month);
+	rtc_setYear(year);
 }
+
 void rtc_setTime(U8 hour,U8 minute, U8 seconds){
-      pRTC->CCR       =  __CCR_CLKEN_DISABLE__|__CCR_CTCRST_ENABLE__;
-      pRTC->HOUR      = hour    & __HOUR_MASK__;
-      pRTC->MIN       = minute  & __MINUTE_MASK__;
-      pRTC->SEC       = seconds & __SECOND_MASK__;
-      pRTC->CCR       = __CCR_CLKEN_ENABLE__|__CCR_CTCRST_DISABLE__;  
+    pRTC->CCR       =  __CCR_CLKEN_DISABLE__|__CCR_CTCRST_ENABLE__;
+	rtc_setHour(hour);
+	rtc_setMin(minute);
+	rtc_setSec(seconds);
+    pRTC->CCR       = __CCR_CLKEN_ENABLE__|__CCR_CTCRST_DISABLE__;  
 }
 
 void rtc_setDOW(U8 dow){
