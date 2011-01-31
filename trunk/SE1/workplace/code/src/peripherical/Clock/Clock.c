@@ -53,7 +53,7 @@ void setClock(pPercurso percurso){
   dateTime.date.day     = pRTC->DOM;
   dateTime.time.hour    = pRTC->HOUR;
   dateTime.time.minute  = pRTC->MIN;
-  dateTime.time.second  = pRTC->SEC;
+  dateTime.time.second  = 0;
   
   KB_Key key;
   U8 position = 0;
@@ -68,7 +68,7 @@ void setClock(pPercurso percurso){
     if (hasKey()){
       switch(key = getBitMap()){
           case OK:
-            //commitDate(); 
+            rtc_setDateTime(&dateTime); //commit dateTime
             break;
           case LEFT:
             --position % NBR_FIELDS;
