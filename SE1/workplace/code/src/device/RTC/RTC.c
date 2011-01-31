@@ -9,8 +9,8 @@ void rtc_init(){
     /*Power: In the PCONP register (Table 3–27), set bit PCRTC = 1.*/
     pPLL->CONTROL   |= PCRTC;
     pRTC->CCR       =  __CCR_CLKEN_DISABLE__|__CCR_CTCRST_ENABLE__;
-    pRTC->PREINT    = LPC_PREINT;
-    pRTC->PREFRAC   = LPC_PREFRAC;
+    pRTC->PREINT    = 1800;/*LPC_PREINT;*/
+    pRTC->PREFRAC   = 0;/*LPC_PREFRAC;*/
     pRTC->ILR       = __ILR_RTCALF_CLEAR__|__ILR_RTCCIF_CLEAR__;
     pRTC->ILR       = __ILR_RTCALF_DISABLE__|__ILR_RTCCIF_DISABLE__;
     pRTC->CIIR      = (~(__CIIR_IMDOM__|__CIIR_IMDOW__|__CIIR_IMDOY__|__CIIR_IMHOUR__|__CIIR_IMMIN__|__CIIR_IMMON__|__CIIR_IMSEC__|__CIIR_IMYEAR__) & __CIIR_MASK__);

@@ -109,8 +109,8 @@ typedef struct _RTC{
 #define __CCR_CTCRST_DISABLE__     0x0
 #define __CCR_CTTEST__             0x3
 
-#define LPC_PREINT      ((58982400 / 32768) - 1)
-#define LPC_PREFRAC     (58982400 - (((58982400 / 32768) - 1) + 1) * 32768)
+#define LPC_PREINT      ((CCLK / 32768) - 1)
+#define LPC_PREFRAC     (CCLK - (((CCLK / 32768) - 1) + 1) * 32768)
 
 
 #define __CIIR_IMSEC__          ((U8) 0x1   )
