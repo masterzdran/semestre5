@@ -9,6 +9,12 @@ void rtc_init(){
     /*Power: In the PCONP register (Table 3–27), set bit PCRTC = 1.*/
     pPLL->CONTROL   |= PCRTC;
     pRTC->CCR       =  __CCR_CLKEN_DISABLE__|__CCR_CTCRST_ENABLE__;
+	U32 teste1= LPC_PREINT;
+	U32 teste2= LPC_PREFRAC;
+	U32 preint_address= &(pRTC->PREINT);
+	U32 prefrac_address= &(pRTC->PREFRAC);
+	
+	
     pRTC->PREINT    = 1800;/*LPC_PREINT;*/
     pRTC->PREFRAC   = 0;/*LPC_PREFRAC;*/
     pRTC->ILR       = __ILR_RTCALF_CLEAR__|__ILR_RTCCIF_CLEAR__;
@@ -19,12 +25,12 @@ void rtc_init(){
     pRTC->CCR       = __CCR_CLKEN_ENABLE__|__CCR_CTCRST_DISABLE__;
 }
 
-void getDate(DATE* date){
+void rtc_getDate(DATE* date){
     date->year   = rtc_getYear();
     date->month  = rtc_getMonth();
     date->day    = rtc_getDom();
 }
-void getTime(TIME* time){
+void rtc_getTime(TIME* time){
     time->hour   = rtc_getHour();
     time->minute = rtc_getMin();
     time->second =  rtc_getSec();

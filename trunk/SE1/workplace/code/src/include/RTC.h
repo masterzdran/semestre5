@@ -56,43 +56,52 @@ typedef struct _RTC{
     U16    DUMMY22;
     /*----------------------------------------------------------------*/
     U16    YEAR;      //  12|Years Register               |0xE002 403C
-    U16    DUMMY23;    
+    U16    DUMMY23;  
+	/*----------------------------------------------------------------*/
+	U32	   DUMMY24;   //								  |0xE002 4040
+	U32	   DUMMY25;   //								  |0xE002 4044
+	U32	   DUMMY26;   //								  |0xE002 4048
+	U32	   DUMMY27;   //								  |0xE002 404C
+	U32	   DUMMY28;   //								  |0xE002 4050
+	U32	   DUMMY29;   //								  |0xE002 4054
+	U32	   DUMMY30;   //								  |0xE002 4058
+	U32	   DUMMY31;   //								  |0xE002 405C
     /*----------------------------------------------------------------*/
-    U32    ALSEC;     //  06|Alarm value for Seconds      |0xE002 4060
-    U8     DUMMY24;
-    U16    DUMMY25;
-    /*----------------------------------------------------------------*/    
-    U8     ALMIN;     //  06|Alarm value for Minutes     |0xE002 4064
-    U8     DUMMY26;
-    U16    DUMMY27;
-    /*----------------------------------------------------------------*/
-    U8     ALHOUR;    //  05|Alarm value for Hours       |0xE002 4068
-    U8     DUMMY28;
-    U16    DUMMY29;
-    /*----------------------------------------------------------------*/
-    U8     ALDOM;     //  05|Alarm value for Day of Month|0xE002 406C
-    U8     DUMMY30;
-    U16    DUMMY31;
-    /*----------------------------------------------------------------*/
-    U8     ALDOW;     //  03|Alarm value for Day of Week |0xE002 4070
+    U8     ALSEC;     //  06|Alarm value for Seconds      |0xE002 4060
     U8     DUMMY32;
     U16    DUMMY33;
+    /*----------------------------------------------------------------*/    
+    U8     ALMIN;     //  06|Alarm value for Minutes     |0xE002 4064
+    U8     DUMMY34;
+    U16    DUMMY35;
     /*----------------------------------------------------------------*/
-    U16    ALDOY;     //  09|Alarm value for Day of Year |0xE002 4074
-    U16    DUMMY34;
-    /*----------------------------------------------------------------*/
-    U8     ALMON;     //  04|Alarm value for Months      |0xE002 4078
-    U8     DUMMY35;
-    U16    DUMMY36;
-    /*----------------------------------------------------------------*/
-    U16    ALYEAR;    //  12|Alarm value for Year        |0xE002 407C
+    U8     ALHOUR;    //  05|Alarm value for Hours       |0xE002 4068
+    U8     DUMMY36;
     U16    DUMMY37;
     /*----------------------------------------------------------------*/
+    U8     ALDOM;     //  05|Alarm value for Day of Month|0xE002 406C
+    U8     DUMMY38;
+    U16    DUMMY39;
+    /*----------------------------------------------------------------*/
+    U8     ALDOW;     //  03|Alarm value for Day of Week |0xE002 4070
+    U8     DUMMY40;
+    U16    DUMMY41;
+    /*----------------------------------------------------------------*/
+    U16    ALDOY;     //  09|Alarm value for Day of Year |0xE002 4074
+    U16    DUMMY42;
+    /*----------------------------------------------------------------*/
+    U8     ALMON;     //  04|Alarm value for Months      |0xE002 4078
+    U8     DUMMY43;
+    U16    DUMMY44;
+    /*----------------------------------------------------------------*/
+    U16    ALYEAR;    //  12|Alarm value for Year        |0xE002 407C
+    U16    DUMMY45;
+    /*----------------------------------------------------------------*/
     U16    PREINT;    //  13|Prescaler value, integer portion|0xE002 4080
-    U16    DUMMY38;
+    U16    DUMMY46;
     /*----------------------------------------------------------------*/
     U16    PREFRAC;   //  15|Prescaler value, integer portion|0xE002 4084
-    U16    DUMMY39;
+    U16    DUMMY47;
     /*----------------------------------------------------------------*/
 }LPC_RTC,*pLPC_RTC;
 
@@ -139,23 +148,23 @@ void rtc_setDate(U16 year,U8 month, U8 day);
 void rtc_setTime(U8 hour,U8 minute, U8 seconds);
 void rtc_setDOW(U8 dow);
 void rtc_setDOY(U16 doy);
-void getDate(DATE* date);
-void getTime(TIME* time);
+void rtc_getDate(DATE* date);
+void rtc_getTime(TIME* time);
 void rtc_setDateTime(DATE_TIME* datetime);
 void rtc_getDateTime(DATE_TIME* datetime);
 
-#define rtc_setDom(A)	  ((pRTC->DOM) = A & __DAY_MASK__)
-#define rtc_setMonth(A)	((pRTC->MONTH) = A & __MONTH_MASK__)
-#define rtc_setYear(A)	((pRTC->YEAR) = A & __YEAR_MASK__)
-#define rtc_setHour(A)	((pRTC->HOUR) = A & __HOUR_MASK__)
-#define rtc_setMin(A)	  ((pRTC->MIN) = A & __MINUTE_MASK__)
-#define rtc_setSec(A)	  ((pRTC->SEC) = A & __SECOND_MASK__)
-#define rtc_getDom()	  ((pRTC->CTIME1     )  & __DAY_MASK__)
-#define rtc_getMonth()	((pRTC->CTIME1 >> 8)  & __MONTH_MASK__)
-#define rtc_getYear()	  ((pRTC->CTIME1>> 16)  & __YEAR_MASK__)
-#define rtc_getHour()   ((pRTC->CTIME0 >> 16) & __HOUR_MASK__)
-#define rtc_getMin()	  ((pRTC->CTIME0 >> 8)  & __MINUTE_MASK__)
-#define rtc_getSec()	  (pRTC->CTIME0 & __SECOND_MASK__)
+#define rtc_setDom(A)	  	((pRTC->DOM) = A & __DAY_MASK__)
+#define rtc_setMonth(A)		((pRTC->MONTH) = A & __MONTH_MASK__)
+#define rtc_setYear(A)		((pRTC->YEAR) = A & __YEAR_MASK__)
+#define rtc_setHour(A)		((pRTC->HOUR) = A & __HOUR_MASK__)
+#define rtc_setMin(A)	  	((pRTC->MIN) = A & __MINUTE_MASK__)
+#define rtc_setSec(A)	  	((pRTC->SEC) = A & __SECOND_MASK__)
+#define rtc_getDom()	  	((pRTC->CTIME1     )  & __DAY_MASK__)
+#define rtc_getMonth()		((pRTC->CTIME1 >> 8)  & __MONTH_MASK__)
+#define rtc_getYear()	  	((pRTC->CTIME1>> 16)  & __YEAR_MASK__)
+#define rtc_getHour()   	((pRTC->CTIME0 >> 16) & __HOUR_MASK__)
+#define rtc_getMin()	  	((pRTC->CTIME0 >> 8)  & __MINUTE_MASK__)
+#define rtc_getSec()	  	(pRTC->CTIME0 & __SECOND_MASK__)
 
 #define __YEAR_MASK__       0xFFF
 #define __MONTH_MASK__      0xF
