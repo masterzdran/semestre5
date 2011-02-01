@@ -20,7 +20,7 @@
 #define  VALUE_MASK             0x0F    //Mascara para os Valores a serem escritos
 #define  MAXTIMERISE            350;    // in miliseconds
 #define  MAXTIMEFALL            400;    // in miliseconds
-
+/*
 #define  clearLine(A)       (LCD_clearLine(A))
 #define  posCursor(A,B)     (LCD_posCursor(A, B))
 #define  setCursor(A,B)     (LCD_setCursor(A, B))
@@ -28,7 +28,7 @@
 #define  writeString(A)     (LCD_writeString(A))
 #define  writeLine(A,B)     (LCD_writeLine(A, B))
 #define  setCenter(A)       (LCD_setCenter(A))
-
+*/
 
 void LCD_init(pLPC_TIMER timer);
 void LCD_write(U32  byte);
