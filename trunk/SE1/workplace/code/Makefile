@@ -42,6 +42,7 @@ SEARCHLIB		= -I$(MYLIB)
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
 LD				= arm-eabi-ld
+OPENOCD		= openocd
 #Debugger
 DEBUGGER		= arm-eabi-insight
 #Commom Options
@@ -57,6 +58,7 @@ COMPILE_ONLY 		= -c
 .PHONY				= peripherical
 .PHONY				= device
 .PHONY				= program
+.PHONY				= deploy
 #=======================================================================
 LDS_PATH		=  	$(TODEPLOY)/ldscript
 OPENOCD_FILE	=	$(TODEPLOY)/openocd/openocd_lpc2106.cfg
@@ -105,6 +107,9 @@ clean:
 	$(MAKE) -C $(PERIPHERICAL) clean
 	$(MAKE) -C $(DEVICE) clean	
 	$(MAKE) -C $(PCOMPILE) clean
+
+deploy: $(END_EXEC)
+	$(OPENOCD) -f $(OPENOCD_FILE) -c $^ -c "reset run" -c shutdown  
 
 clear:
 	clear
