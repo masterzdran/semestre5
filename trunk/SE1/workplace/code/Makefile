@@ -109,7 +109,7 @@ clean:
 	$(MAKE) -C $(PCOMPILE) clean
 
 deploy: $(END_EXEC)
-	$(OPENOCD) -f $(OPENOCD_FILE) -c $^ -c "reset run" -c shutdown  
+	$(OPENOCD) -f $(OPENOCD_FILE) -c "flash write_image erase $^" -c "sleep 100" -c "reset run" -c "shutdown"
 
 clear:
 	clear
