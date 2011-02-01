@@ -17,7 +17,7 @@
 // | 00| 01| 02| 03| 04| 05| 06| 07| 08| 09| 10| 11| 12| 13| 14| 15|
 
 //void format(U8 position,PU16 dateTime[],U16 value);
-void setClock(pPercurso percurso);
+void setClock(PVOID course);
 
 
 #endif

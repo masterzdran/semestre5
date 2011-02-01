@@ -23,7 +23,8 @@ static Option menu1Options[__MAX_FUNCTION_MENU_1__] =
   {"7- Total Time",printTotalTime}  
 };
 
-void Menu_Generic(pPercurso percurso, pOption options[], U8 sizeOf){
+void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
+  pPercurso percurso = (pPercurso)course;
   U8 idx = 0,bidx = -1;
   KB_Key key;
   LCD_writeLine(0,"Press OK or Next");
