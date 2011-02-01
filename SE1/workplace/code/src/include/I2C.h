@@ -2,9 +2,14 @@
 #define I2C_H
 
 #include "TYPES.h"
+/**
+ * Definição do endereço do periférico I2C 
+ **/
+#define     pI2C      (((pLPC_I2C) 0xE001C000))
 
-
-
+/**
+ * Definição da estrutura I2C
+ * */
 typedef struct _I2C{
   U8 CONTROL_SET_REGISTER;
   U8  DUMMY01;
@@ -33,7 +38,11 @@ typedef struct _I2C{
   U16 DUMMY12;
 }LPC_I2C,*pLPC_I2C;
 
-#define     pI2C      (((pLPC_I2C) 0xE001C000))
+
+
+/**
+ * Mascaras referentes ao I2C 
+ **/
 #define __I2CONSET_MASK__       0xFC    //bits 0,1 and 7 are reserved
 #define __I2EN_ENABLE__         0x80
 #define __I2C_STA_ENABLE__      0x10
@@ -54,12 +63,23 @@ typedef struct _I2C{
 #define __I2ADR_CALL__          0x01
 #define __I2ADR_CALL_ADR_MASK__ 0xFE   
 
+/**
+ * Definição dos portos I2C 
+ **/
 #define __I2C_SCL_PIN__         ((U8)   1 << 0x2)
 #define __I2C_SDA_PIN__         ((U8)   1 << 0x3)
 
+
+/**
+ * Definição do modo de Leitura/Escrita do I2C
+ **/
 #define __I2C_READ__            ((U8) 0x0)
 #define __I2C_WRITE__           ((U8) 0x1)
 #define     micro_wait    5
+
+/**
+ * Assinatura das funções publicas
+ **/
 void I2C_init();
 void I2C_start();
 void I2C_stop();

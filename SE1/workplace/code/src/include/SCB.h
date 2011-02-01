@@ -1,6 +1,9 @@
 #ifndef SCB_H
 #define SCB_H
 #include "TYPES.h"
+/**
+ * Definição dos endereços das estruturas 
+ **/
 #define    pEXT_INT       ((pLPC_EXT_INT) 0xE01FC140)
 #define    pMAM           ((pLPC_MAM)     0xE01FC000)     
 #define    pPLL           ((pLPC_PLL)     0xE01FC080)     
@@ -8,7 +11,9 @@
 #define    pAPBDIV        ((pLPC_APB)     0xE01FC100)
 #define    pSCS           ((pLPC_SCS)     0xE01FC1A0)
 
-
+/**
+ * Definição da estrutura das interrupções externas 
+ **/
 typedef struct _EXT{
     U8     EXTINT;
     U8     DUMMY01;
@@ -24,7 +29,9 @@ typedef struct _EXT{
     U16    DUMMY08;
 }LPC_EXT_INT,*pLPC_EXT_INT;
 
-
+/**
+ * Definição do MAM 
+ **/
 typedef struct _MAM{
     U32 CONTROL_REGISTER;
     U32 TIMING;          
@@ -47,7 +54,9 @@ typedef struct _MAM{
     U16 DUMMY16;
 }LPC_MAM,*pLPC_MAM;
 
-
+/**
+ * Definição da PLL 
+ **/
 typedef struct _PLL{
     U8    CONTROL;
     U8    DUMMY01;
@@ -62,22 +71,32 @@ typedef struct _PLL{
     U16   DUMMY07;
 }LPC_PLL,*pLPC_PLL;
 
+/**
+ * Definição do POWER
+ * */
 typedef struct _POWER{
     U32   POWER_CONTROL;
     U32   POWER_CONTROL_PERIPHERICAL;
 }LPC_POWER,*pLPC_POWER;
 
 
-
+/**
+ * Definição do APB 
+ **/
 typedef struct _APB{
     U32   APBDIV;
 }LPC_APB,*pLPC_APB;
 
+/**
+ * Definiçaõ do SCS 
+ **/
 typedef struct _SCS{
     U32   SCS;  
 }LPC_SCS,*pLPC_SCS;
 
-
+/**
+ * Macros para enable das interrupções externas
+ **/
 #define __EXTERNAL_INT_EINT0_ENABLE__               ((U8 )0x01)
 #define __EXTERNAL_INT_EINT1_ENABLE__               ((U8 )0x02)
 #define __EXTERNAL_INT_EINT2_ENABLE__               ((U8 )0x04)
@@ -98,6 +117,9 @@ typedef struct _SCS{
 #define __EXTERNAL_INT_POLARITY_EXTPOLAR2_ENABLE__  ((U8 )0x04)
 #define __EXTERNAL_INT_POLARITY_MASK__              ((U8 )0x07)
 
+/**
+ * Macros para o System Control Status
+ * */
 #define __SYSTEM_CONTROL_AND_STATUS_ENABLE__        ((U8 )0x01)
 #define __SYSTEM_CONTROL_AND_STATUS_MASK__          ((U8 )0x01)
 
@@ -107,6 +129,10 @@ typedef struct _SCS{
 #define __MEMORY_MAP_CONTROL_RESERVED__             ((U8 )0x03)
 #define __MEMORY_MAP_CONTROL_MASK__                 ((U8 )0x03)
 
+
+/**
+ * Macros para valores por Omissão 
+ **/
 #define     __FOSC__                                ((U32) 14745600)
 #define     __PLL_M_VALUE__                         ((U8 ) 0x03 )
 #define     __PLL_P_VALUE__                         ((U8 ) 0x20 )
@@ -114,9 +140,9 @@ typedef struct _SCS{
 #define     __PLL_EFFECTIVE_P_VALUE__               ((U8 ) 0x02 )
 #define     __PLL_FEED_AA__                         ((U8 ) 0xAA )
 #define     __PLL_FEED_55__                         ((U8 ) 0x55 )
-
 #define     CCLK          (__PLL_EFFECTIVE_M_VALUE__ * __FOSC__)
 #define     FCCO          (__FOSC__ * __PLL_EFFECTIVE_M_VALUE__ * __PLL_EFFECTIVE_P_VALUE__ * 2)
+
 
 
 #define     __PLLCON_PLLE_ENABLE__                  ((U8 ) 0x1 )
@@ -173,14 +199,5 @@ typedef struct _SCS{
 #define     __MAMTIM_FETCH_7_CLOCK__                ((U8 ) 0x7 )
 #define     __MAMTIM_MASK__                         ((U8 ) 0x7 )
 
-/*
-  Table 35.
-  Suggestions for MAM timing selection 
-  system clock              Number of MAM fetch cycles in MAMTIM
-  < 20 MHz                    1 CCLK
-  20 MHz to 40 MHz            2 CCLK
-  40 MHz to 60 MHz            3 CCLK
-  >60 MHz                     4 CCLK
-*/
 
 #endif
