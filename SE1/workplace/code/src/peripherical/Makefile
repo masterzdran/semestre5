@@ -51,11 +51,17 @@ MAKEPATHS				= LCD  KEYBOARD EEPROM
 #															Base Make PERIPHERICAL
 #=======================================================================
 all: 
+	@echo "=================================="
+	@echo "Compiling the Peripherical Library"
+	@echo "=================================="	
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH);)
 	$(AR) $(MYLIB)/libPeripherical.a $(MYLIB)/*.o
 	rm -rf $(MYLIB)/*.o
 
 clean:
+	@echo "=================================="
+	@echo "Cleaning the Peripherical Library"
+	@echo "=================================="	
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH) clean;)
 	rm -rf $(MYLIB)/libPeripherical.a
 	
