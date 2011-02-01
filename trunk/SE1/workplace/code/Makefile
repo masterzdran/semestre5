@@ -54,6 +54,9 @@ COMPILE_ONLY 		= -c
 #Phony Target
 .PHONY 				= clean
 .PHONY				= clear
+.PHONY				= peripherical
+.PHONY				= device
+.PHONY				= program
 #=======================================================================
 LDS_PATH		=  	$(TODEPLOY)/ldscript
 OPENOCD_FILE	=	$(TODEPLOY)/openocd/openocd_lpc2106.cfg
@@ -76,25 +79,29 @@ all: $(END_EXEC)
 
 #Generate the executable
 #$(OBJECT)
-$(END_EXEC): 
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $^ $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc -lLPC2106 -lPeripherical
+$(END_EXEC): program
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@   $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc -lLPC2106 -lPeripherical
 
-peripherical:
+peripherical: device
+	@echo "----------------------------------------------------------------------"
 	$(MAKE) -C $(PERIPHERICAL)
 
 device:
+	@echo "----------------------------------------------------------------------"
 	$(MAKE) -C $(DEVICE)
 	
-program:
+program: peripherical device
+	@echo "----------------------------------------------------------------------"
 	$(MAKE) -C $(PCOMPILE)
 
 #Start the Debugger	
 debug: $(END_EXEC)
+	@echo "----------------------------------------------------------------------"
 	$(DEBUGGER) $(END_EXEC)
 
 #clean files
 clean:
-	echo $(PERIPHERICAL)
+	@echo "----------------------------------------------------------------------"
 	$(MAKE) -C $(PERIPHERICAL) clean
 	$(MAKE) -C $(DEVICE) clean	
 	$(MAKE) -C $(PCOMPILE) clean

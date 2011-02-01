@@ -20,7 +20,7 @@
  **/
 U8 eeprom_write_block(U32 address, U8 * block, U8 size);
 void eeprom_read_block(U32 address, U8 * block, U8 size);
-void EEPROM_init()
+void EEPROM_init();
 /*
 U8 eeprom_read_8(U32 address);
 U16 eeprom_read_16(U32 address);

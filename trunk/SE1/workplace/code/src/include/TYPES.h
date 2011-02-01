@@ -19,7 +19,9 @@
 */
 #ifndef TYPES_H
 #define TYPES_H
-//TYPE DEFINITION
+/**
+ * Definição de tipos
+ * */
 typedef volatile unsigned int       U32;
 typedef unsigned short int          U16;
 typedef unsigned char               U8;
@@ -34,13 +36,17 @@ typedef   PU8   Pbyte;
 typedef   PU16  PWord;
 typedef   PU32  PDWord;
 
-
+/**
+ * Definição da estrutura Data 
+ **/
 typedef struct _date{
   U16    year; 
   U8     month;
   U8     day;  
 }DATE;
-
+/**
+ * Definição da estrutura Hora 
+ **/
 typedef struct _time{
   U8     hour;
   U8     minute;
@@ -50,12 +56,17 @@ typedef struct _time{
 enum boolean {false,true};
 typedef enum boolean Bool ;
 
-
+/**
+ * Definição da estrutura Data/Hora 
+ **/
 typedef struct _datetime{
   DATE date;
   TIME time;
 }DATE_TIME;
 
+/**
+ * Definição da estrutura Percurso 
+ **/
 typedef struct _percurso{
   DATE beginDate;
   TIME beginTime;
@@ -67,6 +78,9 @@ typedef struct _percurso{
   U32  totalTime;
 }Percurso,*pPercurso;
 
+/**
+ * Enumerado com as teclas válidas para serem utilizadas no contexto dos Menu 
+ **/
 enum KEYBOARD_KEYS{
   MENU    = 0x7E,
   OK      = 0x7D,
@@ -79,10 +93,16 @@ enum KEYBOARD_KEYS{
 };
 typedef enum KEYBOARD_KEYS KB_Key;
 
+/**
+ * Definição da estrura Option 
+ **/
 typedef struct _option{
   char* text;
   void (*function) (pPercurso percurso);
 }Option,pOption;
 
+/**
+ * Definição do enumerado com os estados válidos
+ * */
 typedef enum _status {MAIN=0,OK_PRESS,MENU_PRESS,RESET_PRESS,FULLRESET,READ,WRITE,WAIT} Status;
 #endif

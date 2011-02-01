@@ -2,7 +2,10 @@
 #define I2C_H
 
 #include "TYPES.h"
-
+/**
+ * Definição do endereço do periférico I2C 
+ **/
+#define     pI2C      (((pLPC_I2C) 0xE001C000))
 
 /**
  * Definição da estrutura I2C
@@ -35,10 +38,7 @@ typedef struct _I2C{
   U16 DUMMY12;
 }LPC_I2C,*pLPC_I2C;
 
-/**
- * Definição do endereço do periférico I2C 
- **/
-#define     pI2C      (((pLPC_I2C) 0xE001C000))
+
 
 /**
  * Mascaras referentes ao I2C 

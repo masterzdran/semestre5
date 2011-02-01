@@ -1,12 +1,18 @@
 #ifndef VIC_H
 #define VIC_H
 #include "TYPES.h"
+
+/**
+ * Definição dos endereços das estruturas referentes aos registos de interrupções 
+ **/
 #define         pVIC              ((pLPC_VIC)           0xFFFFF000)
 #define         pVIC_VECTADDR     ((pLPC_VIC_VECTADDR)  0xFFFFF030)
 #define         pVIC_VECTADDRX    ((pLPC_VIC_VECTADDRX) 0xFFFFF100)
 #define         pVIC_VECTCNTX     ((pLPC_VIC_VECTCNTX)  0xFFFFF200)
 
-
+/**
+ * Estrutura que define os campos dos Vectores de Controlo 
+ **/
 typedef struct _VIC_VECTCNTX{
       U8 VectCntl0;        //0xFFFF F200
       U8  DUMMY03;
@@ -58,6 +64,9 @@ typedef struct _VIC_VECTCNTX{
       U16 DUMMY34;  
 }LPC_VIC_VECTCNTX,*pLPC_VIC_VECTCNTX;  
 
+/**
+ * Estrutura que define os endereços dos Vectores
+ **/
 typedef struct _VIC_VECTADDRX{
       U32 VectAddr0;        //0xFFFF F100
       U32 VectAddr1;        //0xFFFF F104
@@ -77,11 +86,15 @@ typedef struct _VIC_VECTADDRX{
       U32 VectAddr15;       //0xFFFF F13C  
 }LPC_VIC_VECTADDRX,*pLPC_VIC_VECTADDRX;
 
+
 typedef struct _VIC_VECTADDR{
       U32 VectAddr;         //0xFFFF F030
       U32 DefVectAddr;      //0xFFFF F034  
 }LPC_VIC_VECTADDR,*pLPC_VIC_VECTADDR;
 
+/**
+ * Estrutura que define os campos do VIC
+ * */
 typedef struct _VIC{
       U32 IRQStatus;        //0xFFFF F000
       U32 FIQStatus;        //0xFFFF F004
@@ -96,13 +109,16 @@ typedef struct _VIC{
       U16 DUMMY02;  
 }LPC_VIC,*pLPC_VIC;
 
+/**
+ * Definição de macros
+ * */
 #define __VIC_VECTCNTL_MASK__       (U8) 0x1F
 #define __VIC_PROTECTION_MASK__     (U8) 0x01
 #define __VIC_ENABLE__              (U8) 0x20
 #define __MAX_INTERRUPT__           (U8) 0x0F
-
-//Interrupts Sources
-
+/**
+ * Fontes de Interrupção
+ **/
 #define     __INTERRUPT_WDT_MASK__           (U32)   0x00000001
 #define     __INTERRUPT_SOFTWARE_MASK__      (U32)   0x00000002
 #define     __INTERRUPT_DbgCommRx_MASK__     (U32)   0x00000004
@@ -122,6 +138,10 @@ typedef struct _VIC{
 #define     __INTERRUPT_EINT2_MASK__         (U32)   0x00010000
 #define     __INTERRUPT_ALL__                (U32)   0x0001FFFF
 
+
+/**
+ * Valores de cada tipo de interrupção 
+ **/
 #define     __INTERRUPT_WDT_VALUE__          (U8)    0x0
 #define     __INTERRUPT_SOFTWARE_VALUE__     (U8)    0x1
 #define     __INTERRUPT_DbgCommRx_VALUE__    (U8)    0x2
@@ -140,6 +160,10 @@ typedef struct _VIC{
 #define     __INTERRUPT_EINT1_VALUE__        (U8)    0xF
 #define     __INTERRUPT_EINT2_VALUE__        (U8)    0x10
 
+
+/**
+ * Assinatura das funções publicas
+ * */
 Bool VIC_ConfigIRQ(U8 peripherical, U8 priority,void (*fx)(void));
 void VIC_init();
 void disableIRQ(U8 peripherical);

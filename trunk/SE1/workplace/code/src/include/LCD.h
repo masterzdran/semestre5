@@ -21,14 +21,26 @@
 #define  MAXTIMERISE            350;    // in miliseconds
 #define  MAXTIMEFALL            400;    // in miliseconds
 
+#define  clearLine(A)       (LCD_clearLine(A))
+#define  posCursor(A,B)     (LCD_posCursor(A, B))
+#define  setCursor(A,B)     (LCD_setCursor(A, B))
+#define  writeChar(A)       (LCD_writeChar(A))
+#define  writeString(A)     (LCD_writeString(A))
+#define  writeLine(A,B)     (LCD_writeLine(A, B))
+#define  setCenter(A)       (LCD_setCenter(A))
+
+
 void LCD_init(pLPC_TIMER timer);
 void LCD_write(U32  byte);
-void clearLine(U8 line) ;
-void posCursor(U8 line, U8 col) ;
-void setCursor(U8 visible, U8 blinking);
-void writeChar(U8 c) ;
-void writeString(Pbyte txt);
-void writeLine(U8 line, Pbyte txt);
-inline void setCenter(U8 value) ;
+void LCD_clearLine(U8 line) ;
+void LCD_posCursor(U8 line, U8 col) ;
+void LCD_setCursor(U8 visible, U8 blinking);
+void LCD_writeChar(U8 c) ;
+void LCD_writeString(Pbyte txt);
+void LCD_writeLine(U8 line, Pbyte txt);
+inline void LCD_setCenter(U8 value) ;
+
+
+
 
 #endif
