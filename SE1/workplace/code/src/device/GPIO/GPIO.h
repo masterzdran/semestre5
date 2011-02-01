@@ -2,11 +2,9 @@
 #define GPIO_H
 #include "TYPES.h"
 
-#define pGPIO 	((pLPC_GPIO)	0xE0028000)
-#define     __PINSEL0__                      (*((PDWord)0xE002C000))
-#define     __PINSEL1__                      (*((PDWord)0xE002C004))
-
-
+/**
+ * Definição da estrutura referente ao GPIO
+ **/ 
 typedef struct _GPIO{
 	U32 IOPIN;	/* GPIO Port Pin value register.             0xE002 8000*/
 	U32 IOSET;	/* GPIO Port Output Set register.            0xE002 8004*/
@@ -14,21 +12,41 @@ typedef struct _GPIO{
 	U32 IOCLR;	/* GPIO Port Output Clear register.          0xE002 800C*/
 }LPC_GPIO,*pLPC_GPIO;
 
+/**
+ * Assinatura das funções publicas
+ **/
 U32 gpio_read(U32 mask);
 void gpio_clear(U32 mask);
 void gpio_write(U32 mask, U32 value );
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask);
-void gpio_set_direction(U32 mask, unsigned char direction);
+void gpio_set_direction(U32 mask, U8 direction);
 
+
+/**
+ * Definição dos endereços das estruturas, utilizadas internamente para o modulo GPIO.
+ **/
+#define pGPIO 	((pLPC_GPIO)	0xE0028000)
+#define     __PINSEL0__                      (*((PDWord)0xE002C000))
+#define     __PINSEL1__                      (*((PDWord)0xE002C004))
+
+/**
+ * Definição de algumas macros para facilitar a conversão das funcionalidades de cada porto 
+ **/
 #define FUNCTION_0          ((U8)   0x0)
 #define FUNCTION_1          ((U8)   0x1)
 #define FUNCTION_2          ((U8)   0x2)
 #define PORT                ((U8)   0x2)
+
+/**
+ * Definição do tipo de direcção para o porto GPIO
+ * */
 #define GPIO_IN             ((U8)   0x0)
 #define GPIO_OUT            ((U8)   0x1)
 
 
-
+/**
+ * Definição das mascaras referentes às funcionalidades do PINSEL0 
+ **/
 //----------------------------------------------------------------------
 #define     __PINSEL0_GPIO_PORT_0_0__       (FUNCTION_0 << (PORT * 0))
 #define     __PINSEL0_UART_0_TXD__          (FUNCTION_1 << (PORT * 0))

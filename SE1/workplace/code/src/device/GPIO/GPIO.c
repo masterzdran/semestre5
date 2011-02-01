@@ -1,51 +1,58 @@
 #include "GPIO.h"
-/*
- * Table 58. Pin function select register bits (Page 66)
- *   
- * 00 Primary (default) function, typically GPIO port 
- * 01 First alternate function 
- * 10 Second alternate function 
- * 11 Third alternate function 
- * */
-
-/*The PINSEL0 register controls the functions of the pins 0-15*/
-static void gpio_PINSEL0(U32 mask){ 
+/**
+ * Iniciação dos portos de GPIO com a operação definida pela 'mask', definindo o comportamento desse porto de GPIO (0-15)
+ **/
+void gpio_init_PINSEL0(U32 mask){ 
  __PINSEL0__ &= ~mask; 
 }
 
-/*The PINSEL1 register controls the functions of the pins 16-31*/
-static void gpio_PINSEL1(U32 mask){   
+/**
+ * Iniciação dos portos de GPIO com a operação definida pela 'mask', definindo o comportamento desse porto de GPIO (16-31)
+ **/
+void gpio_init_PINSEL1(U32 mask){   
   __PINSEL1__ &= ~mask;
 }
-
+/**
+ * Iniciação dos portos de GPIO com a(s) operação(ões) definidas pelas mascaras  'pinsel0_mask' e 'pinsel0_mask'
+ **/
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){
-  gpio_PINSEL0(pinsel0_mask);
-  gpio_PINSEL1(pinsel1_mask);
+  __PINSEL0__ &= ~pinsel0_mask;
+  __PINSEL1__ &= ~pinsel1_mask;
 } 
-
+/**
+ * Escreve nos pinos definidos por 'mask' o valor de 'value'.
+ * O valor de 'value' tem que estar definido dentro da mascara, caso contrário não é garantido o comportamento desejado.
+ **/ 
 void gpio_write(U32 mask, U32 value){
   pGPIO->IOCLR |= mask ;
   pGPIO->IOSET |= mask & value;    
 }
-/*
- *Table 62. (Page 72)
- * GPIO port 0 Direction register (IO0DIR - address 0xE002 8008) bit description
- * 0 Controlled pin is input.
- * 1 Controlled pin is output.
- * */
+/**
+ * Define a direcção dos bits indicados pela 'mask'.
+ * Com o parametro direction = GPIO_IN os são definidos como entrada
+ * Com o parametro direction = GPIO_OUT os são definidos como saída
+ **/ 
 void gpio_set_direction(U32 mask, U8 direction){
   if (direction)
     pGPIO->IODIR |= mask;
   else
     pGPIO->IODIR &= ~mask;
 }
+/**
+ * Activa os bits definidos pela 'mask'
+ **/ 
 void gpio_set(U32 mask){
   pGPIO->IOSET |= mask;
 }
+/**
+ * Limpa os bits definidos pela 'mask'
+ **/ 
 void gpio_clear(U32 mask){
   pGPIO->IOCLR |= mask ;
 }
-
+/**
+ * Lê o o porto GPIO definido pela 'mask' e devolve o respectivo valor
+ **/
 U32 gpio_read(U32 mask){
     return  pGPIO->IOPIN & mask;
 }
