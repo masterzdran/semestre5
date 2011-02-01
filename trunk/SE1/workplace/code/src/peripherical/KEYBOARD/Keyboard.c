@@ -1,8 +1,9 @@
 #include "Keyboard.h"
-//bitmaps
+/**
+ * Bitmaps
+ * */
 static U8 previous_key;
 static U8 key;
-
 static pLPC_TIMER ptimer;
 
 /**

@@ -26,10 +26,10 @@ static Option menu1Options[__MAX_FUNCTION_MENU_1__] =
 void Menu_Generic(pPercurso percurso, pOption options[], U8 sizeOf){
   U8 idx = 0,bidx = -1;
   KB_Key key;
-  writeLine(0,"Press OK or Next");
+  LCD_writeLine(0,"Press OK or Next");
   while(1){
     if (bidx != idx)
-      writeLine(1,options[idx].text);
+      LCD_writeLine(1,options[idx].text);
     bidx = idx;
     if (hasKey()){
       switch(key = getBitMap()){

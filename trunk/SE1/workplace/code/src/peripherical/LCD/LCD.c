@@ -1,7 +1,4 @@
 #include "LCD.h"
-
-
-
 /* 
  * 
  * |     |P0.13|P0.12|P0.11|P0.10|P0.09|P0.08|
@@ -23,6 +20,9 @@
 U8 value = 0;
 U8 isCentered = 0;
 pLPC_TIMER ptimer;
+/**
+ * Função para contar o comprimento da string
+ * */
 inline U32 Wstrlen(const Pbyte str){
   register Pbyte p;
 
@@ -30,33 +30,43 @@ inline U32 Wstrlen(const Pbyte str){
 
 	return p - str;
 }
-
+/**
+ * Escreve no LCD
+ * */
 void LCD_write(U32  byte){
   gpio_write(DATA_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&DATA_MASK);
 }
 
+/**
+ * Escreve um nibble 
+ **/
 static void processValue_nibble(U8 rs, U8 value){
   gpio_set(ENABLE_MASK);
   LCD_write( value );
   timer_sleep_miliseconds(ptimer,20);
   gpio_clear(ENABLE_MASK);
 }
+/**
+ * Processa o byte
+ * */
 static void processValue(U8 rs, U8 value){
   processValue_nibble(rs,(((value) >> DATA_BITS_SHIFT)&CLEAN_MASK));
   timer_sleep_miliseconds(ptimer,20);
   processValue_nibble(rs,value&CLEAN_MASK);
  
 }  
-
+/**
+ * Inicialização do LCD
+ * */
 void LCD_init(pLPC_TIMER timer){
     //Pag51: Table 6. Interface Data Length : Four bits
     /* Begin inicialization */
 
     ptimer=timer;
 
-  gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
-  gpio_clear(RS_MASK);
-  gpio_clear(ENABLE_MASK);
+    gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
+    gpio_clear(RS_MASK);
+    gpio_clear(ENABLE_MASK);
   
   
     timer_sleep_miliseconds(timer,46);          //Wait for 45 ms or more after VDD
@@ -86,29 +96,29 @@ void LCD_init(pLPC_TIMER timer){
 /**
  * Activa o modo de entrada de dados
  */
-void entryModeSet() {processValue(0,ENTRY_SET_MASK);}
+void LCD_entryModeSet() {processValue(0,ENTRY_SET_MASK);}
   
 /**
  * Activa o mostrador
  */
-void displayControlOn() {processValue(0,DISPLAY_ON_MASK | CURSOR_ON_MASK);}
+void LCD_displayControlOn() {processValue(0,DISPLAY_ON_MASK | CURSOR_ON_MASK);}
 /**
  * Desactiva o mostrador
  */
-void displayControlOff() {processValue(0,DISPLAY_OFF_MASK);}
+void LCD_displayControlOff() {processValue(0,DISPLAY_OFF_MASK);}
 /**
  * Desactiva o Blink
  */
-void blinkOff() {processValue(0,DISPLAY_ON_MASK | BLINK_OFF_MASK);}
+void LCD_blinkOff() {processValue(0,DISPLAY_ON_MASK | BLINK_OFF_MASK);}
 
 /**
  * Apaga todos os caracteres do display
  * */
-void clear() {processValue(0,CLEAR_MASK);}
+void LCD_clear() {processValue(0,CLEAR_MASK);}
 /**
  * Apaga todos os caracteres de uma linha
  * */
-void clearLine(U8 line) {
+void LCD_clearLine(U8 line) {
   posCursor(line, 0);
   register U8 i=0;
   for (; i < 40; i++)
@@ -120,7 +130,7 @@ void clearLine(U8 line) {
  * 
  *  Posiciona o cursor na linha (0..1) e coluna (0..15) indicadas
  */
-void posCursor(U8 line, U8 col) { processValue(0,ADDR_COUNTER_MASK | (0x40 * line + col));}
+void LCD_posCursor(U8 line, U8 col) { processValue(0,ADDR_COUNTER_MASK | (0x40 * line + col));}
 
 /**
  * 
@@ -132,7 +142,7 @@ void posCursor(U8 line, U8 col) { processValue(0,ADDR_COUNTER_MASK | (0x40 * lin
  * blinking will appear with the digit located at the display
  * data RAM (DDRAM) address set in the address counter (AC).
  */
-void setCursor(U8 visible, U8 blinking) {
+void LCD_setCursor(U8 visible, U8 blinking) {
   processValue(0,(char) (visible ? CURSOR_ON_MASK | (blinking ? BLINK_ON_MASK : BLINK_OFF_MASK):(CURSOR_OFF_MASK | (blinking ? BLINK_ON_MASK : BLINK_OFF_MASK))));
 }
 
@@ -141,14 +151,14 @@ void setCursor(U8 visible, U8 blinking) {
  * Escreve o caracter indicado no local do cursor e o cursor
  * avança para a proxima coluna
  */
-void writeChar(U8 c) {processValue(1,c);}
+void LCD_writeChar(U8 c) {processValue(1,c);}
 
 /**
  * 
  * Escreve o texto indicado no local do cursor e o cursor avança
  * para a coluna seguinte
  */
-void writeString(Pbyte txt) {
+void LCD_writeString(Pbyte txt) {
   gpio_set(RS_MASK);
   while(*txt){
       processValue(1,*txt);
@@ -161,7 +171,7 @@ void writeString(Pbyte txt) {
  * da linha é texto fica centrado ou alinhado à
  * esquerda,dependendo da última chamada a SetCenter()
  */
-void writeLine(U8 line, Pbyte txt) {
+void LCD_writeLine(U8 line, Pbyte txt) {
   int length = Wstrlen(txt);
   if (isCentered){
     length =  (DISPLAY_SIZE_MASK - length) / 2;
@@ -174,7 +184,7 @@ void writeLine(U8 line, Pbyte txt) {
  * Indica se o texto escrito com writeLine() nas chamadas
  * seguintes deve ou não ficar centrado na linha
  */
-inline void setCenter(U8 value) {isCentered = value;}
+inline void LCD_setCenter(U8 value) {isCentered = value;}
 
 /**
  * Recebe uma string e o numero de caracteres a recuar e calcula
