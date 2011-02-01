@@ -22,31 +22,33 @@ void printTime(pPercurso percurso){
 
 }
 void printMaxSpeed(pPercurso percurso){
+  pPercurso percurso = (pPercurso)course;
   char text[16];
   sprintf(text,"%3.3d Km/h",percurso->maxSpeed);
   printToLCD("Max Speed",text);
 
 }
-void printAvgSpeed(pPercurso percurso){
+void printAvgSpeed(PVOID course){
+  pPercurso percurso = (pPercurso)course;
   char text[16];
   sprintf(text,"%3.3d Km/h",percurso->averageSpeed);
   printToLCD("Average Speed",text);
 }
-void printTotalDistance(pPercurso percurso){
+void printTotalDistance(PVOID course){
+  pPercurso percurso = (pPercurso)course;
   char text[16];
   sprintf(text,"%3.3d Km",percurso->totalDistance);
   printToLCD("Total Distance",text);
 }
-void printTotalTime(pPercurso percurso){
+void printTotalTime(PVOID course){
+  pPercurso percurso = (pPercurso)course;
   char text[16];
   sprintf(text,"%5.5dH %2.2M",percurso->totalTime/60,percurso->totalTime%60);
   printToLCD("Total Time Spent",text);
 }
 
-
-void setClock(pPercurso percurso);
- 
-void resetTotal(pPercurso percurso){
+void resetTotal(PVOID course){
+    pPercurso percurso = (pPercurso)course;
     percurso->totalDistance = 0;
     percurso->totalTime =0;
     printToLCD("Total Time and","Distance reseted");

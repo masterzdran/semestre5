@@ -6,17 +6,17 @@
  * Menu 1 Functions
  * */
 void printToLCD(char* line0,char* line1);
-void printDateTime(pPercurso percurso);
-void printDistance(pPercurso percurso);
-void printTime(pPercurso percurso);
-void printMaxSpeed(pPercurso percurso);
-void printAvgSpeed(pPercurso percurso);
-void printTotalDistance(pPercurso percurso);
-void printTotalTime(pPercurso percurso);
+void printDateTime(PVOID course);
+void printDistance(PVOID course);
+void printTime(PVOID course);
+void printMaxSpeed(PVOID course);
+void printAvgSpeed(PVOID course);
+void printTotalDistance(PVOID course);
+void printTotalTime(PVOID course);
 
 /*
  * Menu 2 Functions
  * */
-void setClock(pPercurso percurso);
-void resetTotal(pPercurso percurso);
+//void setClock(PVOID percurso);
+void resetTotal(PVOID course);
 #endif

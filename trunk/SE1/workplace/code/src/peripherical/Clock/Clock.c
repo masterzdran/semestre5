@@ -40,7 +40,7 @@ void format(U8 position,DATE_TIME* dateTime,U16 value){
 }
 
 #define PRINT_DATE_TIME "dummy to be print"
-void setClock(pPercurso percurso){
+void setClock(PVOID course){
   U8 writePos[5]= {3,6,9,12,15};
   DATE_TIME dateTime;
   dateTime.date.year    = rtc_getYear();
