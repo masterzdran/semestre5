@@ -29,6 +29,7 @@ typedef unsigned char               U8;
 typedef volatile unsigned long*    PU32;
 typedef volatile unsigned short*   PU16;
 typedef volatile unsigned char*    PU8;
+typedef volatile unsigned void*    PVOID;
 
 
 typedef   U8    byte;
@@ -98,7 +99,7 @@ typedef enum KEYBOARD_KEYS KB_Key;
  **/
 typedef struct _option{
   char* text;
-  void (*function) (pPercurso percurso);
+  void (*function) (PVOID percurso);
 }Option,pOption;
 
 /**
