@@ -53,7 +53,6 @@ static void processValue(U8 rs, U8 value){
   processValue_nibble(rs,(((value) >> DATA_BITS_SHIFT)&CLEAN_MASK));
   timer_sleep_miliseconds(ptimer,20);
   processValue_nibble(rs,value&CLEAN_MASK);
- 
 }  
 /**
  * Inicialização do LCD
@@ -119,11 +118,11 @@ void LCD_clear() {processValue(0,CLEAR_MASK);}
  * Apaga todos os caracteres de uma linha
  * */
 void LCD_clearLine(U8 line) {
-  posCursor(line, 0);
+  LCD_posCursor(line, 0);
   register U8 i=0;
   for (; i < 40; i++)
-    writeChar(' ');
-  posCursor(line, 0);
+    LCD_writeChar(' ');
+  LCD_posCursor(line, 0);
 }
 
 /**
@@ -176,8 +175,8 @@ void LCD_writeLine(U8 line, Pbyte txt) {
   if (isCentered){
     length =  (DISPLAY_SIZE_MASK - length) / 2;
   }
-  posCursor(line, (length));
-  writeString(txt);
+  LCD_posCursor(line, (length));
+  LCD_writeString(txt);
 }
 
 /**
