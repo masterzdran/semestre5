@@ -52,10 +52,16 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 
 all: 
+	@echo "=================================="
+	@echo "Compiling the Program"
+	@echo "=================================="	
 	$(MAKE) -C lcd-test/
 
 	
 clean:
+	@echo "=================================="
+	@echo "Cleaning the Program"
+	@echo "=================================="	
 	$(MAKE) -C lcd-test/ clean	
 	
 clear:
