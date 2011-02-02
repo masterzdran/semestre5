@@ -2,6 +2,7 @@
 #include "GPIO.h"
 #include "TIMER.h"
 #include "RTC.h"
+#include "Clock.h"
 #include "Keyboard.h"
 #include "TYPES.h"
 #include "startosc.h"
@@ -46,21 +47,24 @@ int main(){
 	writeString(buffer);
   }
 */
+	kbTest();
 	
-	DATE date0,date1;
-	rtc_getDate(&date0);
-	TIME time0,time1;
-		
-	rtc_setDate(2011,02,01);
-	rtc_setTime(14,00,0);
+	DATE_TIME date_time;
+	PVOID dummy;
+	setClock(dummy);
 	
-	while (1){
-		rtc_getTime(&time0);
-		sprintf(buffer,"%d:%d:%d",time0.hour,time0.minute,time0.second);
-		LCD_posCursor(0,1);
-		LCD_writeString(buffer);
-		timer_sleep_miliseconds(pTIMER0,900);
-	}
 	
+	rtc_getDateTime(&date_time);
+	sprintf(buffer,"%2.2d/%2.2d:%4.4d",date_time.date.day,date_time.date.month,date_time.date.year);
+	LCD_posCursor(0,0);
+	LCD_writeString(buffer);
+while(1){
+	rtc_getDateTime(&date_time);
+	sprintf(buffer,"%2.2d:%2.2d:%2.2d",date_time.time.hour,date_time.time.minute,date_time.time.second);
+	LCD_posCursor(1,0);
+	LCD_writeString(buffer);
+	timer_sleep_miliseconds(pTIMER0,900);
+}
+
  return 0;  
 }

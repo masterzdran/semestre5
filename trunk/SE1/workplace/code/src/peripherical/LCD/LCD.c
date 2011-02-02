@@ -42,6 +42,10 @@ void LCD_write(U32  byte){
  **/
 static void processValue_nibble(U8 rs, U8 value){
   gpio_set(ENABLE_MASK);
+  if (rs)
+	gpio_set(RS_MASK);
+  else
+	gpio_clear(RS_MASK);
   LCD_write( value );
   timer_sleep_miliseconds(ptimer,20);
   gpio_clear(ENABLE_MASK);
@@ -129,7 +133,7 @@ void LCD_clearLine(U8 line) {
  * 
  *  Posiciona o cursor na linha (0..1) e coluna (0..15) indicadas
  */
-void LCD_posCursor(U8 line, U8 col) { processValue(0,ADDR_COUNTER_MASK | (0x40 * line + col));}
+void LCD_posCursor(U8 line, U8 col) { processValue(0,ADDR_COUNTER_MASK | (LINE_ADDRESS * line + col));}
 
 /**
  * 
@@ -142,7 +146,7 @@ void LCD_posCursor(U8 line, U8 col) { processValue(0,ADDR_COUNTER_MASK | (0x40 *
  * data RAM (DDRAM) address set in the address counter (AC).
  */
 void LCD_setCursor(U8 visible, U8 blinking) {
-  processValue(0,(char) (visible ? CURSOR_ON_MASK | (blinking ? BLINK_ON_MASK : BLINK_OFF_MASK):(CURSOR_OFF_MASK | (blinking ? BLINK_ON_MASK : BLINK_OFF_MASK))));
+  processValue(0,(char) (visible ? CURSOR_ON_MASK | (blinking ? BLINK_ON_MASK : BLINK_OFF_MASK):(CURSOR_OFF_MASK | (blinking ? BLINK_ON_MASK : BLINK_OFF_MASK))) | DISPLAY_ON_MASK);
 }
 
 /**
@@ -174,6 +178,8 @@ void LCD_writeLine(U8 line, Pbyte txt) {
   int length = Wstrlen(txt);
   if (isCentered){
     length =  (DISPLAY_SIZE_MASK - length) / 2;
+  }else{
+	length=0;
   }
   LCD_posCursor(line, (length));
   LCD_writeString(txt);

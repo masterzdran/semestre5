@@ -48,7 +48,7 @@ COMPILE_ONLY 		= -c
 .PHONY					= clear
 #=======================================================================
 Clock.o: Clock.c Clock.h 
-	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $<
 	cp $@ $(MYLIB)/$@
 	cp Clock.h $(INCLUDE)/
 

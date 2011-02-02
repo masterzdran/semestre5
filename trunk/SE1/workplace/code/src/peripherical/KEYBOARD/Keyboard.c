@@ -1,4 +1,5 @@
 #include "Keyboard.h"
+#include "TIMER.h"
 /**
  * Bitmaps
  * */
@@ -99,9 +100,7 @@ U8 decodeKey(U8 keyBitmap){
  * returns 0 if there is no Key, otherwise if there is.
  **/
 U8 hasKey(){ 
-  if (key == __NO_KEY__){
-    readKey();
-  }
+  readKey();
   return (key != __NO_KEY__);   
 }
 
@@ -148,4 +147,55 @@ U8 getBitMap(){
  * Clears the values of both stored keys
  * */
 void clearKey(){previous_key = key = __NO_KEY__;}
+
+/**
+	Teste ao teclado que escreve no LCD as teclas que forem
+	pressionadas no teclado. 
+	Deve-se ter o GPIO, LCD e Timer inicializados.
+	Sai do programa apos pressionar 3 vezes a tecla F
+*/
+void kbTest(){
+  int key;
+  U8 currentCol=0;
+  U8 currentLine=0;
+  U8 contagemSaida=0;
+  LCD_posCursor(0,0);
+  LCD_setCursor(true,true);
+  while(1){
+    if (hasKey()){
+		key=getKey();
+		if (key<10) 
+			key='0'+key;
+		else
+			key='A'+(key-10);
+		LCD_writeChar(key);
+		if (key=='F')
+			++contagemSaida;
+		else
+			contagemSaida=0;
+		++currentCol;
+		if (contagemSaida==3){
+			LCD_clear();
+			LCD_setCursor(false,false);
+			LCD_posCursor(0,0);
+			break;
+		}
+	}
+	if (currentCol>=16){
+		if (currentLine==0){
+			currentLine=1;
+			LCD_clearLine(currentLine);
+		}else{
+			currentLine=0;
+			LCD_clearLine(currentLine);
+		}
+		currentCol=0;
+		LCD_posCursor(currentLine, currentCol);
+	}
+	while(hasKey())
+		timer_sleep_miliseconds(pTIMER0,100);
+	timer_sleep_miliseconds(pTIMER0,100);
+  }	
+  
+}
 

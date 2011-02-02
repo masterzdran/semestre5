@@ -12,10 +12,11 @@
 #define NBR_FIELDS    5
 #define DEFAULT_LINE_SET 1
 
-#define IS_LEAP_YEAR (year)       ((year % 400) == 0  ||  (year % 100) == 0 || (year % 4) == 0)
+#define IS_LEAP_YEAR(A)       (((A) % 400) == 0  ||  ((A) % 100) == 0 || ((A) % 4) == 0)
 // | Y | Y | Y | Y | - | M | M | - | D | D |   | H | H | : | M | M |
 // | 00| 01| 02| 03| 04| 05| 06| 07| 08| 09| 10| 11| 12| 13| 14| 15|
 
+//void format(U8 position,PU16 dateTime[],U16 value);
 void setClock(PVOID course);
 
 
