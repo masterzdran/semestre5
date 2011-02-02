@@ -30,7 +30,7 @@ void format(U8 position,DATE_TIME* dateTime,U16 value){
       break;
   }
   if (dateHasChanged){
-    if (dateTime->date.month == 2 && isleapYear(dateTime->date.year)){
+    if (dateTime->date.month == 2 && IS_LEAP_YEAR((dateTime->date.year))){
       dateTime->date.day = (dateTime->date.month + value) % LEAP_YEAR_FEB;
     }else{
       val = dateTime->date.month -1 ;
@@ -54,11 +54,15 @@ void setClock(PVOID course){
   U8 position = 0;
   Bool hasNotBeenWriten = true;
   U16 val;
+  LCD_setCursor(true,true);
+  LCD_writeString("Set date/time");
+  LCD_posCursor(DEFAULT_LINE_SET, 0);
   while(1){
     if (hasNotBeenWriten){
       sprintf(buffer,"%4.4d-%2.2d-%2.2d %2.2d:%2.2d",dateTime.date.year,dateTime.date.month,dateTime.date.day,dateTime.time.hour,dateTime.time.minute);
-      LCD_writeLine(DEFAULT_LINE_SET, buffer);
-      LCD_posCursor(DEFAULT_LINE_SET, writePos[position]) ;
+      LCD_posCursor(DEFAULT_LINE_SET, 0);
+	  LCD_writeString(buffer);
+      LCD_posCursor(DEFAULT_LINE_SET, writePos[position]);
       hasNotBeenWriten = false;
     }
     if (hasKey()){
@@ -67,11 +71,11 @@ void setClock(PVOID course){
             rtc_setDateTime(&dateTime); //commit dateTime
             break;
           case LEFT:
-            --position % NBR_FIELDS;
+            position=(--position % NBR_FIELDS);
             hasNotBeenWriten = true;
             break;
           case RIGHT:
-            ++position % NBR_FIELDS;
+            position=(++position % NBR_FIELDS);
             hasNotBeenWriten = true;
             break;
           case DOWN:
@@ -83,14 +87,14 @@ void setClock(PVOID course){
             hasNotBeenWriten = true;
             break;
           case CANCEL:
+		    LCD_setCursor(false,false);
             return;  
           default:
               //do nothing
               break;
       }
-     WD_RESETENABLE();
+     WD_RESET_ENABLE();
     }
    timer_sleep_miliseconds(pTIMER0, 200); 
   }
-
 }

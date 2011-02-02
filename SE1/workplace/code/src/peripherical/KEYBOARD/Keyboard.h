@@ -30,4 +30,5 @@ U8 getBitMap();
 U8 decodeKey(U8 keyBitmap);
 void readKey();
 void keyboard_init(pLPC_TIMER timer);
+void kbTest();
 #endif
