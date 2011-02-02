@@ -50,7 +50,7 @@ void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 cou
     return;
   }
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
-  timer->MCR   |= MatchMask;                         //config counting method
+  timer->MCR   |= MatchMask;                         	//config counting method
   timer->PR     = countNbr;                              //define count number  
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }

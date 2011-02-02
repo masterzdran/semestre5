@@ -1,4 +1,5 @@
 #include  "startosc.h"
+
 void StartOsc(void) {
   
     pPLL->CONFIGURATION =__PLL_P_VALUE__ | __PLL_M_VALUE__;
@@ -38,3 +39,4 @@ U32 getSystemClock(){
   U8 val  = pPLL->CONFIGURATION;
   return (__FOSC__ * (val & 0x1F))/ ((div)?div:4);
 }
+

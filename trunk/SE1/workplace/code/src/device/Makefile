@@ -55,7 +55,7 @@ all:
 	@echo "============================"	
 	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(DEVICE)/$(MPATH);)
 	$(AR) $(MYLIB)/libLPC2106.a $(MYLIB)/*.o
-#	rm -rf $(MYLIB)/*.o	
+	rm -rf $(MYLIB)/*.o	
 
 clean:
 	@echo "============================"

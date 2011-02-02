@@ -50,17 +50,17 @@ int main(){
 	DATE date0,date1;
 	rtc_getDate(&date0);
 	TIME time0,time1;
-	rtc_getTime(&time0);
+		
+	rtc_setDate(2011,02,01);
+	rtc_setTime(14,00,0);
 	
-	rtc_setDate(2011,01,29);
-	rtc_setTime(15,30,0);
-	
-	rtc_getDate(&date1);
-	rtc_getTime(&time1);
-	
-	rtc_setHour(17);
-	
-	rtc_getTime(&time1);
+	while (1){
+		rtc_getTime(&time0);
+		sprintf(buffer,"%d:%d:%d",time0.hour,time0.minute,time0.second);
+		LCD_posCursor(0,1);
+		LCD_writeString(buffer);
+		timer_sleep_miliseconds(pTIMER0,900);
+	}
 	
  return 0;  
 }
