@@ -98,7 +98,7 @@ typedef enum KEYBOARD_KEYS KB_Key;
  * Definição da estrura Option 
  **/
 typedef struct _option{
-  char* text;
+  Pbyte text;
   void (*function) (PVOID percurso);
 }Option,pOption;
 

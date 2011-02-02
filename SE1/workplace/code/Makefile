@@ -75,14 +75,15 @@ VPATH 			= $(MYLIB):$(CLIB):$(libdir)
 #VPATH 			= $(MYLIB)
 #=======================================================================
 #OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o libc.a libgcc.a libLPC2106.a
-OBJECT =		 libc.a libgcc.a  libLPC2106.a libPeripherical.a
+OBJECT =		libc.a libgcc.a  libLPC2106.a libPeripherical.a
 #=======================================================================
 all: $(END_EXEC) 
 
 #Generate the executable
 #$(OBJECT)
-$(END_EXEC): program
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@   $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc -lLPC2106 -lPeripherical
+$(END_EXEC): program 
+	cp src/device/STARTUP/start.o src/lib/start.o
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $(MYLIB)/start.o $(PROGRAM)/lcd_test.o -L$(MYLIB) -lc -lgcc -lLPC2106 -lPeripherical
 
 peripherical: device
 	@echo "----------------------------------------------------------------------"
