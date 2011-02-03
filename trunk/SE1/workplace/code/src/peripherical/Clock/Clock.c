@@ -59,6 +59,8 @@ void setClock(PVOID course){
   dateTime.time.second  = 0;
   
   KB_Key key;
+  KB_Key prev_key=__NO_KEY__;
+  
   U8 position = 0;
   Bool hasNotBeenWriten = true;
   U16 val;
@@ -74,34 +76,41 @@ void setClock(PVOID course){
       hasNotBeenWriten = false;
     }
     if (hasKey()){
-      switch(key = getBitMap()){
-          case OK:
-            rtc_setDateTime(&dateTime); //commit dateTime
-            break;
-          case LEFT:
-            position=(--position % NBR_FIELDS);
-            hasNotBeenWriten = true;
-            break;
-          case RIGHT:
-            position=(++position % NBR_FIELDS);
-            hasNotBeenWriten = true;
-            break;
-          case DOWN:
-            format(position, &dateTime, -1);
-            hasNotBeenWriten = true;
-            break;
-          case UP:
-            format(position, &dateTime, 1);
-            hasNotBeenWriten = true;
-            break;
-          case CANCEL:
-		    LCD_setCursor(false,false);
-            return;  
-          default:
-              //do nothing
+      key = getBitMap();
+      if (key != prev_key){
+        switch(key){
+            case OK:
+              rtc_setDateTime(&dateTime); //commit dateTime
               break;
+            case LEFT:
+              position=(--position % NBR_FIELDS);
+              hasNotBeenWriten = true;
+              break;
+            case RIGHT:
+              position=(++position % NBR_FIELDS);
+              hasNotBeenWriten = true;
+              break;
+            case DOWN:
+              format(position, &dateTime, -1);
+              hasNotBeenWriten = true;
+              break;
+            case UP:
+              format(position, &dateTime, 1);
+              hasNotBeenWriten = true;
+              break;
+            case CANCEL:
+          LCD_setCursor(false,false);
+              return;  
+            default:
+                //do nothing
+                break;
+        }
+        prev_key = key;
       }
+     
      WD_RESET_ENABLE();
+    }else{
+      prev_key = __NO_KEY__;
     }
    timer_sleep_miliseconds(pTIMER0, 200); 
   }
