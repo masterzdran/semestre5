@@ -83,7 +83,7 @@ void setClock(PVOID course){
               rtc_setDateTime(&dateTime); //commit dateTime
               break;
             case LEFT:
-              position=(--position % NBR_FIELDS);
+              position = (position==0)? NBR_FIELDS-1:--position;
               hasNotBeenWriten = true;
               break;
             case RIGHT:
