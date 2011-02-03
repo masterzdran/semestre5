@@ -9,6 +9,10 @@ static char buffer[16];
 /**
  * Função que valida Data/hora, obrigando os valores a ficarem dentro dos limites 
  **/
+ 
+#define __FX(A,B,C)   ((A - 1 + B) % C + 1) //Because do not start at 0
+#define MAX_MONTH_DAYS 31
+
 void format(U8 position,DATE_TIME* dateTime,U16 value){
   U8 val;
   Bool dateHasChanged= false;
@@ -18,8 +22,12 @@ void format(U8 position,DATE_TIME* dateTime,U16 value){
         dateHasChanged = true;
         break;
       case 1:
-        dateTime->date.month = (dateTime->date.month + value) % MONTH_LIMIT;
+        //dateTime->date.month = (dateTime->date.month -1  + value) % MONTH_LIMIT + 1;
+        dateTime->date.month = __FX(dateTime->date.month,value,MONTH_LIMIT);
+        dateHasChanged = true;
       case 2:
+        //dateTime->date.day = (dateTime->date.day -1 + value) % MONTH_LIMIT +1;
+        dateTime->date.day = __FX(dateTime->date.day,value,MAX_MONTH_DAYS);
         dateHasChanged = true;
         break;
       case 3:
@@ -31,10 +39,10 @@ void format(U8 position,DATE_TIME* dateTime,U16 value){
   }
   if (dateHasChanged){
     if (dateTime->date.month == 2 && IS_LEAP_YEAR((dateTime->date.year))){
-      dateTime->date.day = (dateTime->date.month + value) % LEAP_YEAR_FEB;
+      dateTime->date.day = (dateTime->date.day) % LEAP_YEAR_FEB;
     }else{
       val = dateTime->date.month -1 ;
-      dateTime->date.day = (dateTime->date.month + value) % monthDays[val];
+      dateTime->date.day = (dateTime->date.day) % monthDays[val];
     }
   }
 }
