@@ -13,7 +13,7 @@ static char buffer[16];
 #define __FX(A,B,C)   ((A - 1 + B) % C + 1) //Because do not start at 0
 #define MAX_MONTH_DAYS 31
 
-void format(U8 position,DATE_TIME* dateTime,U16 value){
+void format(U8 position,DATE_TIME* dateTime,short value){
   U8 val;
   Bool dateHasChanged= false;
   switch (position){
@@ -22,27 +22,26 @@ void format(U8 position,DATE_TIME* dateTime,U16 value){
         dateHasChanged = true;
         break;
       case 1:
-        //dateTime->date.month = (dateTime->date.month -1  + value) % MONTH_LIMIT + 1;
-        dateTime->date.month = __FX(dateTime->date.month,value,MONTH_LIMIT);
+        dateTime->date.month =((dateTime->date.month + value)<=0)?MONTH_LIMIT: __FX(dateTime->date.month,value,MONTH_LIMIT);
         dateHasChanged = true;
+		break;
       case 2:
-        //dateTime->date.day = (dateTime->date.day -1 + value) % MONTH_LIMIT +1;
-        dateTime->date.day = __FX(dateTime->date.day,value,MAX_MONTH_DAYS);
+        dateTime->date.day = ((dateTime->date.day + value)<=0)?monthDays[dateTime->date.month-1]:__FX(dateTime->date.day,value,MAX_MONTH_DAYS);
         dateHasChanged = true;
         break;
       case 3:
-          dateTime->time.hour = (dateTime->time.hour + value) % HOUR_LIMIT;
+        dateTime->time.hour = ((dateTime->time.hour + value) <0)?HOUR_LIMIT-1: (dateTime->time.hour + value) % HOUR_LIMIT;
         break;
       case 4:
-          dateTime->time.minute = (dateTime->time.minute + value) % MINUTE_LIMIT;
-      break;
+        dateTime->time.minute = ((dateTime->time.minute + value)<0)?MINUTE_LIMIT-1:(dateTime->time.minute + value) % MINUTE_LIMIT;
+        break;
   }
   if (dateHasChanged){
     if (dateTime->date.month == 2 && IS_LEAP_YEAR((dateTime->date.year))){
-      dateTime->date.day = (dateTime->date.day) % LEAP_YEAR_FEB;
+      dateTime->date.day = __FX(dateTime->date.day,0,LEAP_YEAR_FEB) 	 	;
     }else{
       val = dateTime->date.month -1 ;
-      dateTime->date.day = (dateTime->date.day) % monthDays[val];
+      dateTime->date.day = __FX(dateTime->date.day,0,monthDays[val]);
     }
   }
 }
@@ -51,17 +50,13 @@ void format(U8 position,DATE_TIME* dateTime,U16 value){
 void setClock(PVOID course){
   U8 writePos[5]= {3,6,9,12,15};
   DATE_TIME dateTime;
-  dateTime.date.year    = rtc_getYear();
-  dateTime.date.month   = rtc_getMonth();
-  dateTime.date.day     = rtc_getDom();
-  dateTime.time.hour    = rtc_getHour();
-  dateTime.time.minute  = rtc_getMin();
+  rtc_getDateTime(&dateTime);
   dateTime.time.second  = 0;
   
   KB_Key key;
   KB_Key prev_key=__NO_KEY__;
   
-  U8 position = 0;
+  char position = 0;
   Bool hasNotBeenWriten = true;
   U16 val;
   LCD_setCursor(true,true);
@@ -75,13 +70,14 @@ void setClock(PVOID course){
       LCD_posCursor(DEFAULT_LINE_SET, writePos[position]);
       hasNotBeenWriten = false;
     }
-    if (hasKey()){
-      key = getBitMap();
+    if (keyboard_hasKey()){
+      key = keyboard_getBitMap();
       if (key != prev_key){
         switch(key){
             case OK:
               rtc_setDateTime(&dateTime); //commit dateTime
-              break;
+			  LCD_setCursor(false,false);
+			  return;
             case LEFT:
               position = (position==0)? NBR_FIELDS-1:--position;
               hasNotBeenWriten = true;
@@ -99,7 +95,7 @@ void setClock(PVOID course){
               hasNotBeenWriten = true;
               break;
             case CANCEL:
-          LCD_setCursor(false,false);
+			  LCD_setCursor(false,false);
               return;  
             default:
                 //do nothing
@@ -112,6 +108,6 @@ void setClock(PVOID course){
     }else{
       prev_key = __NO_KEY__;
     }
-   timer_sleep_miliseconds(pTIMER0, 200); 
+   timer_sleep_miliseconds(pTIMER0, 50); 
   }
 }

@@ -118,8 +118,8 @@ typedef struct _RTC{
 #define __CCR_CTCRST_DISABLE__     0x0
 #define __CCR_CTTEST__             0x3
 
-#define LPC_PREINT      ((getSystemClock() / 32768) - 1)
-#define LPC_PREFRAC     (getSystemClock() - (((getSystemClock() / 32768) - 1) + 1) * 32768)
+#define LPC_PREINT      ((__SYSTEM_CLOCK__ / 32768) - 1)
+#define LPC_PREFRAC     (__SYSTEM_CLOCK__ - (((__SYSTEM_CLOCK__ / 32768) - 1) + 1) * 32768)
 
 
 #define __CIIR_IMSEC__          ((U8) 0x1   )
