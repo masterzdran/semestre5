@@ -46,7 +46,7 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 .PHONY					= all
-MAKEPATHS				= LCD  KEYBOARD EEPROM Clock
+MAKEPATHS				= LCD  KEYBOARD EEPROM Clock Menu
 #=======================================================================
 #															Base Make PERIPHERICAL
 #=======================================================================

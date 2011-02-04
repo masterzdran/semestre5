@@ -16,8 +16,8 @@ void gpio_init_PINSEL1(U32 mask){
  * Iniciação dos portos de GPIO com a(s) operação(ões) definidas pelas mascaras  'pinsel0_mask' e 'pinsel0_mask'
  **/
 void gpio_init(U32 pinsel0_mask,U32 pinsel1_mask){
-  __PINSEL0__ &= ~pinsel0_mask;
-  __PINSEL1__ &= ~pinsel1_mask;
+  __PINSEL0__ = pinsel0_mask;
+  __PINSEL1__ = pinsel1_mask;
 } 
 /**
  * Escreve nos pinos definidos por 'mask' o valor de 'value'.

@@ -32,8 +32,8 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
     if (bidx != idx)
       LCD_writeLine(1,options[idx].text);
     bidx = idx;
-    if (hasKey()){
-      switch(key = getBitMap()){
+    if (keyboard_hasKey()){
+      switch(key = keyboard_getBitMap()){
           case OK:
             options[idx].function(percurso); break;
           case LEFT:
@@ -48,7 +48,7 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
               //do nothing
               break;
       }
-     WD_RESETENABLE();
+     WD_RESET_ENABLE();
     }
    timer_sleep_miliseconds(pTIMER0, 200); 
   }

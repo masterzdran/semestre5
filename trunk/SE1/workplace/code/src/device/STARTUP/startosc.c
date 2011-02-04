@@ -26,17 +26,20 @@ SysClockInfo getSystemClockInfo(){
   U8 div  = (pAPBDIV->APBDIV) & 0x3;
   U8 val  = pPLL->CONFIGURATION;
     
-  systemClock.cclk  = __FOSC__ * (val & 0x1F);
-  systemClock.fcco  = __FOSC__ * (val & 0x1F) * ((val >> 5) & 0x3) * 2;
+  systemClock.cclk  = __FOSC__ * (val & 0x1F +1);
+  systemClock.fcco  = __FOSC__ * (val & 0x1F +1) * (1<<((val >> 5) & 0x3)) * 2;
   systemClock.div   = (div)?div:4;
-  systemClock.m     = val & 0x1F;
-  systemClock.p     = (val >> 5) & 0x3;
-  systemClock.sclk  = (__FOSC__ * (val & 0x1F))/ ((div)?div:4);
+  systemClock.m     = val & 0x1F +1;
+  systemClock.p     = 1<<((val >> 5) & 0x3);
+  systemClock.sclk  = (__FOSC__ * (val & 0x1F +1))/ ((div)?div:4);
   return systemClock;    
 }
+/*
 U32 getSystemClock(){
   U8 div  = (pAPBDIV->APBDIV) & 0x3;
-  U8 val  = pPLL->CONFIGURATION;
-  return (__FOSC__ * (val & 0x1F))/ ((div)?div:4);
+  U8 val  = pPLL->STATUS;
+  return (__FOSC__ * ((val & 0x1F)+1))/ ((div)?div:4);
 }
+*/
+
 

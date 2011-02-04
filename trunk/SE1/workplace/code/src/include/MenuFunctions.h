@@ -17,6 +17,6 @@ void printTotalTime(PVOID course);
 /*
  * Menu 2 Functions
  * */
-//void setClock(PVOID percurso);
-void resetTotal(PVOID course);
+void setClock(PVOID percurso);
+void resetTotal(PVOID percurso);
 #endif

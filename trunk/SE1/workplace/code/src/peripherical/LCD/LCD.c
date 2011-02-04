@@ -7,13 +7,16 @@
  * */
 #define DATA_BITS_SHIFT          ((U8)  4)
 #define CLEAN_MASK               ((U8)0xF)
-#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
-#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
+//#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
+//#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
+//#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
+#define RS_MASK                  ((U16)0x2000)  //Ultimo nibble para Data
+#define ENABLE_MASK              ((U16)0x8000)  //Ultimo nibble para Data
 #define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
 
 #define DATA_MASK                ((U16)0x0F00)
-#define LCD_GPIO_MASK_SHIFT           ((U8)8)
-#define LCD_GPIO_MASK                 ((U16)0x3F00    )
+#define LCD_GPIO_MASK_SHIFT      ((U8)8)
+#define LCD_GPIO_MASK            ((U16)0xAF00)
 
 
 
@@ -41,13 +44,14 @@ void LCD_write(U32  byte){
  * Escreve um nibble 
  **/
 static void processValue_nibble(U8 rs, U8 value){
+  gpio_set_direction(LCD_GPIO_MASK, GPIO_OUT);
   gpio_set(ENABLE_MASK);
   if (rs)
 	gpio_set(RS_MASK);
   else
 	gpio_clear(RS_MASK);
   LCD_write( value );
-  timer_sleep_miliseconds(ptimer,20);
+  timer_sleep_miliseconds(ptimer,2);
   gpio_clear(ENABLE_MASK);
 }
 /**

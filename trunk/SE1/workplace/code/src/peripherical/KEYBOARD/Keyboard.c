@@ -50,7 +50,7 @@ static U32 readNibble(U32 inputMask, U32 outputMask){
  * keyboard, no valid value is affect. This means that call of the function
  * hasKey() will return the NO_KEY (0xFF)value.
  * */
-void readKey(){
+void keyboard_readKey(){
   U8 lowByteKey, highByteKey;
   U8 recentKey;
 
@@ -82,7 +82,8 @@ void readKey(){
  * Decode the bitmap to an valid key.
  * If simultaneos keys were pressed, returns the last valid combination
  * */
-U8 decodeKey(U8 keyBitmap){
+#define kb_nibble 4
+U8 keyboard_decodeKey(U8 keyBitmap){
     register U8 colCount=0,lineCount=0;
     register U8 nibble;
     
@@ -90,7 +91,7 @@ U8 decodeKey(U8 keyBitmap){
     for (;nibble & 1;colCount++)
       nibble = nibble >> 1 ;
     
-    nibble = (keyBitmap >> __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__) & __KEYBOARD_MASK__;
+    nibble = (keyBitmap >> kb_nibble) & __KEYBOARD_MASK__;
     for (;nibble & 1;lineCount++)
       nibble = nibble >> 1 ; 
       
@@ -101,8 +102,8 @@ U8 decodeKey(U8 keyBitmap){
  * Check if it is an valid key stored from an previous call to read.
  * returns 0 if there is no Key, otherwise if there is.
  **/
-U8 hasKey(){ 
-  readKey();
+U8 keyboard_hasKey(){ 
+  keyboard_readKey();
   return (key != __NO_KEY__);   
 }
 
@@ -112,31 +113,31 @@ U8 hasKey(){
  * 
  * Returns the key read or NO_KEY if else
  * */
-U8 getKey(){
+U8 keyboard_getKey(){
   U8 keyBitMap = key;
   if (key == __NO_KEY__)  return __NO_KEY__;
   previous_key = key;
   key = __NO_KEY__;
-  return decodeKey(keyBitMap);  
+  return keyboard_decodeKey(keyBitMap);  
 }
 /**
  * Returns the previous key pressed ou NO_KEY if else 
  * */
-U8 getPreviousKey(){ 
+U8 keyboard_getPreviousKey(){ 
   if (previous_key == __NO_KEY__)  return __NO_KEY__;
-  return decodeKey(previous_key);
+  return keyboard_decodeKey(previous_key);
 }
 /**
  * Returns the previous key pressed Bitmap ou NO_KEY if else 
  * */
-U8 getPreviousBitMap(){return previous_key;}
+U8 keyboard_getPreviousBitMap(){return previous_key;}
 /**
  * Return the key read in the last call of readKey.
  * Should be a previous call to hasKey for best practice.
  * 
  * Returns the key read bitmap or NO_KEY if else
  * */
-U8 getBitMap(){
+U8 keyboard_getBitMap(){
   U8 keyBitMap = key;
   if (key == __NO_KEY__)  return __NO_KEY__;
   previous_key = key;
@@ -148,7 +149,7 @@ U8 getBitMap(){
 /**
  * Clears the values of both stored keys
  * */
-void clearKey(){previous_key = key = __NO_KEY__;}
+void keyboard_clearKey(){previous_key = key = __NO_KEY__;}
 
 /**
 	Teste ao teclado que escreve no LCD as teclas que forem
@@ -164,8 +165,8 @@ void kbTest(){
   LCD_posCursor(0,0);
   LCD_setCursor(true,true);
   while(1){
-    if (hasKey()){
-		key=getKey();
+    if (keyboard_hasKey()){
+		key=keyboard_getKey();
 		if (key<10) 
 			key='0'+key;
 		else
@@ -194,7 +195,7 @@ void kbTest(){
 		currentCol=0;
 		LCD_posCursor(currentLine, currentCol);
 	}
-	while(hasKey())
+	while(keyboard_hasKey())
 		timer_sleep_miliseconds(pTIMER0,100);
 	timer_sleep_miliseconds(pTIMER0,100);
   }	
