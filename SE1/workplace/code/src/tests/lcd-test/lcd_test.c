@@ -22,11 +22,11 @@ int main(){
   rtc_init();
   
 //	kbTest();
-/*	
+	
 	DATE_TIME date_time;
 	PVOID dummy;
 	setClock(dummy);
-	
+/*	
 	LCD_clear();
 	rtc_getDateTime(&date_time);
 	sprintf(buffer,"%2.2d/%2.2d/%4.4d",date_time.date.day,date_time.date.month,date_time.date.year);

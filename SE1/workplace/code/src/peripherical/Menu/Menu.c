@@ -22,6 +22,7 @@
 #include "LCD.h"
 #include "WATCHDOG.h"
 #include "MenuFunctions.h"
+#include "Clock.h"
 
  
 static Option menu2Options[__MAX_FUNCTION_MENU_2__] =
@@ -55,12 +56,12 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
       switch(key = keyboard_getBitMap()){
           case OK:
             options[idx].function(percurso); break;
-          case LEFT:
-          case DOWN:
-            idx = (++idx) % sizeOf;   break;
           case RIGHT:
+          case DOWN:
+            idx = __FX0(idx,1,sizeOf); break;
+          case LEFT:
           case UP:
-            idx = (--idx) % sizeOf;    break;
+            idx = __FX0(idx,-1,sizeOf);    break;
           case CANCEL:
             return;  
           default:
