@@ -29,13 +29,13 @@
 //#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
 //#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
 //#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
-#define RS_MASK                  ((U16)0x2000)  //Ultimo nibble para Data
+#define RS_MASK                  ((U16)0x0200)  //Ultimo nibble para Data
 #define ENABLE_MASK              ((U16)0x8000)  //Ultimo nibble para Data
 #define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
 
-#define DATA_MASK                ((U16)0x0F00)
-#define LCD_GPIO_MASK_SHIFT      ((U8)8)
-#define LCD_GPIO_MASK            ((U16)0xAF00)
+#define DATA_MASK                ((U16)0x3C00)
+#define LCD_GPIO_MASK_SHIFT      ((U8)10)
+#define LCD_GPIO_MASK            ((U16)0xBE00)
 
 
 
@@ -47,9 +47,7 @@ pLPC_TIMER ptimer;
  * */
 inline U32 Wstrlen(const Pbyte str){
   register Pbyte p;
-
 	for (p=str ; *p ; p++);
-
 	return p - str;
 }
 /**
@@ -147,8 +145,8 @@ void LCD_clear() {processValue(0,CLEAR_MASK);}
 void LCD_clearLine(U8 line) {
   LCD_posCursor(line, 0);
   register U8 i=0;
-  for (; i < 40; i++)
-    LCD_writeChar(' ');
+  for (; i < 16; i++)
+  LCD_writeChar(' ');
   LCD_posCursor(line, 0);
 }
 
@@ -198,14 +196,19 @@ void LCD_writeString(Pbyte txt) {
  * esquerda,dependendo da última chamada a SetCenter()
  */
 void LCD_writeLine(U8 line, Pbyte txt) {
-  int length = Wstrlen(txt);
+  int length = Wstrlen(txt),i=0,idx;
   if (isCentered){
-    length =  (DISPLAY_SIZE_MASK - length) / 2;
+    idx =  (DISPLAY_SIZE_MASK - length) / 2;
   }else{
-	length=0;
+	idx=0;
   }
-  LCD_posCursor(line, (length));
+  LCD_posCursor(line,0);
+  for(i=0;i<idx;++i)
+	LCD_writeChar(' ');
+//  LCD_clearLine(line);
   LCD_writeString(txt);
+  for(i+=length;i<16;++i)
+	LCD_writeChar(' ');
 }
 
 /**

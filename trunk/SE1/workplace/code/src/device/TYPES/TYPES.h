@@ -26,6 +26,10 @@ typedef volatile unsigned int       U32;
 typedef unsigned short int          U16;
 typedef unsigned char               U8;
 
+typedef signed int       			S32;
+typedef signed short int          	S16;
+typedef signed char        			S8;
+
 typedef volatile unsigned long*    PU32;
 typedef volatile unsigned short*   PU16;
 typedef volatile unsigned char*    PU8;
