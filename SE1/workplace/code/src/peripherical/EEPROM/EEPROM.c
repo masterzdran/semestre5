@@ -1,21 +1,22 @@
-/*
- * 1024 * 1 byte
- * Write 1 Byte
- * Write 1 Page = 16 Bytes
- * 64 Pages
- * TOTAL:
- * [4 Bytes] TOTAL DISTANCE    //• totalização de distância percorrida pelo veículo, em quilómetros;
- * [4 Bytes] TOTAL USAGE TIME  //• totalização de tempo de utilização, em horas.
- * CURRENT:  
- * [7 Bytes]START             //• data/hora de início do percurso;
- * [4 Bytes]DISTANCE          //• distância percorrida;
- * [4 Bytes]TIME              //• tempo despendido no percurso;
- * [4 Bytes]STOPTIME          //• tempo parado - soma dos períodos de tempo em que o veículo esteve parado.
- * [4 Bytes]MAX SPEED         //• velocidade máxima – a velocidade máxima instantânea atingida pelo veículo;
- * -----------------------------------------------------------------------------
- * 
- * */
-#include "EEPROM.h"
+/**
+#=======================================================================
+# SE1   - Sistemas Embebidos 1
+#-----------------------------------------------------------------------
+# Turma:	LI51N
+# Semestre:	Inverno 2010/2011
+# Data:		Novembro/2010
+#-----------------------------------------------------------------------
+# Nome: 	Nuno Cancelo
+# Numero:	31401
+#-----------------------------------------------------------------------
+# Nome:		Nuno Sousa
+# Numero:	33595
+#-----------------------------------------------------------------------
+# LEIC  - Licenciatura em Engenharia Informática e Computadores
+# DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
+# ISEL  - Instituto Superior de Engenharia de Lisboa
+#=======================================================================
+**/ #include "EEPROM.h"
 #include "I2C.h"
 
 /**
