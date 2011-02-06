@@ -51,10 +51,10 @@ MAKEPATHS				= device  peripherical
 #=======================================================================
 
 all: 
-	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(SOURCE)/$(MPATH);)
+	@$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(SOURCE)/$(MPATH);)
 
 clean:
-	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(SOURCE)/$(MPATH) clean;)
+	@$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(SOURCE)/$(MPATH) clean;)
 	
 clear:
 	clear

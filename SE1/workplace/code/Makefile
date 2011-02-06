@@ -83,7 +83,7 @@ all: $(END_EXEC)
 #$(OBJECT)
 $(END_EXEC): program 
 	cp src/device/STARTUP/start.o src/lib/start.o
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $(MYLIB)/start.o $(PROGRAM)/lcd_test.o -L$(MYLIB) -lLPC2106 -lPeripherical -lc -lgcc
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $(MYLIB)/start.o $(PROGRAM)/lcd_test.o -L$(MYLIB) -lPeripherical -lLPC2106 -lc -lgcc
 
 peripherical: device
 	@echo "----------------------------------------------------------------------"
