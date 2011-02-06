@@ -15,17 +15,38 @@
 
 int main(){
   char buffer[64];
+  U32 addr = 0x10;
+  char text[16]="2011-02-06 14:39";
+  char buff[16]="                ";
   gpio_init(0,0);
-  timer_init(pTIMER0,58982400/MICRO);
-  LCD_init(pTIMER0);
-  keyboard_init(pTIMER0);
+  timer_init(pTIMER1,58982400/MICRO);
+  LCD_init(pTIMER1);
+  keyboard_init(pTIMER1);
   rtc_init();
+  
+  
+  EEPROM_init();
+  LCD_posCursor(0,0);
+	LCD_writeString(text);
+  eeprom_write_block(addr,text,16);
+  timer_sleep_seconds(pTIMER1,2);
+  eeprom_read_block(addr,buff,16);
+   timer_sleep_seconds(pTIMER1,2);
+  LCD_posCursor(1,0);
+	LCD_writeString(buff);
+
+  
+  
+  
+  
+  
+  
   
 //	kbTest();
 	
-	DATE_TIME date_time;
-	PVOID dummy;
-	setClock(dummy);
+//	DATE_TIME date_time;
+//	PVOID dummy;
+//	setClock(dummy);
 /*	
 	LCD_clear();
 	rtc_getDateTime(&date_time);
@@ -45,7 +66,7 @@ while(1){
 	LCD_writeString(buffer);
 	timer_sleep_miliseconds(pTIMER0,800);
 }
-*/
+
 	
 	Percurso p;
 	p.beginDate.year=2011;
@@ -80,6 +101,6 @@ static Option menu1Options[__MAX_FUNCTION_MENU_1__] =
 	while(1){
 		Menu_Generic(&p,&menu1Options,7);
 	}
- 
+*/ 
  return 0;  
 }

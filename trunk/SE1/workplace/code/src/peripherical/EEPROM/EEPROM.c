@@ -16,7 +16,8 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
-**/ #include "EEPROM.h"
+**/ 
+#include "EEPROM.h"
 #include "I2C.h"
 
 /**
@@ -48,7 +49,7 @@ void sendFunction(Bool isStart, U8 byte){
     I2C_start();
   }
   I2C_write_byte(byte);
-  while(I2C_slave_ack == 0);
+  //while(I2C_slave_ack() == 0);
 }
 /**
  * Le bloco da EEPROM

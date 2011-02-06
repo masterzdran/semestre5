@@ -26,10 +26,12 @@
  * Iniciação do periferico I2C
  * */
 void I2C_init(){
-    pPOWER->POWER_CONTROL |= __PCI2C_ENABLE__;
-    gpio_init(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__,0);
+   // pPOWER->POWER_CONTROL |= __PCI2C_ENABLE__;
+    //gpio_init(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__,0);
+    gpio_init_PINSEL0(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__);
     gpio_write(__I2C_SCL_PIN__|__I2C_SDA_PIN__,__I2C_SCL_PIN__|__I2C_SDA_PIN__);
     gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
+    timer_sleep_microseconds(pTIMER1,5);
 }
 
 /**
@@ -44,12 +46,12 @@ static void write_bit(U8 d) {
     gpio_clear(__I2C_SDA_PIN__);
 
 	/* Clock Pulse Width Low */ /* Data In Setup Time - 100 ns */
-	timer_sleep_microseconds(pTIMER0,micro_wait);
+	timer_sleep_microseconds(pTIMER1,micro_wait);
 		
 	/* Gerar um impulso em SCL */ 
   gpio_set(__I2C_SCL_PIN__);
     
-	timer_sleep_microseconds(pTIMER0,micro_wait);	/* Clock Pulse Width High */
+	timer_sleep_microseconds(pTIMER1,micro_wait);	/* Clock Pulse Width High */
   gpio_clear(__I2C_SCL_PIN__);
 	/* Data In Hold Time - 0 ns */
 }
@@ -62,12 +64,12 @@ static U8 read_bit() {
   gpio_set(__I2C_SDA_PIN__);
 	
 	/* Clock Pulse Width Low */
-	timer_sleep_microseconds(pTIMER0,micro_wait);
+	timer_sleep_microseconds(pTIMER1,micro_wait);
 
 	/* Gerar um impulso em SCL */ 
 	gpio_set(__I2C_SCL_PIN__);
 	
-	timer_sleep_microseconds(pTIMER0,micro_wait);	/* Clock Pulse Width High */
+	timer_sleep_microseconds(pTIMER1,micro_wait);	/* Clock Pulse Width High */
 	U32 tmp = gpio_read(__I2C_SDA_PIN__);
   gpio_clear(__I2C_SCL_PIN__);
 	
@@ -78,12 +80,13 @@ static U8 read_bit() {
 /**
  * Função com a sequencia de START da Comunicação 
  **/
-void I2C_start(){  
+void I2C_start(){
+  gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
   gpio_write(__I2C_SCL_PIN__|__I2C_SDA_PIN__,__I2C_SCL_PIN__|__I2C_SDA_PIN__);
-	timer_sleep_microseconds(pTIMER0,micro_wait);						/* Start Setup Time */
+	timer_sleep_microseconds(pTIMER1,micro_wait);						/* Start Setup Time */
   /* Primeiro a data ... */
 	gpio_clear(__I2C_SDA_PIN__);
-	timer_sleep_microseconds(pTIMER0,micro_wait);						/* Start Hold Time */
+	timer_sleep_microseconds(pTIMER1,micro_wait);						/* Start Hold Time */
 	/* ... e depois o clock */
 	gpio_clear(__I2C_SCL_PIN__);
 }
@@ -93,10 +96,10 @@ void I2C_start(){
 void I2C_stop(){
 	/* Colocar ambos a 0 */
 	gpio_clear(__I2C_SCL_PIN__|__I2C_SDA_PIN__);
-	timer_sleep_microseconds(pTIMER0,micro_wait);
+	timer_sleep_microseconds(pTIMER1,micro_wait);
 	/* Primeiro o clock ... */
 	gpio_set(__I2C_SCL_PIN__);
-	timer_sleep_microseconds(pTIMER0,micro_wait);					/* Stop Hold Time */
+	timer_sleep_microseconds(pTIMER1,micro_wait);					/* Stop Hold Time */
 	/* ... e depois a data	*/
 	gpio_set(__I2C_SDA_PIN__);
 }
@@ -104,6 +107,7 @@ void I2C_stop(){
  * Envia um byte 
  **/
 void I2C_write_byte(U8 value){
+  gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
 	U8 i;
 	for (i = 0; i < 8; ++i)
 		write_bit(value >> (7 - i));  
@@ -112,6 +116,7 @@ void I2C_write_byte(U8 value){
  * Lê um byte 
  **/
 U8 I2C_read_byte(){
+  gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_IN);
 	U8 tmp = 0;
 	U8 i;
 	for (i = 0; i < 8; ++i) {
