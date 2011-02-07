@@ -54,6 +54,8 @@
 #define __CAPTURE1_RISING_EDGE__          1 << 3
 #define __CAPTURE1_FALLING_EDGE__         1 << 4
 #define __CAPTURE1_INTERRUPT__            1 << 5
+
+#define __CAP1_MSK__                      ~(__CAPTURE1_RISING_EDGE__|__CAPTURE1_FALLING_EDGE__|__CAPTURE1_INTERRUPT__)
 #define __CAPTURE2_RISING_EDGE__          1 << 6
 #define __CAPTURE2_FALLING_EDGE__         1 << 7
 #define __CAPTURE2_INTERRUPT__            1 << 8
@@ -65,7 +67,7 @@ enum TIMER_MATCH {
   MAT00 =__PINSEL0_TIMER_0_MATCH_0_0__,
   MAT01 =__PINSEL0_TIMER_0_MATCH_0_1__,
   MAT10 =__PINSEL0_TIMER_1_MATCH_1_0__,
-  MAT11 =__PINSEL0_TIMER_1_MATCH_1_1__,
+  MAT11 =__PINSEL0_TIMER_1_MATCH_1_1__
 };
 typedef enum TIMER_MATCH TMatch ;
 
@@ -139,4 +141,5 @@ void timer_init(pLPC_TIMER timer, U32 countNbr);
 void timer_delay(pLPC_TIMER timer, U32 elapse);
 void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
 void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr);
+void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
 #endif

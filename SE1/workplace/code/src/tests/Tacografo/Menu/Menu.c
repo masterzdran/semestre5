@@ -1,3 +1,22 @@
+/**
+#=======================================================================
+# SE1   - Sistemas Embebidos 1
+#-----------------------------------------------------------------------
+# Turma:	LI51N
+# Semestre:	Inverno 2010/2011
+# Data:		Novembro/2010
+#-----------------------------------------------------------------------
+# Nome: 	Nuno Cancelo
+# Numero:	31401
+#-----------------------------------------------------------------------
+# Nome:		Nuno Sousa
+# Numero:	33595
+#-----------------------------------------------------------------------
+# LEIC  - Licenciatura em Engenharia Informática e Computadores
+# DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
+# ISEL  - Instituto Superior de Engenharia de Lisboa
+#=======================================================================
+**/ 
 #include "Menu.h"
 #include "Keyboard.h"
 #include "LCD.h"
@@ -33,23 +52,23 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
     if (bidx != idx)
       LCD_writeLine(1,options[idx].text);
     bidx = idx;
-    if (hasKey()){
-      switch(key = getBitMap()){
+    if (keyboard_hasKey()){
+      switch(key = keyboard_getBitMap()){
           case OK:
             options[idx].function(percurso); break;
-          case LEFT:
-          case DOWN:
-            idx = (++idx) % sizeOf;   break;
           case RIGHT:
+          case DOWN:
+            idx = __FX0(idx,1,sizeOf); break;
+          case LEFT:
           case UP:
-            idx = (--idx) % sizeOf;    break;
+            idx = __FX0(idx,-1,sizeOf);    break;
           case CANCEL:
             return;  
           default:
-            //do nothing
-            break;
+              //do nothing
+              break;
       }
-     WD_RESETENABLE();
+     WD_RESET_ENABLE();
     }
    timer_sleep_miliseconds(pTIMER0, 200); 
   }

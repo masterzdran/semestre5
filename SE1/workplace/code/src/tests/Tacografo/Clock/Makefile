@@ -30,6 +30,8 @@ TEST					= $(PROJECT_PATH)/test
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
 SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
+PROGRAM		= $(SOURCE)/program
+
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -49,7 +51,7 @@ COMPILE_ONLY 		= -c
 #=======================================================================
 Clock.o: Clock.c Clock.h 
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
-	cp $@ $(MYLIB)/$@
+	cp $@ $(PROGRAM)/$@
 	cp Clock.h $(INCLUDE)/
 
 	
