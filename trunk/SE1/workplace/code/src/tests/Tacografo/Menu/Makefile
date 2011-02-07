@@ -29,6 +29,7 @@ TEST					= $(PROJECT_PATH)/test
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
 INCLUDE		= $(SOURCE)/include
+PROGRAM		= $(SOURCE)/program
 SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
 #Executables
 CC 				= arm-eabi-gcc
@@ -51,12 +52,12 @@ COMPILE_ONLY 		= -c
 	
 Menu.o: Menu.c Menu.h MenuFunctions.o
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
-	cp $@ $(MYLIB)/$@
+	cp $@ $(PROGRAM)/$@
 	cp Menu.h $(INCLUDE)/
 
 MenuFunctions.o: MenuFunctions.c MenuFunctions.h
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
-	cp $@ $(MYLIB)/$@
+	cp $@ $(PROGRAM)/$@
 	cp MenuFunctions.h $(INCLUDE)/
 
 	

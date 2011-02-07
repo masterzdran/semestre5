@@ -55,19 +55,19 @@ all: Tacografo.c Tacografo.h
 	@echo "=================================="
 	@echo "Compiling the Program"
 	@echo "=================================="	
-	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(PCOMPILE)/$(MPATH);)
-	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) Tacografo.o  $< 
-	cp Tacografo.o $(MYLIB)/Tacografo.o
-	cp Tacografo.h $(INCLUDE)/
+	@$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(PCOMPILE)/$(MPATH);)
+	@$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) Tacografo.o  $< 
+	@cp Tacografo.o $(PROGRAM)/Tacografo.o
+	@cp Tacografo.h $(INCLUDE)/
 
 
 clean:
 	@echo "=================================="
 	@echo "Cleaning the Program"
 	@echo "=================================="	
-	$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(PCOMPILE)/$(MPATH) clean;)
-	rm  Tacografo.o
-	rm  $(INCLUDE)/Tacografo.h
+	@$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(PCOMPILE)/$(MPATH) clean;)
+	@rm  Tacografo.o
+	@rm  $(INCLUDE)/Tacografo.h
 		
 clear:
 	clear

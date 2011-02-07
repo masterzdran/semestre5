@@ -59,9 +59,9 @@ void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask,
     return;
   }
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
-  timer->CR0    = countNbr;
-  timer->CCR    = captureMask;                         //config counting method
-  //timer->PR     = countNbr;                              //define count number  
+  timer->CR1    = countNbr;
+  timer->CCR    &= captureMask;                         //config counting method
+  timer->CTCR   = 0x6;
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }
 /**
@@ -92,6 +92,7 @@ void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 cou
  * U32 countNbr: Number of counting 
  * 
  * TODO: Working, need to be Generic...
+ * 
  * */
 void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr){
   //Enable GPIO for Timer Capture or Else
@@ -106,6 +107,6 @@ void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
   timer->MR1    = countNbr;  
   timer->MCR    = MatchMask;                         	//config counting method
-  timer->EMR    |= 0xC0;                           //define count number  
+  timer->EMR    |= 0xC0;                              //define count number  
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }
