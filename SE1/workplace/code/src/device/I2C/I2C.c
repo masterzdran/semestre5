@@ -22,16 +22,29 @@
 #include "TIMER.h"
 #include "SCB.h"
 
+#define I2C_FREQ_DIV 800
 /**
  * Iniciação do periferico I2C
  * */
 void I2C_init(){
-   // pPOWER->POWER_CONTROL |= __PCI2C_ENABLE__;
-    //gpio_init(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__,0);
-    gpio_init_PINSEL0(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__);
-    gpio_write(__I2C_SCL_PIN__|__I2C_SDA_PIN__,__I2C_SCL_PIN__|__I2C_SDA_PIN__);
-    gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
-    timer_sleep_microseconds(pTIMER1,5);
+  //I2C Power On
+  pPOWER->POWER_CONTROL |= __PCI2C_ENABLE__;
+  //I2C Pin Select
+  gpio_init_PINSEL0(__PINSEL0_I2C_SCL__|__PINSEL0_I2C_SDA__);
+  //Clear Bits
+  pI2C->CONTROL_CLEAR_REGISTER = __I2CONCLR_MASK__;
+
+  /*
+  Bit Frequency = fCLK / (I2SCLH + I2SCLL)
+  Where fCLK is the frequency of pclk. 
+  The values for I2SCLL and I2SCLH don’t have to be the same. Software can set different duty cycles on SCL by setting these
+  two registers. But the value of the register must ensure that the data rate is in the I2C data rate range of 0 through 400KHz. So
+  the value of I2SCLL and I2SCLH has some restrictions. Each register value should be greater than or equal to 4.
+   * */
+  pI2C->DUTY_CYCLE_HIGH_HALF_WORD_REGISTER = (I2C_FREQ_DIV * 2/3);
+	pI2C->DUTY_CYCLE_LOW_HALF_WORD_REGISTER  = (I2C_FREQ_DIV * 1/3); // 66% duty cycle
+  //enable
+  pI2C->CONTROL_SET_REGISTER =  __I2EN_ENABLE__;
 }
 
 /**

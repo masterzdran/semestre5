@@ -34,12 +34,13 @@ SysClockInfo getSystemClockInfo(){
   systemClock.sclk  = (__FOSC__ * (val & 0x1F +1))/ ((div)?div:4);
   return systemClock;    
 }
-/*
+
 U32 getSystemClock(){
   U8 div  = (pAPBDIV->APBDIV) & 0x3;
+  div  = (pAPBDIV->APBDIV) & 0x3;
   U8 val  = pPLL->STATUS;
   return (__FOSC__ * ((val & 0x1F)+1))/ ((div)?div:4);
 }
-*/
+
 
 

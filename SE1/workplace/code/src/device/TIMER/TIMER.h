@@ -33,6 +33,7 @@
 #define __CTCR_MODE_2__                  0x2
 #define __CTCR_MODE_3__                  0x3
 
+#define __EMR_M
 
 #define __INTERRUPT_MR0__                 1 << 0
 #define __RESET_MR0__                     1 << 1       
@@ -67,15 +68,14 @@ enum TIMER_MATCH {
   MAT11 =__PINSEL0_TIMER_1_MATCH_1_1__,
 };
 typedef enum TIMER_MATCH TMatch ;
+
 enum TIMER_CAPTURE {
   CAP00 = __PINSEL0_TIMER_0_CAPTURE_0_0__,
   CAP01 = __PINSEL0_TIMER_0_CAPTURE_0_1__,
   CAP02 = __PINSEL0_TIMER_0_CAPTURE_0_2__,
   CAP10 = __PINSEL0_TIMER_1_CAPTURE_1_0__,
-  CAP11 = __PINSEL0_TIMER_1_CAPTURE_1_1__/*,
-  CAP12 = __PINSEL1_TIMER_1_CAPTURE_1_2__,
-  CAP13 = __PINSEL1_TIMER_1_CAPTURE_1_3__*/
-  };
+  CAP11 = __PINSEL0_TIMER_1_CAPTURE_1_1__
+};
 typedef enum TIMER_CAPTURE TCapture ;
 
 
@@ -119,11 +119,14 @@ typedef struct _TIMER{
 #define MICRO   1000000
 #define NANO    1000000000 //in this oscilator is not possible to go at nano level :(
 
-#define     timer_sleep_seconds(A,B)          (timer_delay(A,(((__SYSTEM_CLOCK__/SECOND)/((A)->PR))*B)))
+//#define     timer_sleep_seconds(A,B)          (timer_delay(A,(((__SYSTEM_CLOCK__/SECOND)/((A)->PR))*B)))
+//#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(((__SYSTEM_CLOCK__/MILI)/((A)->PR))*B)))
+//#define     timer_sleep_microseconds(A,B)     	(timer_delay(A,(((__SYSTEM_CLOCK__/MICRO)/((A)->PR))*B)))
+#define     timer_sleep_seconds(A,B)            (timer_delay(A,((( getSystemClock()/SECOND)/((A)->PR))*B)))
+#define     timer_sleep_miliseconds(A,B)        (timer_delay(A,((( getSystemClock()/MILI)/((A)->PR))*B)))
+#define     timer_sleep_microseconds(A,B)     	(timer_delay(A,((( getSystemClock()/MICRO)/((A)->PR))*B)))
 //#define		timer_sleep_seconds(A,B) 		    (timer_delay(A,(58982400/SECOND/58)*B))
-#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(((__SYSTEM_CLOCK__/MILI)/((A)->PR))*B)))
 //#define     timer_sleep_miliseconds(A,B)    	(timer_delay(A,(58982400/MILI/58)*B))
-#define     timer_sleep_microseconds(A,B)     	(timer_delay(A,(((__SYSTEM_CLOCK__/MICRO)/((A)->PR))*B)))
 //#define     timer_sleep_microseconds(A,B)   	(timer_delay(A,(58982400/MICRO/58)*B))
 
 #define timer_start(A)                  ((A)->TCR |= __TCR_ENABLE__)
@@ -134,5 +137,6 @@ typedef struct _TIMER{
 
 void timer_init(pLPC_TIMER timer, U32 countNbr);
 void timer_delay(pLPC_TIMER timer, U32 elapse);
-
+void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
+void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr);
 #endif
