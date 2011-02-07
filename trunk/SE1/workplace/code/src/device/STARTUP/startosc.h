@@ -18,6 +18,10 @@ typedef struct _system_clock{
 
 void StartOsc(void);
 SysClockInfo getSystemClockInfo();
+U32 getSystemClock();
+//Ler duas vezes por causa do bug da NXP.
+/*
 #define getAPBDIV()			(((pAPBDIV->APBDIV) & 0x3)?((pAPBDIV->APBDIV) & 0x3):4)
 #define getSystemClock()	((__FOSC__ * (((pPLL->STATUS) & 0x1F)+1)) / getAPBDIV())
+*/ 
 #endif

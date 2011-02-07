@@ -43,33 +43,69 @@ void timer_delay(pLPC_TIMER timer, U32 elapse){
     time = timer_elapsed(timer,0);
     while(timer_elapsed(timer,time)<= elapse);
 }
-
+/**
+ * LPC_TIMER timer: Timer
+ * TCapture timerCapture: Pin enable
+ * U32 captureMask: Counting Method
+ * U32 countNbr: Number of counting 
+ * */
 void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr){
   //Enable GPIO for Timer Capture or Else
   if (timer  == pTIMER0 )
-    gpio_init(timerCapture,0);
+    gpio_init_PINSEL0(timerCapture);
   else if (timer == pTIMER1)
-    gpio_init(0,timerCapture);
+    gpio_init_PINSEL1(timerCapture);
   else {
     return;
   }
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
-  timer->CCR   |= captureMask;                         //config counting method
+  timer->CR0    = countNbr;
+  timer->CCR    = captureMask;                         //config counting method
+  //timer->PR     = countNbr;                              //define count number  
+  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
+}
+/**
+ * LPC_TIMER timer: Timer
+ * TMatch timerMatch: Pin enable
+ * U32 MatchMask: Counting Method
+ * U32 countNbr: Number of counting 
+ * */
+void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr){
+  //Enable GPIO for Timer Capture or Else
+  if (timer  == pTIMER0 )
+    gpio_init_PINSEL0(timerMatch);
+  else if (timer == pTIMER1)
+    gpio_init_PINSEL1(timerMatch);
+  else {
+    return;
+  }
+  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
+  timer->MCR    = MatchMask;                         	//config counting method
   timer->PR     = countNbr;                              //define count number  
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }
 
-void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr){
+/**
+ * LPC_TIMER timer: Timer
+ * TMatch timerMatch: Pin enable
+ * U32 MatchMask: Counting Method
+ * U32 countNbr: Number of counting 
+ * 
+ * TODO: Working, need to be Generic...
+ * */
+void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr){
   //Enable GPIO for Timer Capture or Else
   if (timer  == pTIMER0 )
-    gpio_init(timerMatch,0);
+    gpio_init_PINSEL0(timerMatch);
   else if (timer == pTIMER1)
-    gpio_init(0,timerMatch);
+    gpio_init_PINSEL1(timerMatch);
   else {
     return;
   }
+  
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
-  timer->MCR   |= MatchMask;                         	//config counting method
-  timer->PR     = countNbr;                              //define count number  
+  timer->MR1    = countNbr;  
+  timer->MCR    = MatchMask;                         	//config counting method
+  timer->EMR    |= 0xC0;                           //define count number  
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }

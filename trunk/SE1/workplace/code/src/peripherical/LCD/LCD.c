@@ -29,13 +29,13 @@
 //#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
 //#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
 //#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
-#define RS_MASK                  ((U16)0x0200)  //Ultimo nibble para Data
+#define RS_MASK                  ((U16)0x4000)  //Ultimo nibble para Data
 #define ENABLE_MASK              ((U16)0x8000)  //Ultimo nibble para Data
 #define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
 
 #define DATA_MASK                ((U16)0x3C00)
 #define LCD_GPIO_MASK_SHIFT      ((U8)10)
-#define LCD_GPIO_MASK            ((U16)0xBE00)
+#define LCD_GPIO_MASK            ((U16)0xFE00)
 
 
 
