@@ -22,6 +22,12 @@
 #include "TYPES.h"
 
 /**
+ * |P0.03|P0.02|P0.01|P0.00|
+ * | SDA | SCL |UART0|UART0|
+ * 
+ * 
+ * */
+/**
  * Macros referentes à EEPROM 
  **/
 #define __EEPROM_SLAVE_ADDRESS__                 (U32) 0xA0
@@ -30,7 +36,7 @@
 #define __EEPROM_WRITE__                         (U8)  0x0
 #define __EEPROM_BLOCK_SHIFT__                   (U8)  6
 #define __EEPROM_BLOCK_MASK__                    (U8)  0x0E
-#define __EEPROM_ADDRESS_LSHIFT__                (U8)  1
+#define __EEPROM_ADDRESS_LSHIFT__                (U8)  0
 #define __EEPROM_ADDRESS_MASK__                  (U8)  0xFE
 #define __EEPROM_MAX_BYTE_WRITE__                (U8)  0x10
 

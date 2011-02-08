@@ -47,6 +47,7 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
   pPercurso percurso = (pPercurso)course;
   U8 idx = 0,bidx = -1;
   KB_Key key;
+  LCD_clear();
   LCD_writeLine(0,"Press OK or Next");
   while(1){
     if (bidx != idx)

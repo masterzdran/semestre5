@@ -24,9 +24,20 @@
 
 #define I2C_FREQ_DIV 800
 /**
+ * Iniciação do periferico I2C via GPIO
+ * */
+#define __PINSEL0_GPIO_I2C_SCL__      (0x3 << (PORT * 2))
+#define __PINSEL0_GPIO_I2C_SDA__      (0x3 << (PORT * 3))
+void I2C_init(){
+  //I2C Pin Select
+  //gpio_init_PINSEL0(__PINSEL0_GPIO_I2C_SCL__|__PINSEL0_GPIO_I2C_SDA__);
+  gpio_set(__I2C_SCL_PIN__|__I2C_SDA_PIN__);
+  gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
+}
+/**
  * Iniciação do periferico I2C
  * */
-void I2C_init(){
+void I2C_init_wo_GPIO(){
   //I2C Power On
   pPOWER->POWER_CONTROL |= __PCI2C_ENABLE__;
   //I2C Pin Select
@@ -94,7 +105,7 @@ static U8 read_bit() {
  * Função com a sequencia de START da Comunicação 
  **/
 void I2C_start(){
-  gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
+  //gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_OUT);
   gpio_write(__I2C_SCL_PIN__|__I2C_SDA_PIN__,__I2C_SCL_PIN__|__I2C_SDA_PIN__);
 	timer_sleep_microseconds(pTIMER1,micro_wait);						/* Start Setup Time */
   /* Primeiro a data ... */
@@ -129,13 +140,15 @@ void I2C_write_byte(U8 value){
  * Lê um byte 
  **/
 U8 I2C_read_byte(){
-  gpio_set_direction(__I2C_SCL_PIN__|__I2C_SDA_PIN__,GPIO_IN);
+  gpio_set_direction(__I2C_SDA_PIN__,GPIO_IN);
 	U8 tmp = 0;
 	U8 i;
 	for (i = 0; i < 8; ++i) {
 		tmp = (tmp << 1) + read_bit();
 	}
-	return tmp;  
+	gpio_set_direction(__I2C_SDA_PIN__,GPIO_OUT);
+	
+  return tmp;  
 }
 
 /**
