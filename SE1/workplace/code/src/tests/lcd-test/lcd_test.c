@@ -9,14 +9,16 @@
 #include "stdio.h"
 #include "Menu.h"
 #include "MenuFunctions.h"
+#include "I2C.h"
+#include "EEPROM.h"
 
 
 #define  LCD_MASK   ((U32) 0x7F00)
 
 int main(){
   char buffer[64];
-  U32 addr = 0;
-  U32 addr2 = 0;
+  U32 addr = 0x10;
+  U32 addr2 = 0x10;
   char text[16]="2011-02-06 14:39";
   char buff[16]="                ";
   gpio_init(0,0);
@@ -25,13 +27,14 @@ int main(){
   LCD_init(pTIMER1);
   keyboard_init(pTIMER1);
   rtc_init();
+  I2C_init();
   
   /*
   timer_set_match_register((500000),matchUsed);
 	timer_set_match_control(match_reset, matchUsed, true);
 	timer_set_xMatch_control(xmatch_toggle, matchUsed);
   */
-  
+/*  
   TIMER_ext_match_init(pTIMER0,MAT01,__RESET_MR1__,10000000);
   TIMER_capture_init(pTIMER0,CAP01,__CAP1_MSK__,1000000);
   addr= pTIMER0->TC;
@@ -44,18 +47,18 @@ int main(){
     sprintf(&buff,"%16d",addr);
     LCD_writeString(&buff);
     timer_sleep_seconds(pTIMER1,1);
-  }
-  /*
+  }*/
+  
   EEPROM_init();
   LCD_posCursor(0,0);
 	LCD_writeString(text);
-  eeprom_write_block(addr,text,16);
+  eeprom_write_block(addr,&text,16);
   timer_sleep_seconds(pTIMER1,2);
   eeprom_read_block(addr,buff,16);
    timer_sleep_seconds(pTIMER1,2);
   LCD_posCursor(1,0);
 	LCD_writeString(buff);
-  */
+  
   
   
   
