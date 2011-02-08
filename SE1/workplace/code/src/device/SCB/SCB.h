@@ -30,6 +30,7 @@
 #define    pAPBDIV        ((pLPC_APB)     0xE01FC100)
 #define    pSCS           ((pLPC_SCS)     0xE01FC1A0)
 
+
 /**
  * Definição da estrutura das interrupções externas 
  **/
@@ -112,7 +113,6 @@ typedef struct _APB{
 typedef struct _SCS{
     U32   SCS;  
 }LPC_SCS,*pLPC_SCS;
-
 /**
  * Macros para enable das interrupções externas
  **/

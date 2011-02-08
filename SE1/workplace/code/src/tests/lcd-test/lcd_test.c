@@ -11,9 +11,20 @@
 #include "MenuFunctions.h"
 #include "I2C.h"
 #include "EEPROM.h"
+#include "VIC.h"
+#include "WATCHDOG.h"
 
 
 #define  LCD_MASK   ((U32) 0x7F00)
+
+U32 x;
+ 
+void func0(void){
+    x++;
+    enableIRQ( __INTERRUPT_TIMER0__ );
+    pVIC_VECTDEFADDR->DefVectAddr =0; //dummy write
+}
+
 
 int main(){
   char buffer[64];
@@ -23,32 +34,42 @@ int main(){
   char buff[16]="                ";
   gpio_init(0,0);
   timer_init(pTIMER1,58982400/MICRO);
-  timer_init(pTIMER0,58982400/MICRO);
+  timer_init(pTIMER0,58982400/MILI);
   LCD_init(pTIMER1);
   keyboard_init(pTIMER1);
+  WATCHDOG_init(0xFFFFFFFF);
+  U32 watch = WD_ISRUNNING();
+
+
   rtc_init();
   I2C_init();
+  VIC_init();
   
-  /*
-  timer_set_match_register((500000),matchUsed);
-	timer_set_match_control(match_reset, matchUsed, true);
-	timer_set_xMatch_control(xmatch_toggle, matchUsed);
-  */
-/*  
-  TIMER_ext_match_init(pTIMER0,MAT01,__RESET_MR1__,10000000);
-  TIMER_capture_init(pTIMER0,CAP01,__CAP1_MSK__,1000000);
+  
+  //TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction)
+  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,1000,MATCH_TOGGLE);
+  
+  //TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction)
+  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_FALL__,10,COUNTER_MODE_FALL);
+
+
+
+  x=0;
+  VIC_ConfigIRQ(__INTERRUPT_TIMER0__,0,func0);
+    
   addr= pTIMER0->TC;
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
   while (1){
     LCD_posCursor(0,0);
-    addr = timer_elapsed(pTIMER0,addr);
+    //addr = timer_elapsed(pTIMER0,addr);
+    addr = pTIMER0->TC;
     
-    sprintf(&buff,"%16d",addr);
-    LCD_writeString(&buff);
+    sprintf((char*)(&buff),"%16d",addr);
+    LCD_writeString((char*)&buff);
     timer_sleep_seconds(pTIMER1,1);
-  }*/
-  
+  }
+/*  
   EEPROM_init();
   LCD_posCursor(0,0);
 	LCD_writeString(text);
@@ -58,7 +79,7 @@ int main(){
    timer_sleep_seconds(pTIMER1,2);
   LCD_posCursor(1,0);
 	LCD_writeString(buff);
-  
+  */
   
   
   

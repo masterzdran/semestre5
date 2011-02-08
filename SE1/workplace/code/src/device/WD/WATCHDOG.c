@@ -30,6 +30,7 @@ void WATCHDOG_init(U32 value){
    */
   if (WD_COME_FROM_RESET()) {
       //WatchDog Reset
+      WD_RESET_DISABLE();
   }else{
       //WatchDog Start
   }
