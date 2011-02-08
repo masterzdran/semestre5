@@ -24,15 +24,15 @@
 /**
  * Definição dos endereços das estruturas referentes aos registos de interrupções 
  **/
-#define         pVIC              ((pLPC_VIC)           0xFFFFF000)
-#define         pVIC_VECTADDR     ((pLPC_VIC_VECTADDR)  0xFFFFF030)
-#define         pVIC_VECTADDRX    ((pLPC_VIC_VECTADDRX) 0xFFFFF100)
-#define         pVIC_VECTCNTX     ((pLPC_VIC_VECTCNTX)  0xFFFFF200)
+#define         pVIC                 ((pLPC_VIC)           0xFFFFF000)
+#define         pVIC_VECTDEFADDR     ((pLPC_VIC_DEFVECTADDR)  0xFFFFF030)
+#define         pVIC_VECTADDR        ((pLPC_VIC_VECTADDR) 0xFFFFF100)
+#define         pVIC_VECTCNT         ((pLPC_VIC_VECTCNT)  0xFFFFF200)
 
 /**
  * Estrutura que define os campos dos Vectores de Controlo 
  **/
-typedef struct _VIC_VECTCNTX{
+typedef struct _VIC_VECTCNT{
       U8 VectCntl0;        //0xFFFF F200
       U8  DUMMY03;
       U16 DUMMY04;
@@ -81,12 +81,12 @@ typedef struct _VIC_VECTCNTX{
       U8 VectCntl15;       //0xFFFF F23C
       U8  DUMMY33;
       U16 DUMMY34;  
-}LPC_VIC_VECTCNTX,*pLPC_VIC_VECTCNTX;  
+}LPC_VIC_VECTCNT,*pLPC_VIC_VECTCNT;  
 
 /**
  * Estrutura que define os endereços dos Vectores
  **/
-typedef struct _VIC_VECTADDRX{
+typedef struct _VIC_VECTADDR{
       U32 VectAddr0;        //0xFFFF F100
       U32 VectAddr1;        //0xFFFF F104
       U32 VectAddr2;        //0xFFFF F108
@@ -103,13 +103,13 @@ typedef struct _VIC_VECTADDRX{
       U32 VectAddr13;       //0xFFFF F134
       U32 VectAddr14;       //0xFFFF F138
       U32 VectAddr15;       //0xFFFF F13C  
-}LPC_VIC_VECTADDRX,*pLPC_VIC_VECTADDRX;
+}LPC_VIC_VECTADDR,*pLPC_VIC_VECTADDR;
 
 
-typedef struct _VIC_VECTADDR{
+typedef struct _VIC_DEFVECTADDR{
       U32 VectAddr;         //0xFFFF F030
       U32 DefVectAddr;      //0xFFFF F034  
-}LPC_VIC_VECTADDR,*pLPC_VIC_VECTADDR;
+}LPC_VIC_DEFVECTADDR,*pLPC_VIC_DEFVECTADDR;
 
 /**
  * Estrutura que define os campos do VIC
@@ -179,6 +179,23 @@ typedef struct _VIC{
 #define     __INTERRUPT_EINT1_VALUE__        (U8)    0xF
 #define     __INTERRUPT_EINT2_VALUE__        (U8)    0x10
 
+
+#define     __INTERRUPT_WDT__          (U8)    0x0
+#define     __INTERRUPT_SOFTWARE__     (U8)    0x1
+#define     __INTERRUPT_DbgCommRx__    (U8)    0x2
+#define     __INTERRUPT_DbgCommTX__    (U8)    0x3
+#define     __INTERRUPT_TIMER0__       (U8)    0x4
+#define     __INTERRUPT_TIMER1__       (U8)    0x5
+#define     __INTERRUPT_UART0__        (U8)    0x6
+#define     __INTERRUPT_UART1__        (U8)    0x7
+#define     __INTERRUPT_PWM__          (U8)    0x8
+#define     __INTERRUPT_I2C__          (U8)    0x9
+#define     __INTERRUPT_SPI_SSP__      (U8)    0xA
+#define     __INTERRUPT_RESERVED__     (U8)    0xB     
+#define     __INTERRUPT_PLL__          (U8)    0xC
+#define     __INTERRUPT_RTC__          (U8)    0xD
+#define     __INTERRUPT_EINT0__        (U8)    0xE
+#define     __INTERRUPT_EINT1__        (U8)    0xF
 
 /**
  * Assinatura das funções publicas

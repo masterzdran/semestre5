@@ -41,9 +41,11 @@ typedef struct _WATCHDOG{
 #define   __WDTOF_MASK__        0x4
 #define   __WDINT_MASK__        0x8
 #define   __WDMOD_MASK__        0xF
+
+/*
 #define   __WDRESET_DISABLE__   0x0
 #define   __WDRESET_ENABLE__    0x2
-
+*/
 #define   __DECREASE_COUNT__        CCLK * 4        // CCLK  = PCLK
 #define   __MIN_DECREASE_COUNT__    CCLK * 256 * 4  // CCLK  = PCLK
 
@@ -57,8 +59,9 @@ typedef struct _WATCHDOG{
 #define WD_ISRUNNING()           ( pWatchDog->MODE_REGISTER & __WDEN_MASK__ )
 #define WD_ENABLE()              ( pWatchDog->MODE_REGISTER |= __WDEN_MASK__ )
 #define WD_DISABLE()             ( pWatchDog->MODE_REGISTER &= ~(__WDEN_MASK__) )
-#define WD_RESET_ENABLE()         ( pWatchDog->MODE_REGISTER |= __WDRESET_ENABLE__ )
-#define WD_RESET_DISABLE()        ( pWatchDog->MODE_REGISTER &= ~(_WDRESET_ENABLE__) )
+#define WD_RESET_ENABLE()         ( pWatchDog->MODE_REGISTER |= __WDRESET_MASK__ )
+#define WD_RESET_DISABLE()        ( pWatchDog->MODE_REGISTER &= ~(__WDRESET_MASK__) )
 #define WD_COME_FROM_RESET()       ( pWatchDog->MODE_REGISTER & __WDTOF_MASK__ )
+#define WD_READ_TIME()            (pWatchDog->TIMER_VALUE)
 
 #endif

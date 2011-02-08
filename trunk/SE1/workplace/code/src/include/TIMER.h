@@ -80,7 +80,16 @@ enum TIMER_CAPTURE {
 };
 typedef enum TIMER_CAPTURE TCapture ;
 
+#define __MATCH_INTERRUPT__                 (1 << 0)
+#define __MATCH_RESET__                     (1 << 1)       
+#define __MATCH_STOP__                      (1 << 2)
 
+#define __CAPTURE_RISE__                    (1<<0)
+#define __CAPTURE_FALL__                    (1<<1)
+#define __CAPTURE_INTERRUPT__               (1<<2)
+
+typedef enum EMR_FUNCTION {MATCH_NOTHING=0,MATCH_CLEAR,MATCH_SET,MATCH_TOGGLE} tEmrFunction;
+typedef enum CTCR_FUNCTION {TIMER_MODE=0,COUNTER_MODE_RISE,COUNTER_MODE_FALL,COUNTER_MODE_BOTH} tCtcrFunction;
 typedef struct _TIMER{
     U32		IR;             
     U32		TCR;
@@ -97,7 +106,7 @@ typedef struct _TIMER{
     U32		CR1;
     U32		CR2;
     U32		CR3;          
-    U32		EMR;          //0xE000 403C
+    U32		EMR;             //0xE000 403C
     U32   DUMMY01;         //0xE000 4040
     U32   DUMMY02;         //0xE000 4044
     U32   DUMMY03;         //0xE000 4048
@@ -110,7 +119,7 @@ typedef struct _TIMER{
     U32   DUMMY10;         //0xE000 4064
     U32   DUMMY11;         //0xE000 4068
     U32   DUMMY12;         //0xE000 406C
-    U32   CTCR;         //0xE000 4070
+    U32   CTCR;            //0xE000 4070
 }LPC_TIMER,*pLPC_TIMER;
 
 #define pTIMER0 ((pLPC_TIMER) 0xE0004000)
@@ -139,7 +148,9 @@ typedef struct _TIMER{
 
 void timer_init(pLPC_TIMER timer, U32 countNbr);
 void timer_delay(pLPC_TIMER timer, U32 elapse);
-void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
-void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr);
-void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
+//void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
+//void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr);
+//void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
+void TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction);
+void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction);
 #endif
