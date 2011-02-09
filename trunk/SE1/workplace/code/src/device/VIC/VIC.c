@@ -31,7 +31,7 @@ void VIC_init(){
     pVIC->SoftIntClear            = 0xFFFFFFFF;
     pMAM->MEMORY_MAPPING_CONTROL  = __MEMORY_MAP_CONTROL_USERRAM__;
     pVIC->IntSelect               = 0;
-    pVIC->IntEnable               = 0xFFFFFFFF; //clear all interrupts
+    pVIC->IntEnable               = 0xFFFFFFFF; //enable all interrupts
 /*
     for ( i = 0; i < __MAX_INTERRUPT__; i++ )
     {
@@ -67,7 +67,7 @@ Bool VIC_ConfigIRQ(U8 peripherical, U8 priority,void (*fx)(void)){
   if (peripherical < 0 || peripherical > __MAX_INTERRUPT__) return false;
   
   disableIRQ(peripherical);
-
+  pVIC->IntSelect &= ~(1 << peripherical);
   
   PU32 vicAddr = (PU32)(&(pVIC_VECTADDR->VectAddr0) + (U32)priority);
   PU32 vicCtrl = (PU32)(&(pVIC_VECTCNT->VectCntl0) + (U32)priority*4);

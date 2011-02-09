@@ -19,8 +19,6 @@
 **/ 
 #include "WATCHDOG.h"
 
-
-
 void WATCHDOG_init(U32 value){
   /*
    * Set the watchdog timer constant reload value in WDTC register.

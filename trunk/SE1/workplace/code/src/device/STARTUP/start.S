@@ -28,6 +28,8 @@
 ******************************************************************/
 .section .startup, "ax"
 .global _start
+.global _CPU_IRQ_RESET
+.global _CPU_IRQ_ENABLE
 
 /* Exception Vectors */
 _vectors:
@@ -36,8 +38,8 @@ _vectors:
     	ldr     pc, SWIAddr
     	ldr     pc, PAbtAddr
     	ldr     pc, DAbtAddr
-      .word	  0xB9205F80                             /*0xB8A06F58*/
-      ldr     pc,[pc,#-0xFF0]                        /*pc, IRQAddr*/
+		.word	  0xB9205F80                      /*0xB8A06F58*/
+		ldr     pc,[pc,#-0xFF0]                   /*pc, IRQAddr*/
     	ldr     pc, FIQAddr
 
 ResetAddr:	    .word   ResetHandler
@@ -112,6 +114,11 @@ end_set_loop:
   mov   	lr, pc
   bx    	r10
 
+	/*Enable IRQ*/
+  mrs		r0, cpsr
+  and		r0,r0, #~(1<<7)
+  msr		cpsr_c,r0
+
   ldr   	r10, =main
   mov   	lr, pc
   bx    	r10                       /* enter main() */
@@ -120,6 +127,7 @@ end_set_loop:
 .section .stack
 		.space	1024 * 4
 __stack_top__:
+
 
 /****************************************************************************/
 /*                         Default interrupt handler                        */

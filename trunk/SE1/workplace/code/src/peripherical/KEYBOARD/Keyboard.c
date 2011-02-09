@@ -75,14 +75,14 @@ void keyboard_readKey(){
 
   //Read Lines
   lowByteKey = readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ )>>__KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__;
-  if (lowByteKey  == __KEYBOARD_HIGH_PORT_MASK__){       //There is an key pressed!?
+  if (lowByteKey  == __DEFAULT_VALUE__){       //There is an key pressed!?
     key = __NO_KEY__;  
     return;
   }
 
   //Read Columns
   highByteKey = readNibble(__KEYBOARD_LOW_PORT_MASK__,__KEYBOARD_HIGH_PORT_MASK__)>>__KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__;
-  if (highByteKey == __KEYBOARD_LOW_PORT_MASK__){       //Something went wrong, value discarted
+  if (highByteKey == __DEFAULT_VALUE__){       //Something went wrong, value discarted
     key = __NO_KEY__;
     return; 
   }

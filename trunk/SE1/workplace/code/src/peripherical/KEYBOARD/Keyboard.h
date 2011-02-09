@@ -27,11 +27,11 @@
 /**
  * Macros com as Mascaras referentes ao KB
  * */
-#define   __KEYBOARD_ALL_MASK__                       ((U16)0x3FC0)
+#define   __KEYBOARD_ALL_MASK__                       ((U16)0xFF00)
 #define   __KEYBOARD_MASK__                           ((U8)0xF)
 #define   __DEFAULT_VALUE__                           ((U8)0xF)
-#define   __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__     ((U8) 0x6)
-#define   __KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__    ((U8) 0xA)
+#define   __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__     ((U8) 0x8)
+#define   __KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__    ((U8) 0xC)
 #define   __KEYBOARD_LOW_PORT_MASK__                  (__KEYBOARD_MASK__ << __KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__ )
 #define   __KEYBOARD_HIGH_PORT_MASK__                 (__KEYBOARD_MASK__ << __KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__ )
 #define   __NO_KEY__                                  ((U8) 0xFF)
