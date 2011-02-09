@@ -20,22 +20,22 @@
 #include "LCD.h"
 /* 
  * 
- * |     |P0.13|P0.12|P0.11|P0.10|P0.09|P0.08|
+ * |     |P0.07|P0.06|P0.15|P0.14|P0.13|P0.12|
  * | R/!W| EN  | RS  | DB7 | DB6 | DB5 | DB4 |
  * 
  * */
-#define DATA_BITS_SHIFT          ((U8)  4)
+#define DATA_BITS_SHIFT          ((U8)0x4)
 #define CLEAN_MASK               ((U8)0xF)
 //#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
 //#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
 //#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
-#define RS_MASK                  ((U16)0x4000)  //Ultimo nibble para Data
-#define ENABLE_MASK              ((U16)0x8000)  //Ultimo nibble para Data
-#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
+#define RS_MASK                  ((U16)0x0040)  //Ultimo nibble para Data
+#define ENABLE_MASK              ((U16)0x0080)  //Ultimo nibble para Data
+#define RW_MASK                  ((U16)0x0000)  //Ultimo nibble para Data
 
-#define DATA_MASK                ((U16)0x3C00)
-#define LCD_GPIO_MASK_SHIFT      ((U8)10)
-#define LCD_GPIO_MASK            ((U16)0xFE00)
+#define DATA_MASK                ((U16)0xF000)
+#define LCD_GPIO_MASK_SHIFT      ((U8) 0xC)
+#define LCD_GPIO_MASK            ((U16)0xF0C0)
 
 
 

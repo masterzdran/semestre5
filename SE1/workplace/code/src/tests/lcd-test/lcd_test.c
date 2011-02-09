@@ -17,11 +17,11 @@
 
 #define  LCD_MASK   ((U32) 0x7F00)
 
-U32 x;
- 
+static int x;
+
 void func0(void){
     x++;
-    enableIRQ( __INTERRUPT_TIMER0__ );
+	enableIRQ( __INTERRUPT_TIMER0__ );
     pVIC_VECTDEFADDR->DefVectAddr =0; //dummy write
 }
 
@@ -40,12 +40,13 @@ int main(){
   WATCHDOG_init(0xFFFFFFFF);
   U32 watch = WD_ISRUNNING();
 
+	//kbTest();
 
   rtc_init();
   I2C_init();
   VIC_init();
-  
-  
+ 
+ 
   //TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction)
   TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,1000,MATCH_TOGGLE);
   
@@ -65,10 +66,11 @@ int main(){
     //addr = timer_elapsed(pTIMER0,addr);
     addr = pTIMER0->TC;
     
-    sprintf((char*)(&buff),"%16d",addr);
+    sprintf((char*)(&buff),"%12d-%3d",x,addr);
     LCD_writeString((char*)&buff);
     timer_sleep_seconds(pTIMER1,1);
   }
+
 /*  
   EEPROM_init();
   LCD_posCursor(0,0);
@@ -89,7 +91,7 @@ int main(){
   
   
 //	kbTest();
-	
+
 //	DATE_TIME date_time;
 //	PVOID dummy;
 //	setClock(dummy);

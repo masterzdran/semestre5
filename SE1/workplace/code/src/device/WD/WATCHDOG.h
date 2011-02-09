@@ -22,7 +22,6 @@
 #include "startosc.h"
 #include "TIMER.h"
 
-
 #define pWatchDog     ((pLPC_WATCHDOG)  0xE0000000)
 
 typedef struct _WATCHDOG{
