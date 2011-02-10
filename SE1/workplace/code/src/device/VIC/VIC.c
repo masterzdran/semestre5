@@ -29,10 +29,10 @@ void VIC_init(){
     PU32 vicCtrl;
     pVIC->IntEnClr                = 0xFFFFFFFF; //clear all interrupts
     pVIC->SoftIntClear            = 0xFFFFFFFF; //clear all sw interrupts
-	pMAM->MEMORY_MAPPING_CONTROL  = __MEMORY_MAP_CONTROL_USERRAM__;
     pVIC->IntSelect               = 0;			//select IRQ
-    pVIC->IntEnable               = 0xFFFFFFFF; //enable all interrupts
-
+    //pVIC->IntEnable               = 0xFFFFFFFF; //enable all interrupts
+	//pVIC_VECTDEFADDR->DefVectAddr = 0;			//clear old default isr address
+	//pVIC_VECTDEFADDR->VectAddr	  = 0;			//clear old isr address
 }
 /**
  * Função que desactiva da interrupção provocada pela fonte 'peripherical'
@@ -59,11 +59,9 @@ Bool VIC_ConfigIRQ(U8 peripherical, U8 priority,void (*fx)(void)){
   if (peripherical < 0 || peripherical > __MAX_INTERRUPT__) return false;
   
   disableIRQ(peripherical);
-  //pVIC->IntSelect &= ~(1 << peripherical);
   
   PU32 vicAddr = (PU32)(&(pVIC_VECTADDR->VectAddr0) + (U32)priority);
   PU32 vicCtrl = (PU32)(&(pVIC_VECTCNT->VectCntl0) + (U32)priority*4);
-  
   
     //  *(&(pVIC_VECTADDR->VectAddr0) + (U32)priority ) = (PU32)fx;
     //  *(&(pVIC_VECTCNT->VectCntl0) + (U32)priority) = __VIC_ENABLE__|(peripherical&__VIC_VECTCNTL_MASK__);
