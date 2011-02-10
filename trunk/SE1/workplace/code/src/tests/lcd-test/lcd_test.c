@@ -22,11 +22,13 @@ void func0(void) __attribute__ ((interrupt));
 void isr(void) __attribute__ ((interrupt));
 
 void func0(void){
-    x++;
-	pVIC_VECTDEFADDR->DefVectAddr =0;	//dummy write
-	pVIC_VECTDEFADDR->VectAddr =0;		//dummy write
-	pTIMER0->IR |= 1<<5;				//clear timer0 CR1 interrupt request
-	//enableIRQ( __INTERRUPT_TIMER0__ );
+	U32 irq_status = pVIC->IRQStatus;
+	if (irq_status & __INTERRUPT_TIMER0_MASK__){
+		x++;
+		pVIC_VECTDEFADDR->VectAddr =0;		//clear isr function address
+		pTIMER0->IR |= 1<<5;				//clear timer0 CR1 interrupt request
+		enableIRQ( __INTERRUPT_TIMER0__ );
+	}
 }
 
 void isr(){
@@ -57,7 +59,7 @@ int main(){
   timer_init(pTIMER0,58982400/MILI);
   LCD_init(pTIMER1);
   keyboard_init(pTIMER1);
-  WATCHDOG_init(0xFFFFFFFF);
+  WATCHDOG_init(0xFFFFFF);
   U32 watch = WD_ISRUNNING();
 
   //kbTest();
@@ -66,14 +68,16 @@ int main(){
   rtc_init();
   I2C_init();
   VIC_init();
+  //to use only when compiling to ram
+  pMAM->MEMORY_MAPPING_CONTROL  = __MEMORY_MAP_CONTROL_USERRAM__; 
   
   VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,func0);
 
   //TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction)
-  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,1000,MATCH_TOGGLE);
+  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,5000,MATCH_TOGGLE);
   
    //TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction)
-  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_FALL__,10,COUNTER_MODE_FALL);  
+  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_RISE__,10,COUNTER_MODE_FALL);  
 
   //pVIC->SoftInt = (1 << 4);
    
@@ -90,8 +94,10 @@ int main(){
     LCD_posCursor(0,0);
     //addr = timer_elapsed(pTIMER0,addr);
     addr = pTIMER0->TC;
-    
     sprintf((char*)(&buff),"%12d-%3d",x,addr);
+    LCD_writeString((char*)&buff);
+    LCD_posCursor(1,0);
+	sprintf((char*)(&buff),"%16d",pWatchDog->TIMER_VALUE);
     LCD_writeString((char*)&buff);
     timer_sleep_seconds(pTIMER1,1);
   }
