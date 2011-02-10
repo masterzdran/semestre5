@@ -114,11 +114,6 @@ end_set_loop:
   mov   	lr, pc
   bx    	r10
 
-	/*Enable IRQ*/
-  mrs		r0, cpsr
-  and		r0,r0, #~(1<<7)
-  msr		cpsr_c,r0
-
   ldr   	r10, =main
   mov   	lr, pc
   bx    	r10                       /* enter main() */
