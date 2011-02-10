@@ -83,7 +83,8 @@ void TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countN
   //*(&(timer->CR0) + channel)    = countNbr;
   timer->CCR                    |= (captureMask)<<(3*channel);                         
   //timer->CTCR                   = 0x6;
-  
+  if(captureMask & __CAPTURE_INTERRUPT__)
+	  timer->IR		= (1<<(channel+4));  
   timer->TCR                    = __TCR_ENABLE__|__TCR_RESET_DISABLE__; 
 }
 /**
@@ -110,11 +111,12 @@ void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countN
     return;
   }
 
-  
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
   *(&(timer->MR0) + channel)    = countNbr;  
   timer->MCR    |= (MatchMask)<<(3*channel);
   timer->EMR    |= (1<<channel) | ((emrFunction << 2*channel)<<4) ;                              
+  if(MatchMask & __MATCH_INTERRUPT__)
+	  timer->IR		= (1<<channel);
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
 

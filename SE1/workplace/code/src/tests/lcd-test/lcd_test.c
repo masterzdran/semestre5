@@ -17,13 +17,33 @@
 
 #define  LCD_MASK   ((U32) 0x7F00)
 
-static int x;
+volatile static int x;
+void func0(void) __attribute__ ((interrupt));
+void isr(void) __attribute__ ((interrupt));
 
 void func0(void){
     x++;
-	enableIRQ( __INTERRUPT_TIMER0__ );
-    pVIC_VECTDEFADDR->DefVectAddr =0; //dummy write
+	pVIC_VECTDEFADDR->DefVectAddr =0;	//dummy write
+	pVIC_VECTDEFADDR->VectAddr =0;		//dummy write
+	pTIMER0->IR |= 1<<5;				//clear timer0 CR1 interrupt request
+	//enableIRQ( __INTERRUPT_TIMER0__ );
 }
+
+void isr(){
+	U32 irq_status = pVIC->IRQStatus;
+	if (irq_status & __INTERRUPT_TIMER0_MASK__){
+		x++;
+		pTIMER0->IR |= 1<<1; 
+	}
+}
+static void timer_init1(U32 period){
+	pTIMER0->TCR = __TCR_RESET_ENABLE__;
+	pTIMER0->PR  = 58982400/1000;
+	pTIMER0->MCR = (__MATCH_RESET__|__MATCH_INTERRUPT__)<<3;
+	pTIMER0->MR1 = period;
+	pTIMER0->TCR = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
+}
+
 
 
 int main(){
@@ -40,24 +60,29 @@ int main(){
   WATCHDOG_init(0xFFFFFFFF);
   U32 watch = WD_ISRUNNING();
 
-	//kbTest();
-
+  //kbTest();
+  
+  x=0;
   rtc_init();
   I2C_init();
   VIC_init();
- 
- 
+  
+  VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,func0);
+
   //TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction)
   TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,1000,MATCH_TOGGLE);
   
-  //TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction)
-  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_FALL__,10,COUNTER_MODE_FALL);
+   //TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction)
+  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_FALL__,10,COUNTER_MODE_FALL);  
 
-
-
-  x=0;
-  VIC_ConfigIRQ(__INTERRUPT_TIMER0__,0,func0);
-    
+  //pVIC->SoftInt = (1 << 4);
+   
+  /*VIC_init();
+  timer_init1(1000);
+  enableIRQ(4);*/
+  
+  interrupt_enable(); 
+  
   addr= pTIMER0->TC;
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
@@ -150,5 +175,11 @@ static Option menu1Options[__MAX_FUNCTION_MENU_1__] =
 		Menu_Generic(&p,&menu1Options,7);
 	}
 */ 
- return 0;  
+	while(1);
 }
+
+/*
+  mrs		r0, cpsr
+  and		r0,r0, #~(1<<7)
+  msr		cpsr_c,r0
+*/

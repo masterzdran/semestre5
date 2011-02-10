@@ -204,6 +204,8 @@ Bool VIC_ConfigIRQ(U8 peripherical, U8 priority,void (*fx)(void));
 void VIC_init();
 void disableIRQ(U8 peripherical);
 void enableIRQ(U8 peripherical);
+void interrupt_enable();
+void interrupt_disable();
 
 
 
