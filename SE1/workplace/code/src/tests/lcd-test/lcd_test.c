@@ -84,13 +84,14 @@ int main(){
   /*VIC_init();
   timer_init1(1000);
   enableIRQ(4);*/
-  
+  int aux = 0;
   interrupt_enable(); 
   
   addr= pTIMER0->TC;
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
   while (1){
+	++aux;
     LCD_posCursor(0,0);
     //addr = timer_elapsed(pTIMER0,addr);
     addr = pTIMER0->TC;
@@ -99,7 +100,7 @@ int main(){
     LCD_posCursor(1,0);
 	sprintf((char*)(&buff),"%16d",pWatchDog->TIMER_VALUE);
     LCD_writeString((char*)&buff);
-    timer_sleep_seconds(pTIMER1,1);
+	timer_sleep_seconds(pTIMER1,1);
   }
 
 /*  

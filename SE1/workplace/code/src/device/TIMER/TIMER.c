@@ -35,9 +35,6 @@
 
 #define _Timer1_Match_MAX 2
 
-
-
-
 //PR (Prescale Register) contains the number of MCU clocks (PCLK) required to increment the Timer Counter (TC) value.
 void timer_init(pLPC_TIMER timer, U32 countNbr){
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
@@ -45,6 +42,7 @@ void timer_init(pLPC_TIMER timer, U32 countNbr){
   timer->PR     = countNbr;                           
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__; 
 }
+
 //PC (Prescale Counter) contains the current prescale counter value. 
 //When this value equals the Prescale Register (PR), the Timer (TC) value is incremented.
 void timer_delay(pLPC_TIMER timer, U32 elapse){
@@ -120,6 +118,23 @@ void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countN
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
 
+void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U32 multiplier){
+  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
+  U32 value = *(&(timer->MR0) + channel);
+  value *= multiplier;
+  *(&(timer->MR0) + channel) = value;
+  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
+}
+
+void TIMER_ext_match_stop(pLPC_TIMER timer){
+  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
+}
+
+void TIMER_ext_match_start(pLPC_TIMER timer){
+  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
+}
+
+
 /**
  * LPC_TIMER timer: Timer
  * TMatch timerMatch: Pin enable
@@ -141,41 +156,3 @@ void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 cou
   timer->PR     = countNbr;                              //define count number  
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }
-//deprecated
-void TIMER_ext_matchX_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr){
-  //Enable GPIO for Timer Capture or Else
-  if (timer  == pTIMER0 )
-    gpio_init_PINSEL0(timerMatch);
-  else if (timer == pTIMER1)
-    gpio_init_PINSEL1(timerMatch);
-  else {
-    return;
-  }
-  
-  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
-  timer->MR1    = countNbr;  
-  timer->MCR    = MatchMask;                         	//config counting method
-  timer->EMR    |= 0xC0;                              //define count number  
-  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
-}
-
-
-void TIMER_captureX_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr){
-  U32 _Timer0_Capture_Mask[3]={__PINSEL0_TIMER_0_CAPTURE_0_0__,__PINSEL0_TIMER_0_CAPTURE_0_1__,__PINSEL0_TIMER_0_CAPTURE_0_2__};
-  U32 _Timer1_Capture_Mask[2]={__PINSEL0_TIMER_1_CAPTURE_1_0__,__PINSEL0_TIMER_1_CAPTURE_1_1__};
-
-  //Enable GPIO for Timer Capture or Else
-  if (timer  == pTIMER0 )
-    gpio_init_PINSEL0(timerCapture);
-  else if (timer == pTIMER1)
-    gpio_init_PINSEL1(timerCapture);
-  else {
-    return;
-  }
-  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;  //disable timer
-  timer->CR1    = countNbr;
-  timer->CCR    &= captureMask;                         //config counting method
-  timer->CTCR   = 0x6;
-  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
-}
-
