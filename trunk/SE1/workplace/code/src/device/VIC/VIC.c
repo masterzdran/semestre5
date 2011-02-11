@@ -27,9 +27,9 @@ void VIC_init(){
     U32 i ;
     PU32 vicAddr;
     PU32 vicCtrl;
-    pVIC->IntEnClr                = 0xFFFFFFFF; //clear all interrupts
-    pVIC->SoftIntClear            = 0xFFFFFFFF; //clear all sw interrupts
-    pVIC->IntSelect               = 0;			//select IRQ
+    pVIC->IntEnClr                = 0xFFFFFFFF; 	//clear all interrupts
+    pVIC->SoftIntClear            = 0xFFFFFFFF; 	//clear all sw interrupts
+    pVIC->IntSelect               = 0;				//select IRQ
     //pVIC->IntEnable               = 0xFFFFFFFF; //enable all interrupts
 	//pVIC_VECTDEFADDR->DefVectAddr = 0;			//clear old default isr address
 	//pVIC_VECTDEFADDR->VectAddr	  = 0;			//clear old isr address
