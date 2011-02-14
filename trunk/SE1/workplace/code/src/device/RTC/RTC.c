@@ -81,3 +81,4 @@ void rtc_getDateTime(DATE_TIME* datetime){
   rtc_getDate(&(datetime->date));
   rtc_getTime(&(datetime->time));
 }
+

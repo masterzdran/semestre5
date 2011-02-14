@@ -20,7 +20,9 @@
 #ifndef RTC_H
 #define RTC_H
 #include "TYPES.h"
-#define     pRTC      (((pLPC_RTC) 0xE0024000))
+#define     pRTC      		(((pLPC_RTC) 0xE0024000))
+#define		secondsInHour	(60*60)
+#define		secondsInDay	(60*60*24)
 
 typedef struct _RTC{
                       //SIZE|Description                  |Address
@@ -171,7 +173,7 @@ void rtc_getDate(DATE* date);
 void rtc_getTime(TIME* time);
 void rtc_setDateTime(DATE_TIME* datetime);
 void rtc_getDateTime(DATE_TIME* datetime);
-
+ 
 #define rtc_setDom(A)	  	((pRTC->DOM) = A & __DAY_MASK__)
 #define rtc_setMonth(A)		((pRTC->MONTH) = A & __MONTH_MASK__)
 #define rtc_setYear(A)		((pRTC->YEAR) = A & __YEAR_MASK__)

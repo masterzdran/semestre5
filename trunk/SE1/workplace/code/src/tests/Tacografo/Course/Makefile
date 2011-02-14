@@ -15,24 +15,23 @@
 # DEETC - Dep. de Eng. Electrónica e Telecomunicações e Computadores
 # ISEL  - Instituto Superior de Engenharia de Lisboa
 #=======================================================================
-#															LCD TEST
+#															Clock
 #=======================================================================
 #Shell Path
 SHELL			= /bin/sh
 #Environmental Paths
-SVN_PATH		= ./../../..
+SVN_PATH		= ./../../../../..
 #=======================================================================
 PROJECT_PATH	= $(SVN_PATH)/code
 SOURCE				= $(PROJECT_PATH)/src
-DEVICE				= $(SOURCE)/device
 TARGET				= $(PROJECT_PATH)/target
 TEST					= $(PROJECT_PATH)/test
-PCOMPILE			= $(SOURCE)/tests/
 #=======================================================================
 MYLIB			= $(SOURCE)/lib
-PROGRAM		= $(SOURCE)/program
 INCLUDE		= $(SOURCE)/include
 SEARCHLIB		= -I $(INCLUDE) -I $(MYLIB)
+PROGRAM		= $(SOURCE)/program
+
 #Executables
 CC 				= arm-eabi-gcc
 AS				= arm-eabi-as
@@ -50,21 +49,15 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-
-all: 
-	@echo "=================================="
-	@echo "Compiling the Program"
-	@echo "=================================="	
-	#$(MAKE) -C lcd-test/
-	$(MAKE) -C Tacografo/
+Course.o: Course.c Course.h 
+	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	cp $@ $(PROGRAM)/$@
+	cp Course.h $(INCLUDE)/
 
 	
 clean:
-	@echo "=================================="
-	@echo "Cleaning the Program"
-	@echo "=================================="	
-	#$(MAKE) -C lcd-test/ clean	
-	$(MAKE) -C Tacografo/ clean	
-	
+	rm  Course.o
+	rm  $(INCLUDE)/Course.h
+
 clear:
 	clear

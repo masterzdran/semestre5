@@ -94,7 +94,11 @@ enum KEYBOARD_KEYS{
   UP      = 0xDB,
   DOWN    = 0xD7,
   LEFT    = 0xE7,
-  RIGHT   = 0xB7  
+  RIGHT   = 0xB7,
+  ACCEL	  = 0xEE,
+  BRAKE	  = 0xED,
+  START   = 0xDE,
+  STOP    = 0xDD 
 };
 typedef enum KEYBOARD_KEYS KB_Key;
 

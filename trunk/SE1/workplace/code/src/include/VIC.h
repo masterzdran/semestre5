@@ -207,6 +207,4 @@ void enableIRQ(U8 peripherical);
 void interrupt_enable();
 void interrupt_disable();
 
-
-
 #endif

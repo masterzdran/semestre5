@@ -13,40 +13,22 @@
 #include "EEPROM.h"
 #include "VIC.h"
 #include "WATCHDOG.h"
-
+#include "Tacografo.h"
 
 #define  LCD_MASK   ((U32) 0x7F00)
 
-volatile static int x;
-void func0(void) __attribute__ ((interrupt));
-void isr(void) __attribute__ ((interrupt));
+static int tickCount;
+void timer0isr(void) __attribute__ ((interrupt));
 
-void func0(void){
+void timer0isr(void){
 	U32 irq_status = pVIC->IRQStatus;
 	if (irq_status & __INTERRUPT_TIMER0_MASK__){
-		x++;
+		tickCount++;
 		pVIC_VECTDEFADDR->VectAddr =0;		//clear isr function address
 		pTIMER0->IR |= 1<<5;				//clear timer0 CR1 interrupt request
 		enableIRQ( __INTERRUPT_TIMER0__ );
 	}
 }
-
-void isr(){
-	U32 irq_status = pVIC->IRQStatus;
-	if (irq_status & __INTERRUPT_TIMER0_MASK__){
-		x++;
-		pTIMER0->IR |= 1<<1; 
-	}
-}
-static void timer_init1(U32 period){
-	pTIMER0->TCR = __TCR_RESET_ENABLE__;
-	pTIMER0->PR  = 58982400/1000;
-	pTIMER0->MCR = (__MATCH_RESET__|__MATCH_INTERRUPT__)<<3;
-	pTIMER0->MR1 = period;
-	pTIMER0->TCR = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
-}
-
-
 
 int main(){
   char buffer[64];
@@ -54,24 +36,17 @@ int main(){
   U32 addr2 = 0x10;
   char text[16]="2011-02-06 14:39";
   char buff[16]="                ";
-  gpio_init(0,0);
-  timer_init(pTIMER1,58982400/MICRO);
-  timer_init(pTIMER0,58982400/MILI);
-  LCD_init(pTIMER1);
-  keyboard_init(pTIMER1);
-  WATCHDOG_init(0xFFFFFF);
+
+  Tacografo_init();
+
   U32 watch = WD_ISRUNNING();
 
   //kbTest();
   
-  x=0;
-  rtc_init();
-  I2C_init();
-  VIC_init();
   //to use only when compiling to ram
   pMAM->MEMORY_MAPPING_CONTROL  = __MEMORY_MAP_CONTROL_USERRAM__; 
   
-  VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,func0);
+  VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,timer0isr);
 
   //TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction)
   TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,5000,MATCH_TOGGLE);
@@ -81,26 +56,22 @@ int main(){
 
   //pVIC->SoftInt = (1 << 4);
    
-  /*VIC_init();
-  timer_init1(1000);
-  enableIRQ(4);*/
-  int aux = 0;
   interrupt_enable(); 
   
   addr= pTIMER0->TC;
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
   while (1){
-	++aux;
     LCD_posCursor(0,0);
     //addr = timer_elapsed(pTIMER0,addr);
     addr = pTIMER0->TC;
-    sprintf((char*)(&buff),"%12d-%3d",x,addr);
+    sprintf((char*)(&buff),"%12d-%3d",tickCount,addr);
     LCD_writeString((char*)&buff);
     LCD_posCursor(1,0);
-	sprintf((char*)(&buff),"%16d",pWatchDog->TIMER_VALUE);
+	sprintf((char*)(&buff),"%16d",pTIMER0->CR1);
     LCD_writeString((char*)&buff);
-	timer_sleep_seconds(pTIMER1,1);
+	//WD_FEED();
+	timer_sleep_miliseconds(pTIMER1,1);
   }
 
 /*  
