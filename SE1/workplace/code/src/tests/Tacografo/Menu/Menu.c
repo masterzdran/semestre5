@@ -45,6 +45,8 @@ Option menu1Options[__MAX_FUNCTION_MENU_1__] =
 
 void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
   pPercurso percurso = (pPercurso)course;
+  U32 currentTime=0;
+  timer_reset(pTIMER1);
   U8 idx = 0,bidx = -1;
   KB_Key key;
   LCD_clear();
@@ -54,6 +56,7 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
       LCD_writeLine(1,options[idx].text);
     bidx = idx;
     if (keyboard_hasKey()){
+	  currentTime=timer_now(pTIMER1);
       switch(key = keyboard_getBitMap()){
           case OK:
             options[idx].function(percurso); break;
@@ -69,8 +72,14 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
               //do nothing
               break;
       }
-     WD_RESET_ENABLE();
-    }
-   timer_sleep_miliseconds(pTIMER0, 200); 
+    }else{
+	  //no key
+	  if(timer_elapsed(pTIMER1,currentTime)>5000000)
+		return;
+	}
+    //WD_reset();
+    timer_sleep_miliseconds(pTIMER0, 50);
   }
 }
+
+

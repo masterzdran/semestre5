@@ -18,6 +18,7 @@
 #=======================================================================
 **/ 
 #include "WATCHDOG.h"
+#include "VIC.h"
 
 void WATCHDOG_init(U32 value){
   /*
@@ -32,9 +33,24 @@ void WATCHDOG_init(U32 value){
   }else{
       //WatchDog Start
   }
-  pWatchDog->TIMER_CONSTANT = value;
-  WD_ENABLE();
-  WD_FEED();
+  WD_DISABLE();
+  pWatchDog->TIMER_CONSTANT = value;	//set the time-out interval
+  pWatchDog->TIMER_VALUE	= 0xFF;		//reset the counter timer value
+  pWatchDog->MODE_REGISTER	= __WDTOF_MASK__|__WDINT_MASK__; //clear Int flag and TOF
+  WD_RESET_ENABLE();					//make the WDTOF to set WDINT  
+  //WD_RESET_DISABLE();					//make the WDTOF to reset the micro
+  WD_ENABLE();							//enable WD
+  WD_FEED();							//
+}
+/*
+ * When reseting the WatchDog Interrupts must be disabled.
+ * If an interrupt occurs during feed sequence an abort condition will occur
+ */
+void WD_reset(){
+	U32 int_enabled = pVIC->IntEnable;
+	pVIC->IntEnClr = int_enabled;
+	WD_FEED();
+	pVIC->IntEnable = int_enabled;
 }
 /*
  * Substituido por macros

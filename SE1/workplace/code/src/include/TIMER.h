@@ -130,27 +130,30 @@ typedef struct _TIMER{
 #define MICRO   1000000
 #define NANO    1000000000 //in this oscilator is not possible to go at nano level :(
 
-//#define     timer_sleep_seconds(A,B)          (timer_delay(A,(((__SYSTEM_CLOCK__/SECOND)/((A)->PR))*B)))
-//#define     timer_sleep_miliseconds(A,B)      (timer_delay(A,(((__SYSTEM_CLOCK__/MILI)/((A)->PR))*B)))
-//#define     timer_sleep_microseconds(A,B)     	(timer_delay(A,(((__SYSTEM_CLOCK__/MICRO)/((A)->PR))*B)))
-#define     timer_sleep_seconds(A,B)            (timer_delay(A,((( getSystemClock()/SECOND)/((A)->PR))*B)))
-#define     timer_sleep_miliseconds(A,B)        (timer_delay(A,((( getSystemClock()/MILI)/((A)->PR))*B)))
-#define     timer_sleep_microseconds(A,B)     	(timer_delay(A,((( getSystemClock()/MICRO)/((A)->PR))*B)))
-//#define		timer_sleep_seconds(A,B) 		    (timer_delay(A,(58982400/SECOND/58)*B))
-//#define     timer_sleep_miliseconds(A,B)    	(timer_delay(A,(58982400/MILI/58)*B))
-//#define     timer_sleep_microseconds(A,B)   	(timer_delay(A,(58982400/MICRO/58)*B))
+//#define     timer_sleep_seconds(A,B)          (TIMER_delay(A,(((__SYSTEM_CLOCK__/SECOND)/((A)->PR))*B)))
+//#define     timer_sleep_miliseconds(A,B)      (TIMER_delay(A,(((__SYSTEM_CLOCK__/MILI)/((A)->PR))*B)))
+//#define     timer_sleep_microseconds(A,B)     	(TIMER_delay(A,(((__SYSTEM_CLOCK__/MICRO)/((A)->PR))*B)))
+#define     timer_sleep_seconds(A,B)            (TIMER_delay(A,((( getSystemClock()/SECOND)/((A)->PR))*B)))
+#define     timer_sleep_miliseconds(A,B)        (TIMER_delay(A,((( getSystemClock()/MILI)/((A)->PR))*B)))
+#define     timer_sleep_microseconds(A,B)     	(TIMER_delay(A,((( getSystemClock()/MICRO)/((A)->PR))*B)))
+//#define		timer_sleep_seconds(A,B) 		    (TIMER_delay(A,(58982400/SECOND/58)*B))
+//#define     timer_sleep_miliseconds(A,B)    	(TIMER_delay(A,(58982400/MILI/58)*B))
+//#define     timer_sleep_microseconds(A,B)   	(TIMER_delay(A,(58982400/MICRO/58)*B))
 
 #define timer_start(A)                  ((A)->TCR |= __TCR_ENABLE__)
 #define timer_stop(A)                   ((A)->TCR &= ~(__TCR_DISABLE__))
 #define timer_elapsed(A,B)              ((A)->TC - B)
+#define timer_now(A)					((A)->TC)
 
 #define timer_reset(A)                  {(A)->TCR |= __TCR_RESET_ENABLE__; (A)->TCR &= ~(__TCR_RESET_DISABLE__);}
 
-void timer_init(pLPC_TIMER timer, U32 countNbr);
-void timer_delay(pLPC_TIMER timer, U32 elapse);
-//void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
-//void TIMER_capture_init(pLPC_TIMER timer,TCapture timerCapture, U32 captureMask, U32 countNbr);
-//void TIMER_ext_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 countNbr);
+void TIMER_init(pLPC_TIMER timer, U32 countNbr);
+void TIMER_delay(pLPC_TIMER timer, U32 elapse);
 void TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction);
 void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction);
+
+void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 dif);
+void TIMER_ext_match_stop(pLPC_TIMER timer);
+void TIMER_ext_match_start(pLPC_TIMER timer);
+
 #endif

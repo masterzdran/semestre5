@@ -40,7 +40,6 @@ U32 modulos(S32 value, U8 adj, S8 offset, U32 mod){
 	return val + adj;
 }
 
-
 void format(U8 position,DATE_TIME* dateTime,short value){
   U8 val;
   Bool dateHasChanged= false;
@@ -139,3 +138,30 @@ void setClock(PVOID course){
    timer_sleep_miliseconds(pTIMER0, 200); 
   }
 }
+
+void Clock_timeDif(TIME* time_init, TIME* time_end, TIME* time_dif){
+  S32 timeDifSeconds = rtc_timeToSecond(time_end)-rtc_timeToSecond(time_init);
+  if (timeDifSeconds<0)
+	timeDifSeconds+=(secondsInDay);
+  time_dif->hour   = rtc_timeSecToHour(timeDifSeconds);
+  time_dif->minute = rtc_timeSecToMin(timeDifSeconds);
+  time_dif->second = rtc_timeSecToSec(timeDifSeconds); 
+}
+
+//diferença apenas tem em conta os dias, fazer passagem de ano
+U16 Clock_dateDif(DATE* date_init, DATE* date_end){
+  U16 numberDays=0;
+  if (date_end->month == date_init->month){
+	numberDays=date_end->day-date_init->day;
+  }else{
+    numberDays=monthDays[date_init->month]-date_init->day;
+	numberDays+=date_end->day;
+  }
+  U8 aux;
+  for(aux=date_init->month+1; aux<date_end->month-1;++aux){
+	numberDays+=monthDays[aux];
+  }
+  return numberDays;
+}
+
+

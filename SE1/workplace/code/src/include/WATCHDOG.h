@@ -21,6 +21,7 @@
 #define WATCHDOG_H
 #include "startosc.h"
 #include "TIMER.h"
+#include "VIC.h"
 
 #define pWatchDog     ((pLPC_WATCHDOG)  0xE0000000)
 
@@ -58,9 +59,11 @@ typedef struct _WATCHDOG{
 #define WD_ISRUNNING()           ( pWatchDog->MODE_REGISTER & __WDEN_MASK__ )
 #define WD_ENABLE()              ( pWatchDog->MODE_REGISTER |= __WDEN_MASK__ )
 #define WD_DISABLE()             ( pWatchDog->MODE_REGISTER &= ~(__WDEN_MASK__) )
-#define WD_RESET_ENABLE()         ( pWatchDog->MODE_REGISTER |= __WDRESET_MASK__ )
-#define WD_RESET_DISABLE()        ( pWatchDog->MODE_REGISTER &= ~(__WDRESET_MASK__) )
-#define WD_COME_FROM_RESET()       ( pWatchDog->MODE_REGISTER & __WDTOF_MASK__ )
-#define WD_READ_TIME()            (pWatchDog->TIMER_VALUE)
+#define WD_RESET_ENABLE()        ( pWatchDog->MODE_REGISTER |= __WDRESET_MASK__ )
+#define WD_RESET_DISABLE()       ( pWatchDog->MODE_REGISTER &= ~(__WDRESET_MASK__) )
+#define WD_COME_FROM_RESET()     ( pWatchDog->MODE_REGISTER & __WDTOF_MASK__ )
+#define WD_READ_TIME()           (pWatchDog->TIMER_VALUE)
+
+void WD_reset();
 
 #endif

@@ -36,7 +36,7 @@
 #define _Timer1_Match_MAX 2
 
 //PR (Prescale Register) contains the number of MCU clocks (PCLK) required to increment the Timer Counter (TC) value.
-void timer_init(pLPC_TIMER timer, U32 countNbr){
+void TIMER_init(pLPC_TIMER timer, U32 countNbr){
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
   //timer->CTCR   |= __CTCR_MODE_0__;
   timer->PR     = countNbr;                           
@@ -45,7 +45,7 @@ void timer_init(pLPC_TIMER timer, U32 countNbr){
 
 //PC (Prescale Counter) contains the current prescale counter value. 
 //When this value equals the Prescale Register (PR), the Timer (TC) value is incremented.
-void timer_delay(pLPC_TIMER timer, U32 elapse){
+void TIMER_delay(pLPC_TIMER timer, U32 elapse){
     U32 time;
     timer->PC = 0;                          
     time = timer_elapsed(timer,0);
@@ -76,11 +76,7 @@ void TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countN
   }
   
   timer->TCR                    = __TCR_DISABLE__|__TCR_RESET_ENABLE__; 
-  timer->PR                     =0x0007530;
-  //timer->CTCR                   |= (ctcrFunction) | ((channel)<<2);
-  //*(&(timer->CR0) + channel)    = countNbr;
   timer->CCR                    |= (captureMask)<<(3*channel);                         
-  //timer->CTCR                   = 0x6;
   if(captureMask & __CAPTURE_INTERRUPT__)
 	  timer->IR		= (1<<(channel+4));  
   timer->TCR                    = __TCR_ENABLE__|__TCR_RESET_DISABLE__; 
@@ -115,14 +111,13 @@ void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countN
   timer->EMR    |= (1<<channel) | ((emrFunction << 2*channel)<<4) ;                              
   if(MatchMask & __MATCH_INTERRUPT__)
 	  timer->IR		= (1<<channel);
-  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
+  //After being configured needs to be started
+  //timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
 
-void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U32 multiplier){
+void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 dif){
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
-  U32 value = *(&(timer->MR0) + channel);
-  value *= multiplier;
-  *(&(timer->MR0) + channel) = value;
+  *(&(timer->MR0) + channel) += dif;
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
 
@@ -133,7 +128,6 @@ void TIMER_ext_match_stop(pLPC_TIMER timer){
 void TIMER_ext_match_start(pLPC_TIMER timer){
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
-
 
 /**
  * LPC_TIMER timer: Timer
@@ -156,3 +150,4 @@ void TIMER_match_init(pLPC_TIMER timer,TMatch timerMatch, U32 MatchMask, U32 cou
   timer->PR     = countNbr;                              //define count number  
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;  // enable timer  
 }
+
