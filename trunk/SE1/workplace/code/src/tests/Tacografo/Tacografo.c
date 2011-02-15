@@ -14,26 +14,18 @@
 #include "Menu.h"
 #include "MenuFunctions.h"
 #include "EEPROM.h"
+#include "Percurso.h"
 
-static percurso_init(pPercurso percurso){
-	percurso->beginDate.year=2011;
-	percurso->beginDate.month=02;
-	percurso->beginDate.day=04;
-	percurso->beginTime.hour=13;
-	percurso->beginTime.minute=0;
-	percurso->beginTime.second=0;
-	percurso->spentTime=0;
-	percurso->distance=0;
-	percurso->averageSpeed=0;
-	percurso->totalDistance=0;
-	percurso->totalTime=0;
-  
-}
+
 extern Option menu2Options[__MAX_FUNCTION_MENU_2__];
 extern Option menu1Options[__MAX_FUNCTION_MENU_1__];
 
 static int tickCount;
 Percurso percurso;
+U8  currentSpeed;
+U32 lastDistanceTimeUpdate;
+U32 lastSaveTime;
+
 
 void timer0isr(void){
 	U32 irq_status = pVIC->IRQStatus;
@@ -48,7 +40,7 @@ void timer0isr(void){
 void Tacografo_init(){
   gpio_init(0,0);
   TIMER_init(pTIMER1,58982400/MICRO);
-  TIMER_init(pTIMER0,58982400/MILI);
+  TIMER_init(pTIMER0,58982400/MICRO);
   LCD_init(pTIMER1);
   keyboard_init(pTIMER1); 
   //WATCHDOG_init(0x0FFFFFFF);
@@ -57,7 +49,8 @@ void Tacografo_init(){
   VIC_init();
   
   VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,timer0isr);
-  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,5000,MATCH_TOGGLE);
+  //35297122 - time needed to run at a 1 km/h speed
+  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,3597122,MATCH_TOGGLE);
   TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_RISE__,10,COUNTER_MODE_FALL);  
   interrupt_enable(); 
  
@@ -68,19 +61,47 @@ void Tacografo_init(){
 
 }
 
+void updateSpeed(){
+  if (currentSpeed==0){
+	//estava parado
+	lastDistanceTimeUpdate=percurso_addStopTime(&percurso, lastDistanceTimeUpdate);
+  }else{
+	//estava a andar
+	lastDistanceTimeUpdate=percurso_addSpentTime(&percurso, lastDistanceTimeUpdate);
+	percurso_updateDistance(&percurso, tickCount);
+	tickCount=0;
+	percurso_updateAverageSpeed(&percurso);
+  }
+  currentSpeed=3600000/timer_capture1_time(pTIMER0);
+  timer_capture1_time(pTIMER0)=0;
+  percurso_testAndSetMaxSpeed(&percurso, currentSpeed);
+  
+}
+
+void saveData(){
+	
+}
 //typedef enum _status {MAIN=0,OK_PRESS,MENU_PRESS,RESET_PRESS,FULLRESET,READ,WRITE,WAIT} Status;
 
 int main(){
   Status program_status=OK_PRESS;
   KB_Key key;
   char buff[16]="                ";
-  percurso_init(&percurso);
+
+  U16 lastSaveDistance = percurso.distance;
+  U32 lastSpeedCheckTS=timer_now(pTIMER1);
+  currentSpeed=0;
+  lastDistanceTimeUpdate = Clock_getCurrentTimeSeconds();
+  lastSaveTime = lastDistanceTimeUpdate;
+ 
+  percurso_init(&percurso,0,0);
   Tacografo_init();  
 
 
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
   while (1){
+	Menu_Generic(&percurso,&menu1Options,7);
     LCD_posCursor(0,0);
     sprintf((char*)(&buff),"%12d-%3d",tickCount,pTIMER0->TC);
     LCD_writeString((char*)&buff);
@@ -92,27 +113,31 @@ int main(){
   }
   
   while (true){
-	  
-	  
+	if (timer_elapsed(pTIMER1,lastSpeedCheckTS)>2000000){
+	  updateSpeed();
+	}
 	if (keyboard_hasKey()){
 		switch(key = keyboard_getBitMap()){
 		  case OK:
 			Menu_Generic(&percurso,menu1Options,__MAX_FUNCTION_MENU_1__);
-			program_status=MENU_PRESS;
 			break;
 		  case MENU:
 			Menu_Generic(&percurso,menu2Options,__MAX_FUNCTION_MENU_2__);
-			program_status=RESET_PRESS;
 			break;
 		  case RESET:
 			resetTotal((&percurso));
-			program_status = OK_PRESS;
 			break;
-		  case ACCEL:
+		  case ACCEL5:
 			TIMER_ext_match_changeTime(pTIMER0,1,+5);
 			break;
-		  case BRAKE:
+		  case ACCEL1:
+			TIMER_ext_match_changeTime(pTIMER0,1,+1);
+			break;
+		  case BRAKE5:
 		    TIMER_ext_match_changeTime(pTIMER0,1,-5);
+		    break;
+		  case BRAKE1:
+		    TIMER_ext_match_changeTime(pTIMER0,1,-1);
 		    break;
 		  case START:
 		    TIMER_ext_match_start(pTIMER0);
@@ -124,12 +149,14 @@ int main(){
 		    //do nothing
 		  	break;
 		}
-		
 	}else{
-		//No key present
-		
-	}
+	  if ((percurso.distance-lastSaveDistance)>1000 || timer_elapsed(pTIMER1,lastSpeedCheckTS)>1000000*60){
+	    saveData();
+		lastSaveDistance=percurso.distance;
+	  }
+    }
 	//WD_reset;
+	timer_sleep_miliseconds(pTIMER1,100);
   }
 
 

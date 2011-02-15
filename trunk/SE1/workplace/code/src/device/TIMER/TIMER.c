@@ -29,11 +29,12 @@
 * */
 
 #define _Timer0_Capture_MAX 3
-
 #define _Timer1_Capture_MAX 2
 #define _Timer0_Match_MAX 2
-
 #define _Timer1_Match_MAX 2
+
+U8 timer_match_aux1;
+U8 timer_match_aux2;
 
 //PR (Prescale Register) contains the number of MCU clocks (PCLK) required to increment the Timer Counter (TC) value.
 void TIMER_init(pLPC_TIMER timer, U32 countNbr){
@@ -91,6 +92,9 @@ void TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countN
  * 
  * */
 void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction){
+  timer_match_aux1=2;
+  timer_match_aux2=1;
+  
   U32 _Timer1_Match_Mask[2]={__PINSEL0_TIMER_1_MATCH_1_0__,__PINSEL0_TIMER_1_MATCH_1_1__};
   U32 _Timer0_Match_Mask[2]={__PINSEL0_TIMER_0_MATCH_0_0__,__PINSEL0_TIMER_0_MATCH_0_1__};
   if (timer  == pTIMER0 ){
@@ -116,8 +120,24 @@ void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countN
 }
 
 void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 dif){
+  double multiplier;
+  U8  aux;
+  //if out of limits don't change
+  if ((timer_match_aux2-dif)<0 || (timer_match_aux2-dif)>250)
+	return;
+	
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
-  *(&(timer->MR0) + channel) += dif;
+  if (dif>0){
+	for (aux=0;aux<dif;++aux){
+	  multiplier=(timer_match_aux2++)/(timer_match_aux1++);
+	  *(&(timer->MR0) + channel)*=multiplier;
+	}
+  }else{
+	for (aux=0;aux<dif;++aux){
+	  multiplier=(--timer_match_aux1)/(--timer_match_aux2);
+	  *(&(timer->MR0) + channel)*=multiplier;
+	}
+  }
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
 

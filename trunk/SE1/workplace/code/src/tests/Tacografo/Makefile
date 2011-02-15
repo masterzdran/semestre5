@@ -49,7 +49,7 @@ COMPILE_ONLY 		= -c
 #Phony Target
 .PHONY 					= clean
 .PHONY					= clear
-MAKEPATHS				= Clock Menu Course
+MAKEPATHS				= Clock Menu Percurso
 #=======================================================================
 all: Tacografo.c Tacografo.h
 	@echo "=================================="

@@ -20,9 +20,10 @@
 #ifndef RTC_H
 #define RTC_H
 #include "TYPES.h"
-#define     pRTC      		(((pLPC_RTC) 0xE0024000))
-#define		secondsInHour	(60*60)
-#define		secondsInDay	(60*60*24)
+#define     pRTC      			(((pLPC_RTC) 0xE0024000))
+#define		__MINUTES_IN_DAY__  (60*24)
+#define		__SECONDS_IN_HOUR__	(60*60)
+#define		__SECONDS_IN_DAY__	(60*60*24)
 
 typedef struct _RTC{
                       //SIZE|Description                  |Address

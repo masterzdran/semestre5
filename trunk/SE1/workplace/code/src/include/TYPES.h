@@ -75,10 +75,11 @@ typedef struct _datetime{
 typedef struct _percurso{
   DATE beginDate;
   TIME beginTime;
-  U16  spentTime;//in minutes
+  U32  spentTime;//in seconds
+  U32  stopTime;//in seconds
   U16  distance; //in meters
-  U8   maxSpeed; //in KM/s
-  U8   averageSpeed; // in KM/s
+  U8   maxSpeed; //in KM/h
+  U8   averageSpeed; // in KM/h
   U32  totalDistance;
   U32  totalTime;
 }Percurso,*pPercurso;
@@ -95,11 +96,14 @@ enum KEYBOARD_KEYS{
   DOWN    = 0xD7,
   LEFT    = 0xE7,
   RIGHT   = 0xB7,
-  ACCEL	  = 0xEE,
-  BRAKE	  = 0xED,
-  START   = 0xDE,
-  STOP    = 0xDD 
+  ACCEL5  = 0xEE,
+  ACCEL1  = 0xDE,
+  BRAKE5  = 0xED,
+  BRAKE1  = 0xDD,
+  START   = 0xBE,
+  STOP    = 0xBD
 };
+
 typedef enum KEYBOARD_KEYS KB_Key;
 
 /**
