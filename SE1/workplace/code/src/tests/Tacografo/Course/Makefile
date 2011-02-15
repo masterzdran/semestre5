@@ -49,15 +49,15 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 #=======================================================================
-Course.o: Course.c Course.h 
+Percurso.o: Percurso.c Percurso.h 
 	$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
 	cp $@ $(PROGRAM)/$@
-	cp Course.h $(INCLUDE)/
+	cp Percurso.h $(INCLUDE)/
 
 	
 clean:
-	rm  Course.o
-	rm  $(INCLUDE)/Course.h
+	rm  Percurso.o
+	rm  $(INCLUDE)/Percurso.h
 
 clear:
 	clear
