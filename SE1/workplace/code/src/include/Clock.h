@@ -39,13 +39,16 @@
 // | Y | Y | Y | Y | - | M | M | - | D | D |   | H | H | : | M | M |
 // | 00| 01| 02| 03| 04| 05| 06| 07| 08| 09| 10| 11| 12| 13| 14| 15|
 
-#define Clock_timeToSecond(A)	((A)->hour*60*60+(A)->minute*60+(A)->second)
-#define Clock_timeSecToHour(A)((A)/secondsInDay)
-#define Clock_timeSecToMin(A)	((A-((A/secondsInDay)*secondsInDay))/60)
-#define Clock_timeSecToSec(A)	((A)%60)
+#define Clock_timeToSecond(A)		((A)->hour*60*60+(A)->minute*60+(A)->second)
+#define Clock_timeToMinutes(A)		((A)->hour*60*60+(A)->minute*60)
 
-void Clock_timeDif(TIME* time1, TIME* time2, TIME* time_res);
-U16  Clock_dateDif(DATE* date_init, DATE* date_end);
+#define Clock_timeSecToHour(A)  	((A)/__SECONDS_IN_DAY__)
+#define Clock_timeSecToMin(A)		((A-((A/__SECONDS_IN_DAY__)*__SECONDS_IN_DAY__))/60)
+#define Clock_timeSecToSec(A)		((A)%60)
+
+U8  Clock_timeDif(TIME* time_init, TIME* time_end, TIME* time_dif);
+U16 Clock_dateDif(DATE* date_init, DATE* date_end);
+U32 Clock_getCurrentTimeSeconds();
 
 void setClock(PVOID course);
 U32  modulos(S32 value, U8 adj, S8 offset, U32 mod);

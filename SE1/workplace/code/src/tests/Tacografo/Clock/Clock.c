@@ -139,13 +139,17 @@ void setClock(PVOID course){
   }
 }
 
-void Clock_timeDif(TIME* time_init, TIME* time_end, TIME* time_dif){
-  S32 timeDifSeconds = rtc_timeToSecond(time_end)-rtc_timeToSecond(time_init);
-  if (timeDifSeconds<0)
-	timeDifSeconds+=(secondsInDay);
-  time_dif->hour   = rtc_timeSecToHour(timeDifSeconds);
-  time_dif->minute = rtc_timeSecToMin(timeDifSeconds);
-  time_dif->second = rtc_timeSecToSec(timeDifSeconds); 
+U8 Clock_timeDif(TIME* time_init, TIME* time_end, TIME* time_dif){
+  U8 changeDay=0;
+  S32 timeDifSeconds = Clock_timeToSecond(time_end)-Clock_timeToSecond(time_init);
+  if (timeDifSeconds<0){
+	timeDifSeconds+=(__SECONDS_IN_DAY__);
+	changeDay=1;
+  }
+  time_dif->hour   = Clock_timeSecToHour(timeDifSeconds);
+  time_dif->minute = Clock_timeSecToMin(timeDifSeconds);
+  time_dif->second = Clock_timeSecToSec(timeDifSeconds); 
+  return changeDay;
 }
 
 //diferença apenas tem em conta os dias, fazer passagem de ano
@@ -158,10 +162,14 @@ U16 Clock_dateDif(DATE* date_init, DATE* date_end){
 	numberDays+=date_end->day;
   }
   U8 aux;
-  for(aux=date_init->month+1; aux<date_end->month-1;++aux){
+  for(aux=date_init->month+1; aux<date_end->month-1;aux++){
 	numberDays+=monthDays[aux];
   }
   return numberDays;
 }
 
-
+U32 Clock_getCurrentTimeSeconds(){
+  TIME* auxTime;
+  rtc_getTime(auxTime);
+  return Clock_timeToSecond(auxTime);
+}
