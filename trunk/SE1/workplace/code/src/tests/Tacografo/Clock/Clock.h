@@ -48,7 +48,6 @@
 
 U8  Clock_timeDif(TIME* time_init, TIME* time_end, TIME* time_dif);
 U16 Clock_dateDif(DATE* date_init, DATE* date_end);
-U32 Clock_getCurrentTimeSeconds();
 
 void setClock(PVOID course);
 U32  modulos(S32 value, U8 adj, S8 offset, U32 mod);

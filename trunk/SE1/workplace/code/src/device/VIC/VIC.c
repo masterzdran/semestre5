@@ -23,10 +23,6 @@
  * Inicialização do VIC
  * */
 void VIC_init(){
-  
-    U32 i ;
-    PU32 vicAddr;
-    PU32 vicCtrl;
     pVIC->IntEnClr                = 0xFFFFFFFF; 	//clear all interrupts
     pVIC->SoftIntClear            = 0xFFFFFFFF; 	//clear all sw interrupts
     pVIC->IntSelect               = 0;				//select IRQ

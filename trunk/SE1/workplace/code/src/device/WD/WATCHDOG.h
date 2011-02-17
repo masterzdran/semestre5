@@ -64,6 +64,7 @@ typedef struct _WATCHDOG{
 #define WD_COME_FROM_RESET()     ( pWatchDog->MODE_REGISTER & __WDTOF_MASK__ )
 #define WD_READ_TIME()           (pWatchDog->TIMER_VALUE)
 
+void WATCHDOG_init(U32 value);
 void WD_reset();
 
 #endif

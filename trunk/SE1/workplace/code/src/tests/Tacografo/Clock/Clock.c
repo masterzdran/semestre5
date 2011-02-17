@@ -167,9 +167,3 @@ U16 Clock_dateDif(DATE* date_init, DATE* date_end){
   }
   return numberDays;
 }
-
-U32 Clock_getCurrentTimeSeconds(){
-  TIME* auxTime;
-  rtc_getTime(auxTime);
-  return Clock_timeToSecond(auxTime);
-}

@@ -20,7 +20,20 @@
 #include "MenuFunctions.h"
 #include "LCD.h"
 #include "stdio.h"
-
+/*
+typedef struct _percurso{
+  DATE beginDate;
+  TIME beginTime;
+  U32  spentTime;		//in miliseconds
+  U32  stopTime;		//in miliseconds
+  U16  distance; 		//in meters
+  U8   currentSpeed;	//in km/h
+  U8   maxSpeed; 		//in km/h
+  U8   averageSpeed; 	//in km/h
+  U32  totalDistance;	//in meters
+  U32  totalTime;		//in seconds
+}Percurso,*pPercurso;
+ * */
 void printToLCD(char* line0,char* line1){
   LCD_writeLine(0,line0); LCD_writeLine(1,line1);    
 }
@@ -33,13 +46,13 @@ void printDateTime(PVOID course){
 void printDistance(PVOID course){
   pPercurso percurso = (pPercurso)course;
   char text[16];  
-  sprintf(text,"%3.3d Km/h",percurso->distance);
+  sprintf(text,"%4.4d,%3.3d Km",percurso->distance/1000,percurso->distance%1000);
   printToLCD("Distance Made",text);
 }
 void printTime(PVOID course){
   pPercurso percurso = (pPercurso)course;
   char text[16];  
-  sprintf(text,"%5.5dH %2.2M",percurso->spentTime/60,percurso->spentTime%60);
+  sprintf(text,"%5.5dH %2.2M",percurso->spentTime/60000,percurso->spentTime%60000);
   printToLCD("Time Spent",text);
 
 }
@@ -59,7 +72,7 @@ void printAvgSpeed(PVOID course){
 void printTotalDistance(PVOID course){
   pPercurso percurso = (pPercurso)course;
   char text[16];
-  sprintf(text,"%3.3d Km",percurso->totalDistance);
+  sprintf(text,"%3.3d,%3.3d Km",percurso->totalDistance/1000,percurso->totalDistance%1000);
   printToLCD("Total Distance",text);
 }
 void printTotalTime(PVOID course){

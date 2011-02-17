@@ -37,8 +37,8 @@ void WATCHDOG_init(U32 value){
   pWatchDog->TIMER_CONSTANT = value;	//set the time-out interval
   pWatchDog->TIMER_VALUE	= 0xFF;		//reset the counter timer value
   pWatchDog->MODE_REGISTER	= __WDTOF_MASK__|__WDINT_MASK__; //clear Int flag and TOF
-  WD_RESET_ENABLE();					//make the WDTOF to set WDINT  
-  //WD_RESET_DISABLE();					//make the WDTOF to reset the micro
+  WD_RESET_ENABLE();					//make the WDTOF to reset the micro
+  //WD_RESET_DISABLE();					//make the WDTOF to set WDINT
   WD_ENABLE();							//enable WD
   WD_FEED();							//
 }

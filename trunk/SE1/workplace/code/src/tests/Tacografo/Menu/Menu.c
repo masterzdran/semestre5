@@ -22,8 +22,9 @@
 #include "LCD.h"
 #include "WATCHDOG.h"
 #include "MenuFunctions.h"
+#include "Timer.h"
+#include "RTC.h"
 #include "Clock.h"
-
  
 Option menu2Options[__MAX_FUNCTION_MENU_2__] =
 {
@@ -45,8 +46,8 @@ Option menu1Options[__MAX_FUNCTION_MENU_1__] =
 
 void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
   pPercurso percurso = (pPercurso)course;
-  U32 currentTime=0;
-  timer_reset(pTIMER1);
+  U32 currentTime=rtc_getCurrentTime();
+  U32 elapsedTime;
   U8 idx = 0,bidx = -1;
   KB_Key key;
   LCD_clear();
@@ -56,7 +57,7 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
       LCD_writeLine(1,options[idx].text);
     bidx = idx;
     if (keyboard_hasKey()){
-	  currentTime=timer_now(pTIMER1);
+	  currentTime=rtc_getCurrentTime();
       switch(key = keyboard_getBitMap()){
           case OK:
             options[idx].function(percurso); break;
@@ -74,11 +75,14 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
       }
     }else{
 	  //no key
-	  if(timer_elapsed(pTIMER1,currentTime)>5000000)
+	  elapsedTime = rtc_getCurrentTime()-currentTime;
+	  if(elapsedTime>10){
 		return;
+	  }
+
 	}
     //WD_reset();
-    timer_sleep_miliseconds(pTIMER0, 50);
+    timer_sleep_miliseconds(pTIMER1, 50);
   }
 }
 

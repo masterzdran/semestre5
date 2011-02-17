@@ -82,3 +82,8 @@ void rtc_getDateTime(DATE_TIME* datetime){
   rtc_getTime(&(datetime->time));
 }
 
+U32 rtc_secondsElapsed(U32 seconds){
+  U32 time_dif = rtc_getCurrentTime()-seconds;
+  if (time_dif<0)
+	time_dif+=__SECONDS_IN_DAY__;
+}
