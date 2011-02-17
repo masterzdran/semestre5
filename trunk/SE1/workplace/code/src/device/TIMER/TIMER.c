@@ -119,21 +119,18 @@ void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countN
   //timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
 
-void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 dif){
-  double multiplier;
-  U8  aux;
-  //if out of limits don't change
-  if ((timer_match_aux2+dif)<0 || (timer_match_aux2+dif)>200)
+void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 up, U8 dif){
+  if ((timer_match_aux2-dif)<0 || (timer_match_aux2+dif)>200)
 	return;
 	
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
-  if (dif>0){
-	for (aux=0;aux<dif;++aux){
+  if (up){
+	for (;dif>0;--dif){
 	  *(&(timer->MR0) + channel)*=(timer_match_aux2++);
 	  *(&(timer->MR0) + channel)/=(timer_match_aux1++);
 	}
   }else{
-	for (aux=0;aux<dif;++aux){
+	for (;dif>0;--dif){
 	  *(&(timer->MR0) + channel)*=(--timer_match_aux1);
 	  *(&(timer->MR0) + channel)/=(--timer_match_aux2);
 	}
