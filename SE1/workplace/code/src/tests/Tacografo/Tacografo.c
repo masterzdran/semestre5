@@ -48,8 +48,8 @@ void Tacografo_init(){
   
   VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,timer0isr);
   //3597122 - time needed to run at a 1 km/h speed
-  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,3597122,MATCH_TOGGLE);
   TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_FALL__,1,COUNTER_MODE_FALL);  
+  TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,3597122,MATCH_TOGGLE);
   interrupt_enable(); 
  
   tickCount=0;
@@ -85,7 +85,8 @@ void saveData(){
 int main(){
   Percurso percurso;
   U32 lastSaveTime;
-
+  U32 lastUpdateTime;
+  
   KB_Key key;
   char buff[16]="                ";
 
@@ -98,7 +99,7 @@ int main(){
 
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
-  TIMER_ext_match_start;
+  //TIMER_ext_match_start;
   
  /* 
   while (1){
@@ -121,8 +122,10 @@ int main(){
 	}
   }
 */
+
   while (true){
-	if (tickTime > __MAX_SPEED_UPDATE_TIMEOUT__){
+	if (lastUpdateTime > __MAX_SPEED_UPDATE_TIMEOUT__){
+	  lastUpdateTime=tickTime;
 	  updateSpeed(&percurso);
 	}
 	if (keyboard_hasKey()){
@@ -137,16 +140,16 @@ int main(){
 			resetTotal((&percurso));
 			break;
 		  case ACCEL5:
-			TIMER_ext_match_changeTime(pTIMER0,1,+5);
+			TIMER_ext_match_changeTime(pTIMER0,1,1,+5);
 			break;
 		  case ACCEL1:
-			TIMER_ext_match_changeTime(pTIMER0,1,+1);
+			TIMER_ext_match_changeTime(pTIMER0,1,1,+1);
 			break;
 		  case BRAKE5:
-		    TIMER_ext_match_changeTime(pTIMER0,1,-5);
+		    TIMER_ext_match_changeTime(pTIMER0,1,0,5);
 		    break;
 		  case BRAKE1:
-		    TIMER_ext_match_changeTime(pTIMER0,1,-1);
+		    TIMER_ext_match_changeTime(pTIMER0,1,0,1);
 		    break;
 		  case START:
 		    TIMER_ext_match_start(pTIMER0);
@@ -163,13 +166,13 @@ int main(){
 	    saveData(&percurso);
 		lastSaveTime=rtc_getCurrentTime();
 	  }
-	  sprintf((char*)(&buff),"%16d",percurso.currentSpeed);
+	  sprintf((char*)(&buff),"%11d km/h",percurso.currentSpeed);
 	  LCD_writeLine(0,(char*)&buff);
       /*sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
 	  LCD_writeLine(1,(char*)&buff);*/
     }
 	//WD_reset;
-	timer_sleep_miliseconds(pTIMER1,200);
+	timer_sleep_miliseconds(pTIMER1,300);
   }
 
   return 0;

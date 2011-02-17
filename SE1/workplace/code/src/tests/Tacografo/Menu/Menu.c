@@ -68,6 +68,7 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
           case UP:
             idx = __FX0(idx,-1,sizeOf);    break;
           case CANCEL:
+			LCD_clear();
             return;  
           default:
               //do nothing
@@ -77,6 +78,7 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
 	  //no key
 	  elapsedTime = rtc_getCurrentTime()-currentTime;
 	  if(elapsedTime>10){
+		 LCD_clear(); 
 		return;
 	  }
 

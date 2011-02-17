@@ -1,8 +1,8 @@
 #ifndef __TACOGRAFO_H__
 #define __TACOGRAFO_H__
 
-#define __MAX_SPEED_UPDATE_TIMEOUT__ 	1000000 	//2 seconds
-#define __MAX_SAVE_TIMEOUT__		 	5			//5 seconds
+#define __MAX_SPEED_UPDATE_TIMEOUT__ 	1 			//1 seconds
+#define __MAX_SAVE_TIMEOUT__		 	60			//60 seconds
 #define __MAX_SAVE_DISTANCE__			1000		//1 km
 
 #define __METERS_PER_TICK__		1
