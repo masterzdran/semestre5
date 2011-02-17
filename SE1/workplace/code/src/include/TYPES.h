@@ -75,13 +75,14 @@ typedef struct _datetime{
 typedef struct _percurso{
   DATE beginDate;
   TIME beginTime;
-  U32  spentTime;//in seconds
-  U32  stopTime;//in seconds
-  U16  distance; //in meters
-  U8   maxSpeed; //in KM/h
-  U8   averageSpeed; // in KM/h
-  U32  totalDistance;
-  U32  totalTime;
+  U32  spentTime;		//in miliseconds
+  U32  stopTime;		//in miliseconds
+  U16  distance; 		//in meters
+  U8   currentSpeed;	//in km/h
+  U8   maxSpeed; 		//in km/h
+  U8   averageSpeed; 	//in km/h
+  U32  totalDistance;	//in meters
+  U32  totalTime;		//in seconds
 }Percurso,*pPercurso;
 
 /**

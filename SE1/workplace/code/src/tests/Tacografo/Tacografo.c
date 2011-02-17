@@ -20,21 +20,19 @@
 extern Option menu2Options[__MAX_FUNCTION_MENU_2__];
 extern Option menu1Options[__MAX_FUNCTION_MENU_1__];
 
-static int tickCount;
-Percurso percurso;
-U8  currentSpeed;
-U32 lastDistanceTimeUpdate;
-U32 lastSaveTime;
-
+static U32 tickCount;
+static U32 tickTime;
 
 void timer0isr(void){
-	U32 irq_status = pVIC->IRQStatus;
-	if (irq_status & __INTERRUPT_TIMER0_MASK__){
+	//U32 irq_status = pVIC->IRQStatus;
+	//if (irq_status & __INTERRUPT_TIMER0_MASK__){
+		timer_reset(pTIMER0);
 		tickCount++;
-		pVIC_VECTDEFADDR->VectAddr =0;		//clear isr function address
-		pTIMER0->IR |= 1<<5;				//clear timer0 CR1 interrupt request
+		tickTime+=pTIMER0->CR1;
+		pVIC_VECTDEFADDR->VectAddr =0;		     //clear isr function address
+		pTIMER0->IR |= __INTERRUPT_TIMER0_MASK__;//clear timer0 CR1 interrupt request
 		enableIRQ( __INTERRUPT_TIMER0__ );
-	}
+	//}
 }
 
 void Tacografo_init(){
@@ -49,9 +47,9 @@ void Tacografo_init(){
   VIC_init();
   
   VIC_ConfigIRQ(__INTERRUPT_TIMER0__,1,timer0isr);
-  //35297122 - time needed to run at a 1 km/h speed
+  //3597122 - time needed to run at a 1 km/h speed
   TIMER_ext_match_init(pTIMER0,1,__MATCH_RESET__,3597122,MATCH_TOGGLE);
-  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_RISE__,10,COUNTER_MODE_FALL);  
+  TIMER_capture_init(pTIMER0,1,__CAPTURE_INTERRUPT__|__CAPTURE_FALL__,1,COUNTER_MODE_FALL);  
   interrupt_enable(); 
  
   tickCount=0;
@@ -61,21 +59,22 @@ void Tacografo_init(){
 
 }
 
-void updateSpeed(){
-  if (currentSpeed==0){
-	//estava parado
-	lastDistanceTimeUpdate=percurso_addStopTime(&percurso, lastDistanceTimeUpdate);
-  }else{
-	//estava a andar
-	lastDistanceTimeUpdate=percurso_addSpentTime(&percurso, lastDistanceTimeUpdate);
-	percurso_updateDistance(&percurso, tickCount);
+void updateSpeed(Percurso* percurso){
+  if (tickTime){
+	//is running
+	percurso_addSpentTime(percurso, tickTime/1000);
+	percurso_updateDistance(percurso, tickCount*__METERS_PER_TICK__);
+	//speed in km/h
+	percurso_setCurrentSpeed(percurso, ((tickCount * __METERS_PER_TICK__)*3600000)/tickTime);
 	tickCount=0;
-	percurso_updateAverageSpeed(&percurso);
+	tickTime=0;
+	percurso_updateAverageSpeed(percurso);
+  }else{
+	//is stopped
+	percurso_addStopTime(percurso, (pTIMER0->TC)/1000);
+	timer_reset(pTIMER0);
+	percurso_setCurrentSpeed(percurso,0);
   }
-  currentSpeed=3600000/timer_capture1_time(pTIMER0);
-  timer_capture1_time(pTIMER0)=0;
-  percurso_testAndSetMaxSpeed(&percurso, currentSpeed);
-  
 }
 
 void saveData(){
@@ -84,37 +83,47 @@ void saveData(){
 //typedef enum _status {MAIN=0,OK_PRESS,MENU_PRESS,RESET_PRESS,FULLRESET,READ,WRITE,WAIT} Status;
 
 int main(){
-  Status program_status=OK_PRESS;
+  Percurso percurso;
+  U32 lastSaveTime;
+
   KB_Key key;
   char buff[16]="                ";
 
-  U16 lastSaveDistance = percurso.distance;
-  U32 lastSpeedCheckTS=timer_now(pTIMER1);
-  currentSpeed=0;
-  lastDistanceTimeUpdate = Clock_getCurrentTimeSeconds();
-  lastSaveTime = lastDistanceTimeUpdate;
- 
+  U16 lastSaveDistance;
   percurso_init(&percurso,0,0);
   Tacografo_init();  
-
+  
+  lastSaveTime = rtc_getCurrentTime();
+  lastSaveDistance = percurso.distance;
 
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
-  while (1){
-	Menu_Generic(&percurso,&menu1Options,7);
-    LCD_posCursor(0,0);
-    sprintf((char*)(&buff),"%12d-%3d",tickCount,pTIMER0->TC);
-    LCD_writeString((char*)&buff);
-    LCD_posCursor(1,0);
-	sprintf((char*)(&buff),"%16d",pTIMER0->CR1);
-    LCD_writeString((char*)&buff);
-	//WD_FEED();
-	timer_sleep_miliseconds(pTIMER1,1);
-  }
+  TIMER_ext_match_start;
   
+ /* 
+  while (1){
+	//Menu_Generic(&percurso,&menu1Options,7);
+    sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
+    LCD_writeLine(0,(char*)&buff);
+	TIMER_ext_match_stop(pTIMER0);
+	timer_sleep_miliseconds(pTIMER1,4000);
+    sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
+	LCD_writeLine(0,(char*)&buff);
+	TIMER_ext_match_start(pTIMER0);
+	sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
+    LCD_writeLine(0,(char*)&buff);
+	TIMER_ext_match_changeTime(pTIMER0,1,+20);
+	while(1){
+	sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
+    LCD_writeLine(0,(char*)&buff);
+	//WD_FEED();
+	timer_sleep_miliseconds(pTIMER1,2000);
+	}
+  }
+*/
   while (true){
-	if (timer_elapsed(pTIMER1,lastSpeedCheckTS)>2000000){
-	  updateSpeed();
+	if (tickTime > __MAX_SPEED_UPDATE_TIMEOUT__){
+	  updateSpeed(&percurso);
 	}
 	if (keyboard_hasKey()){
 		switch(key = keyboard_getBitMap()){
@@ -150,16 +159,19 @@ int main(){
 		  	break;
 		}
 	}else{
-	  if ((percurso.distance-lastSaveDistance)>1000 || timer_elapsed(pTIMER1,lastSpeedCheckTS)>1000000*60){
-	    saveData();
-		lastSaveDistance=percurso.distance;
+	  if ((percurso.distance-lastSaveDistance > __MAX_SAVE_DISTANCE__) || (rtc_secondsElapsed(lastSaveTime) > __MAX_SAVE_TIMEOUT__)){
+	    saveData(&percurso);
+		lastSaveTime=rtc_getCurrentTime();
 	  }
+	  sprintf((char*)(&buff),"%16d",percurso.currentSpeed);
+	  LCD_writeLine(0,(char*)&buff);
+      /*sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
+	  LCD_writeLine(1,(char*)&buff);*/
     }
 	//WD_reset;
-	timer_sleep_miliseconds(pTIMER1,100);
+	timer_sleep_miliseconds(pTIMER1,200);
   }
-
-
 
   return 0;
 }
+

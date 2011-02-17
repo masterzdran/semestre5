@@ -122,7 +122,8 @@ U8 keyboard_decodeKey(U8 keyBitmap){
  * returns 0 if there is no Key, otherwise if there is.
  **/
 U8 keyboard_hasKey(){ 
-  keyboard_readKey();
+  if (key == __NO_KEY__)
+	keyboard_readKey();
   return (key != __NO_KEY__);   
 }
 

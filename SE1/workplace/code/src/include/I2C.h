@@ -107,7 +107,5 @@ U32 I2C_slave_ack();
 U8 I2C_read_byte();
 void I2C_master_ack();
 void I2C_master_nack();
-void gpio_init_PINSEL0(U32 mask);
-void gpio_init_PINSEL1(U32 mask);
 
 #endif

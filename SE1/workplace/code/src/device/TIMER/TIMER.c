@@ -123,19 +123,19 @@ void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 dif){
   double multiplier;
   U8  aux;
   //if out of limits don't change
-  if ((timer_match_aux2-dif)<0 || (timer_match_aux2-dif)>250)
+  if ((timer_match_aux2+dif)<0 || (timer_match_aux2+dif)>200)
 	return;
 	
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
   if (dif>0){
 	for (aux=0;aux<dif;++aux){
-	  multiplier=(timer_match_aux2++)/(timer_match_aux1++);
-	  *(&(timer->MR0) + channel)*=multiplier;
+	  *(&(timer->MR0) + channel)*=(timer_match_aux2++);
+	  *(&(timer->MR0) + channel)/=(timer_match_aux1++);
 	}
   }else{
 	for (aux=0;aux<dif;++aux){
-	  multiplier=(--timer_match_aux1)/(--timer_match_aux2);
-	  *(&(timer->MR0) + channel)*=multiplier;
+	  *(&(timer->MR0) + channel)*=(--timer_match_aux1);
+	  *(&(timer->MR0) + channel)/=(--timer_match_aux2);
 	}
   }
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;

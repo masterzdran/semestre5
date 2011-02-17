@@ -138,11 +138,10 @@ typedef struct _TIMER{
 #define     timer_sleep_microseconds(A,B)     	(TIMER_delay(A,((( getSystemClock()/MICRO)/((A)->PR))*B)))
 
 #define timer_start(A)                  ((A)->TCR |= __TCR_ENABLE__)
-#define timer_stop(A)                   ((A)->TCR &= ~(__TCR_DISABLE__))
+#define timer_stop(A)                   ((A)->TCR &= ~(__TCR_ENABLE__))
 #define timer_elapsed(A,B)              ((A)->TC - B)
 #define timer_now(A)					((A)->TC)
-#define timer_capture1_time(A)			((A)->CR1)
-#define timer_reset(A)                  {(A)->TCR |= __TCR_RESET_ENABLE__; (A)->TCR &= ~(__TCR_RESET_DISABLE__);}
+#define timer_reset(A)                  {(A)->TCR |= __TCR_RESET_ENABLE__; (A)->TCR &= ~(__TCR_RESET_ENABLE__);}
 
 void TIMER_init(pLPC_TIMER timer, U32 countNbr);
 void TIMER_delay(pLPC_TIMER timer, U32 elapse);
