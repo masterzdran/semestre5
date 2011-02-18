@@ -228,3 +228,4 @@ static int getPos(Pbyte txt, U8 b) {
   int length = Wstrlen(txt);
   return (isCentered) ? (DISPLAY_SIZE_MASK + length - 2 * b) / 2 : (length - 3);
 }
+

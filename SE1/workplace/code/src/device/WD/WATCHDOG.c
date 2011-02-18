@@ -47,10 +47,10 @@ void WATCHDOG_init(U32 value){
  * If an interrupt occurs during feed sequence an abort condition will occur
  */
 void WD_reset(){
-	U32 int_enabled = pVIC->IntEnable;
-	pVIC->IntEnClr = int_enabled;
+	//U32 int_enabled = pVIC->IntEnable;
+	//pVIC->IntEnClr = int_enabled;
 	WD_FEED();
-	pVIC->IntEnable = int_enabled;
+	//pVIC->IntEnable = int_enabled;
 }
 /*
  * Substituido por macros

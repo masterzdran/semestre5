@@ -20,18 +20,18 @@
 extern Option menu2Options[__MAX_FUNCTION_MENU_2__];
 extern Option menu1Options[__MAX_FUNCTION_MENU_1__];
 
-static U32 tickCount;
-static U32 tickTime;
+static U32 tickCount;	//nº de ticks detectados
+static U32 tickTime;	//tempo acumulado entre ticks consecutivos
 
 void timer0isr(void){
 	//U32 irq_status = pVIC->IRQStatus;
 	//if (irq_status & __INTERRUPT_TIMER0_MASK__){
-		timer_reset(pTIMER0);
-		tickCount++;
-		tickTime+=pTIMER0->CR1;
-		pVIC_VECTDEFADDR->VectAddr =0;		     //clear isr function address
-		pTIMER0->IR |= __INTERRUPT_TIMER0_MASK__;//clear timer0 CR1 interrupt request
-		enableIRQ( __INTERRUPT_TIMER0__ );
+	timer_reset(pTIMER0);
+	tickCount++;
+	tickTime+=pTIMER0->CR1;
+	pVIC_VECTDEFADDR->VectAddr =0;		     //clear isr function address
+	pTIMER0->IR |= __INTERRUPT_TIMER0_MASK__;//clear timer0 CR1 interrupt request
+	enableIRQ( __INTERRUPT_TIMER0__ );
 	//}
 }
 
@@ -53,7 +53,7 @@ void Tacografo_init(){
   interrupt_enable(); 
  
   tickCount=0;
-
+  tickTime=0;
   //to use only when compiling to ram
   pMAM->MEMORY_MAPPING_CONTROL  = __MEMORY_MAP_CONTROL_USERRAM__; 
 
@@ -85,7 +85,6 @@ void saveData(){
 int main(){
   Percurso percurso;
   U32 lastSaveTime;
-  U32 lastUpdateTime;
   
   KB_Key key;
   char buff[16]="                ";
@@ -99,7 +98,7 @@ int main(){
 
   LCD_clear();
   timer_sleep_seconds(pTIMER1,1);
-  //TIMER_ext_match_start;
+  TIMER_ext_match_start(pTIMER0);
   
  /* 
   while (1){
@@ -124,8 +123,7 @@ int main(){
 */
 
   while (true){
-	if (lastUpdateTime > __MAX_SPEED_UPDATE_TIMEOUT__){
-	  lastUpdateTime=tickTime;
+	if (tickTime > __MAX_SPEED_UPDATE_TIMEOUT__ || (pTIMER0->TC) > __TICK_STOPPED_TIMEOUT__){
 	  updateSpeed(&percurso);
 	}
 	if (keyboard_hasKey()){
@@ -167,9 +165,7 @@ int main(){
 		lastSaveTime=rtc_getCurrentTime();
 	  }
 	  sprintf((char*)(&buff),"%11d km/h",percurso.currentSpeed);
-	  LCD_writeLine(0,(char*)&buff);
-      /*sprintf((char*)(&buff),"%12d-%3d",tickTime,tickCount);
-	  LCD_writeLine(1,(char*)&buff);*/
+	  LCD_writeLine(1,buff);
     }
 	//WD_reset;
 	timer_sleep_miliseconds(pTIMER1,300);

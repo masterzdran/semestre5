@@ -58,9 +58,7 @@ void LCD_setCursor(U8 visible, U8 blinking);
 void LCD_writeChar(U8 c) ;
 void LCD_writeString(Pbyte txt);
 void LCD_writeLine(U8 line, Pbyte txt);
-inline void LCD_setCenter(U8 value) ;
-
-
+inline void LCD_setCenter(U8 value);
 
 
 #endif
