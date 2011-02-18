@@ -1,0 +1,65 @@
+typedef struct _date{
+  U16    year; 
+  U8     month;
+  U8     day;  
+}DATE;
+
+typedef struct _time{
+  U8     hour;
+  U8     minute;
+  U8     second;  
+}TIME;
+
+
+typedef struct _percurso{
+  DATE beginDate;
+  TIME beginTime;
+  U32  spentTime;		//in miliseconds
+  U32  stopTime;		//in miliseconds
+  U16  distance; 		//in meters
+  U8   currentSpeed;	//in km/h
+  U8   maxSpeed; 		//in km/h
+  U8   averageSpeed; 	//in km/h
+  U32  totalDistance;	//in meters
+  U32  totalTime;		//in seconds
+}Percurso,*pPercurso;
+
+Totalizações:
+• totalização de distância percorrida pelo veículo, em quilómetros;             [Check]
+• totalização de tempo de utilização, em horas.                                 [Check]
+
+Dados do percurso actual:
+• data/hora de início do percurso;                                              [Check]
+• distância percorrida;
+• tempo despendido no percurso;
+• tempo parado - soma dos períodos de tempo em que o veículo esteve parado.
+• velocidade máxima – a velocidade máxima instantânea atingida pelo veículo;    [Check]
+
+
+(Em bits)
+--------------------------------------------------------------------------------
+Totalizadores
+--------------------------------------------------------------------------------
+[4 bytes]#00000: 32:  Percurso->totalDistance 
+[4 bytes]#00000: 32:  Percurso->totalTime
+[2 bytes]#00000: 16:  Pointer para o endereço do inicio do actual percurso (4 de maior peso a zero)
+[2 bytes]#00000: 16:  EEPROM Checksum
+--------------------------------------------------------------------------------
+Percurso Inicio
+--------------------------------------------------------------------------------
+[2 bytes]#00000: 16:  Date->year
+[2 bytes]#00000: 16:  Date->month Date->day
+[2 bytes]#00000: 16:  Time->Hour Time->minute
+[2 bytes]#00000: 16:  Percurso->maxSpeed Percurso->averageSpeed
+
+[1 bytes]#00000: 08:  Time->second
+--------------------------------------------------------------------------------
+Percurso Registo(4 Bytes)
+--------------------------------------------------------------------------------
+[1 byte ]#XXXX:   8:  Espaço percorrido (metros diferença para o anterior: -128 -> 127)
+[2 bytes]#XXXX:  16:  Tempo percorrido Tempo parado (segundos diferença para o anterior: -128 -> 127)
+[1 byte ]#XXXX:   8:  Record CheckSum
+--------------------------------------------------------------------------------
+  15    14    13    12    11    10    09    08    07    06    05    04    03    02    01    00  
+
+
