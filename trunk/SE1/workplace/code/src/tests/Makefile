@@ -55,7 +55,7 @@ all:
 	@echo "=================================="
 	@echo "Compiling the Program"
 	@echo "=================================="	
-	#$(MAKE) -C lcd-test/
+#$(MAKE) -C lcd-test/
 	$(MAKE) -C Tacografo/
 
 	
@@ -63,7 +63,7 @@ clean:
 	@echo "=================================="
 	@echo "Cleaning the Program"
 	@echo "=================================="	
-	#$(MAKE) -C lcd-test/ clean	
+#$(MAKE) -C lcd-test/ clean	
 	$(MAKE) -C Tacografo/ clean	
 	
 clear:

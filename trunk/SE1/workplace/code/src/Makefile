@@ -47,7 +47,7 @@ COMPILE_ONLY 		= -c
 .PHONY 					= clean
 .PHONY					= clear
 .PHONY					= all
-MAKEPATHS				= device  peripherical
+MAKEPATHS				= device  peripherical 
 #=======================================================================
 
 all: 

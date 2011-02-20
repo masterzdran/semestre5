@@ -34,8 +34,7 @@ static pLPC_TIMER ptimer;
  * 
  * */
 void keyboard_init(pLPC_TIMER timer){
-    //gpio_set_direction(__KEYBOARD_LOW_PORT_MASK__, GPIO_OUT); // define output 0x00F0
-    //gpio_set_direction(__KEYBOARD_HIGH_PORT_MASK__, GPIO_IN); 
+    gpio_init_PINSEL0(__PINSEL0_GPIO_PORT_0_15__|__PINSEL0_GPIO_PORT_0_14__|__PINSEL0_GPIO_PORT_0_13__|__PINSEL0_GPIO_PORT_0_12__|__PINSEL0_GPIO_PORT_0_11__|__PINSEL0_GPIO_PORT_0_10__|__PINSEL0_GPIO_PORT_0_9__|__PINSEL0_GPIO_PORT_0_8__);
     previous_key = key =   __DEFAULT_VALUE__; //define default value 0xF
     ptimer = timer;
 }
@@ -63,6 +62,10 @@ static U32 readNibble(U32 inputMask, U32 outputMask){
   return ((nibble == gpio_read(inputMask))? nibble:inputMask);     //Há Tecla Pressionada!?  
 }
 
+inline static void keyboard_resetOutputValue(U32 outputMask){
+  gpio_set_direction(outputMask, GPIO_OUT);
+  gpio_set(outputMask);  
+}
 /**
  * This funcion tries to read a key.
  * If no key is pressed or an error occurred while attempting to read the
@@ -76,7 +79,8 @@ void keyboard_readKey(){
   //Read Lines
   lowByteKey = readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ )>>__KEYBOARD_PORT_HIGH_NIBBLE_SHIFT_MASK__;
   if (lowByteKey  == __DEFAULT_VALUE__){       //There is an key pressed!?
-    key = __NO_KEY__;  
+    key = __NO_KEY__;
+    keyboard_resetOutputValue(__KEYBOARD_LOW_PORT_MASK__);
     return;
   }
 
@@ -84,18 +88,13 @@ void keyboard_readKey(){
   highByteKey = readNibble(__KEYBOARD_LOW_PORT_MASK__,__KEYBOARD_HIGH_PORT_MASK__)>>__KEYBOARD_PORT_LOW_NIBBLE_SHIFT_MASK__;
   if (highByteKey == __DEFAULT_VALUE__){       //Something went wrong, value discarted
     key = __NO_KEY__;
+    keyboard_resetOutputValue(__KEYBOARD_HIGH_PORT_MASK__);
     return; 
   }
-
+  keyboard_resetOutputValue(__KEYBOARD_HIGH_PORT_MASK__);
   recentKey = (highByteKey<<4) | lowByteKey;
   
-  //if (recentKey != key)  key  = recentKey;    //Save the bitmap
-  key  = recentKey;    //Save the bitmap
-  /*
-  do{
-    timer_sleep_miliseconds(ptimer,50);      //wait until the key is released
-  }while((readNibble(__KEYBOARD_HIGH_PORT_MASK__,__KEYBOARD_LOW_PORT_MASK__ )) != __DEFAULT_VALUE__ );
-  */
+  if (recentKey != key)  key  = recentKey;    //Save the bitmap
 }
 /**
  * Decode the bitmap to an valid key.
@@ -216,8 +215,8 @@ void kbTest(){
 		LCD_posCursor(currentLine, currentCol);
 	}
 	while(keyboard_hasKey())
-		timer_sleep_miliseconds(pTIMER0,100);
-	timer_sleep_miliseconds(pTIMER0,100);
+		timer_sleep_miliseconds(pTIMER1,100);
+	timer_sleep_miliseconds(pTIMER1,100);
   }	
   
 }

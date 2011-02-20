@@ -25,6 +25,9 @@
 #include "stdio.h"
 static U8 monthDays[12] ={31,28,31,30,31,30,31,31,30,31,30,31};
 static char buffer[16];
+
+//150 = 30 segundos. Tempo de espera aproximado, por cada 200ms de sleep até tecla pressionada
+#define __WAIT_PERIOD_30_Seconds__    135
 /**
  * Função que valida Data/hora, obrigando os valores a ficarem dentro dos limites 
  **/
@@ -41,20 +44,23 @@ U32 modulos(S32 value, U8 adj, S8 offset, U32 mod){
 }
 
 void format(U8 position,DATE_TIME* dateTime,short value){
-  U8 val;
+  U8 val; U8 tmp=0;
   Bool dateHasChanged= false;
+  Bool isLeap = (IS_LEAP_YEAR((dateTime->date.year)))?true:false;
   switch (position){
       case 0:
         dateTime->date.year = (dateTime->date.year + value);
         dateHasChanged = true;
+        isLeap = (IS_LEAP_YEAR((dateTime->date.year)))?true:false;
         break;
       case 1:
         dateTime->date.month =__FX1(dateTime->date.month,value,MONTH_LIMIT);
         dateHasChanged = true;
-		break;
+        break;
       case 2:
-        dateTime->date.day = __FX1(dateTime->date.day,value,MAX_MONTH_DAYS);
-        dateHasChanged = true;
+        tmp = (dateTime->date.month == 2 && (isLeap))?LEAP_YEAR_FEB : monthDays[ dateTime->date.month - 1 ];
+        dateTime->date.day = __FX1(dateTime->date.day,value,tmp);
+        //dateHasChanged = true;
         break;
       case 3:
         dateTime->time.hour = __FX0(dateTime->time.hour,value,HOUR_LIMIT);
@@ -64,7 +70,7 @@ void format(U8 position,DATE_TIME* dateTime,short value){
         break;
   }
   if (dateHasChanged){
-    if (dateTime->date.month == 2 && IS_LEAP_YEAR((dateTime->date.year))){
+    if (dateTime->date.month == 2 && isLeap){
       dateTime->date.day = __FX1(dateTime->date.day,0,LEAP_YEAR_FEB) 	 	;
     }else{
       val = dateTime->date.month -1 ;
@@ -73,13 +79,12 @@ void format(U8 position,DATE_TIME* dateTime,short value){
   }
 }
 
-#define PRINT_DATE_TIME "dummy to be print"
 void setClock(PVOID course){
   U8 writePos[5]= {3,6,9,12,15};
   DATE_TIME dateTime;
   rtc_getDateTime(&dateTime);
   dateTime.time.second  = 0;
-  
+  U8 elapsedTime=0;
   KB_Key key;
   KB_Key prev_key=__NO_KEY__;
   
@@ -93,18 +98,17 @@ void setClock(PVOID course){
     if (hasNotBeenWriten){
       sprintf(buffer,"%4.4d-%2.2d-%2.2d %2.2d:%2.2d",dateTime.date.year,dateTime.date.month,dateTime.date.day,dateTime.time.hour,dateTime.time.minute);
       LCD_posCursor(DEFAULT_LINE_SET, 0);
-	  LCD_writeString(buffer);
+      LCD_writeString(buffer);
       LCD_posCursor(DEFAULT_LINE_SET, writePos[position]);
       hasNotBeenWriten = false;
     }
     if (keyboard_hasKey()){
       key = keyboard_getBitMap();
-      //if (key != prev_key){
         switch(key){
             case OK:
               rtc_setDateTime(&dateTime); //commit dateTime
-			  LCD_setCursor(false,false);
-			  return;
+              LCD_setCursor(false,false);
+              return;
             case LEFT:
               position = __FX0(position,-1,NBR_FIELDS);
               hasNotBeenWriten = true;
@@ -122,20 +126,23 @@ void setClock(PVOID course){
               hasNotBeenWriten = true;
               break;
             case CANCEL:
-			  LCD_setCursor(false,false);
+              LCD_setCursor(false,false);
               return;  
             default:
-                //do nothing
+                key = __NO_KEY__;
                 break;
         }
-        prev_key = key;
+        elapsedTime=0;
+      }else{
+        //no key
+        elapsedTime ++;
+        if(elapsedTime>__WAIT_PERIOD_30_Seconds__){
+          LCD_clear(); 
+          return;
+        } 
       }
-     
-     WD_RESET_ENABLE();
-    //}else{
-      //prev_key = __NO_KEY__;
-    //}
-   timer_sleep_miliseconds(pTIMER0, 200); 
+     WD_reset();
+     timer_sleep_miliseconds(pTIMER1, 200); 
   }
 }
 
@@ -159,11 +166,11 @@ U16 Clock_dateDif(DATE* date_init, DATE* date_end){
 	numberDays=date_end->day-date_init->day;
   }else{
     numberDays=monthDays[date_init->month]-date_init->day;
-	numberDays+=date_end->day;
+    numberDays+=date_end->day;
   }
   U8 aux;
   for(aux=date_init->month+1; aux<date_end->month-1;aux++){
-	numberDays+=monthDays[aux];
+    numberDays+=monthDays[aux];
   }
   return numberDays;
 }

@@ -51,13 +51,13 @@ COMPILE_ONLY 		= -c
 .PHONY					= clear
 MAKEPATHS				= Clock Menu Percurso
 #=======================================================================
-all: Tacografo.c Tacografo.h
+Tacografo.o: Tacografo.c Tacografo.h
 	@echo "=================================="
 	@echo "Compiling the Program"
 	@echo "=================================="	
 	@$(foreach MPATH, $(MAKEPATHS), $(MAKE) -C $(PCOMPILE)/$(MPATH);)
-	@$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) Tacografo.o  $< 
-	@cp Tacografo.o $(PROGRAM)/Tacografo.o
+	@$(CC) $(SEARCHLIB) $(DEBUGSYMBOLS) $(COMPILE_ONLY) $(OUTPUT) $@  $< 
+	@cp $@ $(PROGRAM)/$@
 	@cp Tacografo.h $(INCLUDE)/
 
 

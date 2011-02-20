@@ -130,9 +130,6 @@ typedef struct _TIMER{
 #define MICRO   1000000
 #define NANO    1000000000 //in this oscilator is not possible to go at nano level :(
 
-//#define     timer_sleep_seconds(A,B)          (TIMER_delay(A,(((__SYSTEM_CLOCK__/SECOND)/((A)->PR))*B)))
-//#define     timer_sleep_miliseconds(A,B)      (TIMER_delay(A,(((__SYSTEM_CLOCK__/MILI)/((A)->PR))*B)))
-//#define     timer_sleep_microseconds(A,B)     (TIMER_delay(A,(((__SYSTEM_CLOCK__/MICRO)/((A)->PR))*B)))
 #define     timer_sleep_seconds(A,B)            (TIMER_delay(A,((( getSystemClock()/SECOND)/((A)->PR))*B)))
 #define     timer_sleep_miliseconds(A,B)        (TIMER_delay(A,((( getSystemClock()/MILI)/((A)->PR))*B)))
 #define     timer_sleep_microseconds(A,B)     	(TIMER_delay(A,((( getSystemClock()/MICRO)/((A)->PR))*B)))
@@ -147,9 +144,9 @@ void TIMER_init(pLPC_TIMER timer, U32 countNbr);
 void TIMER_delay(pLPC_TIMER timer, U32 elapse);
 void TIMER_capture_init(pLPC_TIMER timer,U8 channel, U32 captureMask, U32 countNbr,tCtcrFunction ctcrFunction);
 void TIMER_ext_match_init(pLPC_TIMER timer,U8 channel, U32 MatchMask, U32 countNbr,tEmrFunction emrFunction);
-
+void TIMER_enable(pLPC_TIMER timer);
 void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel,U8 up, U8 dif);
-void TIMER_ext_match_stop(pLPC_TIMER timer);
-void TIMER_ext_match_start(pLPC_TIMER timer);
+void TIMER_ext_match_stop(pLPC_TIMER timer,U8 channel, U32 emrFunction);
+void TIMER_ext_match_start(pLPC_TIMER timer,U8 channel, U32 emrFunction);
 
 #endif

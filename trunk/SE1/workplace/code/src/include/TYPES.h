@@ -69,10 +69,26 @@ typedef struct _datetime{
   TIME time;
 }DATE_TIME;
 
+struct _percurso;
+typedef struct _percurso  Percurso;
+
+typedef struct percurso_methods{
+  const void (*resetValues)        (Percurso* this);
+	const void (*addStopTime)        (Percurso* this ,U32 time);
+	const void (*addSpentTime)       (Percurso* this ,U32 time);
+	const void (*updateDistance)     (Percurso* this ,U16 distance);
+	const void (*updateAverageSpeed) (Percurso* this);
+	const void (*setCurrentSpeed)    (Percurso* this, U8 speed);
+	const void (*updateSpeed)        (Percurso* this, U32* tickTime, U32* tickCount);
+	const void (*start)              (Percurso* this, U32 tickTime,  U32 tickCount);
+}Percurso_Methods;
+
+
 /**
  * Definição da estrutura Percurso 
  **/
 typedef struct _percurso{
+  const Percurso_Methods* vptr;
   DATE beginDate;
   TIME beginTime;
   U32  spentTime;		//in miliseconds
@@ -83,7 +99,7 @@ typedef struct _percurso{
   U8   averageSpeed; 	//in km/h
   U32  totalDistance;	//in meters
   U32  totalTime;		//in seconds
-}Percurso,*pPercurso;
+}*pPercurso;
 
 /**
  * Enumerado com as teclas válidas para serem utilizadas no contexto dos Menu 

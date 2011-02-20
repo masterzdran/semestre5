@@ -38,7 +38,6 @@ void WATCHDOG_init(U32 value){
   pWatchDog->TIMER_VALUE	= 0xFF;		//reset the counter timer value
   pWatchDog->MODE_REGISTER	= __WDTOF_MASK__|__WDINT_MASK__; //clear Int flag and TOF
   WD_RESET_ENABLE();					//make the WDTOF to reset the micro
-  //WD_RESET_DISABLE();					//make the WDTOF to set WDINT
   WD_ENABLE();							//enable WD
   WD_FEED();							//
 }
@@ -47,16 +46,8 @@ void WATCHDOG_init(U32 value){
  * If an interrupt occurs during feed sequence an abort condition will occur
  */
 void WD_reset(){
-	//U32 int_enabled = pVIC->IntEnable;
-	//pVIC->IntEnClr = int_enabled;
+	U32 int_enabled = pVIC->IntEnable;
+	pVIC->IntEnClr = int_enabled;
 	WD_FEED();
-	//pVIC->IntEnable = int_enabled;
+	pVIC->IntEnable = int_enabled;
 }
-/*
- * Substituido por macros
-Bool WD_isRunning(){return pWatchDog->MODE_REGISTER & __WDEN_MASK__;}
-void WD_Enable(){ pWatchDog->MODE_REGISTER |= __WDEN_MASK__;}
-void WD_Disable(){ pWatchDog->MODE_REGISTER &= ~(__WDEN_MASK__);}
-void WD_ResetEnable(){ pWatchDog->MODE_REGISTER |= _WDRESET_ENABLE__;}
-void WD_ResetDisable(){ pWatchDog->MODE_REGISTER &= ~(_WDRESET_ENABLE__)}
-*/

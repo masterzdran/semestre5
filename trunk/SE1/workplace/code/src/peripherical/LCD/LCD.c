@@ -26,9 +26,6 @@
  * */
 #define DATA_BITS_SHIFT          ((U8)0x4)
 #define CLEAN_MASK               ((U8)0xF)
-//#define RS_MASK                  ((U16)0x01000)  //Ultimo nibble para Data
-//#define ENABLE_MASK              ((U16)0x02000)  //Ultimo nibble para Data
-//#define RW_MASK                  ((U16)0x04000)  //Ultimo nibble para Data
 #define RS_MASK                  ((U16)0x0040)  //Ultimo nibble para Data
 #define ENABLE_MASK              ((U16)0x0080)  //Ultimo nibble para Data
 #define RW_MASK                  ((U16)0x0000)  //Ultimo nibble para Data
@@ -50,10 +47,16 @@ inline U32 Wstrlen(const Pbyte str){
 	for (p=str ; *p ; p++);
 	return p - str;
 }
+
+inline static void LCD_resetOutputValue(){
+  gpio_clear(ENABLE_MASK);
+  gpio_set_direction(DATA_MASK, GPIO_OUT);
+  gpio_set(DATA_MASK);  
+}
 /**
  * Escreve no LCD
  * */
-void LCD_write(U32  byte){
+static void LCD_write(U32  byte){
   gpio_write(DATA_MASK,(byte<<LCD_GPIO_MASK_SHIFT)&DATA_MASK);
 }
 
@@ -87,7 +90,7 @@ void LCD_init(pLPC_TIMER timer){
     /* Begin inicialization */
 
     ptimer=timer;
-
+    gpio_init_PINSEL0(__PINSEL0_GPIO_PORT_0_11__|__PINSEL0_GPIO_PORT_0_10__|__PINSEL0_GPIO_PORT_0_9__|__PINSEL0_GPIO_PORT_0_8__|__PINSEL0_GPIO_PORT_0_7__|__PINSEL0_GPIO_PORT_0_6__);
     gpio_set_direction(LCD_GPIO_MASK,GPIO_OUT);
     gpio_clear(RS_MASK);
     gpio_clear(ENABLE_MASK);
@@ -188,6 +191,7 @@ void LCD_writeString(Pbyte txt) {
       processValue(1,*txt);
       txt++;
   }
+  //LCD_resetOutputValue();
 }
 
 /**
@@ -209,6 +213,7 @@ void LCD_writeLine(U8 line, Pbyte txt) {
   LCD_writeString(txt);
   for(i+=length;i<16;++i)
 	LCD_writeChar(' ');
+ 
 }
 
 /**

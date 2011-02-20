@@ -22,10 +22,13 @@
 #include "LCD.h"
 #include "WATCHDOG.h"
 #include "MenuFunctions.h"
-#include "Timer.h"
+#include "TIMER.h"
 #include "RTC.h"
 #include "Clock.h"
- 
+//150 = 30 segundos. Tempo de espera aproximado, por cada 200ms de sleep até tecla pressionada
+#define __WAIT_PERIOD_30_Seconds__    135
+
+
 Option menu2Options[__MAX_FUNCTION_MENU_2__] =
 {
   {"1- Setting Clock",setClock}, 
@@ -47,20 +50,24 @@ Option menu1Options[__MAX_FUNCTION_MENU_1__] =
 void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
   pPercurso percurso = (pPercurso)course;
   U32 currentTime=rtc_getCurrentTime();
-  U32 elapsedTime;
+  U8 elapsedTime=0;
   U8 idx = 0,bidx = -1;
   KB_Key key;
-  LCD_clear();
-  LCD_writeLine(0,"Press OK or Next");
+  
+  
   while(1){
-    if (bidx != idx)
+    if (bidx != idx){
+      LCD_clear();
+      LCD_writeLine(0,"Press OK or Next");
       LCD_writeLine(1,options[idx].text);
-    bidx = idx;
+      bidx = idx;
+    }
     if (keyboard_hasKey()){
-	  currentTime=rtc_getCurrentTime();
+      currentTime=rtc_getCurrentTime();
       switch(key = keyboard_getBitMap()){
           case OK:
-            options[idx].function(percurso); break;
+            options[idx].function(percurso);
+            break;
           case RIGHT:
           case DOWN:
             idx = __FX0(idx,1,sizeOf); break;
@@ -68,23 +75,24 @@ void Menu_Generic(PVOID course, pOption options[], U8 sizeOf){
           case UP:
             idx = __FX0(idx,-1,sizeOf);    break;
           case CANCEL:
-			LCD_clear();
+            LCD_clear();
             return;  
           default:
               //do nothing
               break;
       }
+      elapsedTime=0;
     }else{
-	  //no key
-	  elapsedTime = rtc_getCurrentTime()-currentTime;
-	  if(elapsedTime>10){
-		 LCD_clear(); 
-		return;
-	  }
-
-	}
-    //WD_reset();
-    timer_sleep_miliseconds(pTIMER1, 50);
+      //no key
+      elapsedTime ++;
+      
+      if(elapsedTime >__WAIT_PERIOD_30_Seconds__){
+        LCD_clear(); 
+        return;
+      }
+      timer_sleep_miliseconds(pTIMER1, 200);
+    }
+    WD_reset();
   }
 }
 
