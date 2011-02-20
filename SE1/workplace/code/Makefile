@@ -65,9 +65,11 @@ OPENOCD_FILE	=	$(TODEPLOY)/openocd/openocd_lpc2106.cfg
 #Set the Correct LdScript
 ifdef ROM
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_rom
+EXEC				= rom.elf
 END_EXEC		= $(TARGET)/rom.elf
 else
 LDSCRIPT_FILE	= $(LDS_PATH)/ldscript_ram
+EXEC				= ram.elf
 END_EXEC		= $(TARGET)/ram.elf
 endif
 
@@ -75,7 +77,8 @@ VPATH 			= $(MYLIB):$(CLIB):$(libdir)
 #VPATH 			= $(MYLIB)
 #=======================================================================
 #OBJECT =		start.o startosc.o TIMER.o GPIO.o LCD.o keyboard.o libc.a libgcc.a libLPC2106.a
-OBJECT =		libc.a libgcc.a  libLPC2106.a libPeripherical.a
+LIBOBJECT =		libc.a libgcc.a  libLPC2106.a libPeripherical.a
+OBJECT =		$(MYLIB)/start.o $(PROGRAM)/Tacografo.o $(PROGRAM)/Menu.o $(PROGRAM)/MenuFunctions.o $(PROGRAM)/Clock.o $(PROGRAM)/Percurso.o
 #=======================================================================
 all: $(END_EXEC) 
 
@@ -84,7 +87,7 @@ all: $(END_EXEC)
 $(END_EXEC): program 
 	cp src/device/STARTUP/start.o src/lib/start.o
 #	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $(MYLIB)/start.o $(PROGRAM)/tacografo.o -L$(MYLIB) -lPeripherical -lLPC2106 -lc -lgcc
-	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $(MYLIB)/start.o $(PROGRAM)/Tacografo.o $(PROGRAM)/Menu.o $(PROGRAM)/MenuFunctions.o $(PROGRAM)/Clock.o $(PROGRAM)/Percurso.o -L$(MYLIB) -lPeripherical -lLPC2106 -lc -lgcc
+	$(LD) $(LDSCRIPT) $(LDSCRIPT_FILE) $(OUTPUT) $@  $(OBJECT) -L$(MYLIB) -lPeripherical -lLPC2106 -lc -lgcc
 
 peripherical: device
 	@echo "----------------------------------------------------------------------"
@@ -94,20 +97,21 @@ device:
 	@echo "----------------------------------------------------------------------"
 	$(MAKE) -C $(DEVICE)
 	
-program: peripherical device
+program:  device peripherical
 	@echo "----------------------------------------------------------------------"
 	$(MAKE) -C $(PCOMPILE)
 
 #Start the Debugger	
-debug: $(END_EXEC)
+debug: 
 	@echo "----------------------------------------------------------------------"
-	$(DEBUGGER) $(END_EXEC)
+	@echo $(DEBUGGER) $(END_EXEC)
+	$(DEBUGGER) --cd=$(TARGET) --exec=$(EXEC)
 
 #clean files
 clean:
 	@echo "----------------------------------------------------------------------"
-	$(MAKE) -C $(PERIPHERICAL) clean
 	$(MAKE) -C $(DEVICE) clean	
+	$(MAKE) -C $(PERIPHERICAL) clean
 	$(MAKE) -C $(PCOMPILE) clean
 
 deploy: $(END_EXEC)

@@ -61,7 +61,7 @@ Bool VIC_ConfigIRQ(U8 peripherical, U8 priority,void (*fx)(void)){
   
     //  *(&(pVIC_VECTADDR->VectAddr0) + (U32)priority ) = (PU32)fx;
     //  *(&(pVIC_VECTCNT->VectCntl0) + (U32)priority) = __VIC_ENABLE__|(peripherical&__VIC_VECTCNTL_MASK__);
-  *(vicAddr) = (PU32)fx;
+  *(vicAddr) = (U32)fx;
   *(vicCtrl) = __VIC_ENABLE__|(peripherical&__VIC_VECTCNTL_MASK__);
   
   enableIRQ(peripherical);

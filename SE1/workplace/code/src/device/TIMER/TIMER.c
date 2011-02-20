@@ -52,6 +52,9 @@ void TIMER_delay(pLPC_TIMER timer, U32 elapse){
     time = timer_elapsed(timer,0);
     while(timer_elapsed(timer,time)<= elapse);
 }
+void TIMER_enable(pLPC_TIMER timer){
+	timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
+}
 /**
  * LPC_TIMER timer: Timer
  * TCapture timerCapture: Pin enable
@@ -137,7 +140,7 @@ void TIMER_ext_match_changeTime(pLPC_TIMER timer,U8 channel, U8 up, U8 dif){
   }
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
-
+/*
 void TIMER_ext_match_stop(pLPC_TIMER timer){
   timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
 }
@@ -145,7 +148,18 @@ void TIMER_ext_match_stop(pLPC_TIMER timer){
 void TIMER_ext_match_start(pLPC_TIMER timer){
   timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;
 }
+*/
+void TIMER_ext_match_stop(pLPC_TIMER timer,U8 channel, U32 emrFunction){
+  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
+  timer->EMR    &= ~(1<<channel) | ~((emrFunction << 2*channel)<<4);
+  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;   
+}
 
+void TIMER_ext_match_start(pLPC_TIMER timer,U8 channel, U32 emrFunction){
+  timer->TCR    = __TCR_DISABLE__|__TCR_RESET_ENABLE__;
+  timer->EMR    |= (1<<channel) | ((emrFunction << 2*channel)<<4);
+  timer->TCR    = __TCR_ENABLE__|__TCR_RESET_DISABLE__;   
+}
 /**
  * LPC_TIMER timer: Timer
  * TMatch timerMatch: Pin enable
